@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.base.AppException;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
@@ -150,6 +151,8 @@ public class AppApplication extends TSApplication {
                 .setDefaultPath(com.zycx.shortvideo.utils.FileUtils.getBaseFolder() + ParamsManager.SaveVideo);
         DownloadConfig.INSTANCE.init(builder);
         MobSDK.init(AppApplication.this);
+        //crash log
+        AppException.getInstance().init(this);
     }
 
     /**
