@@ -6,13 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.utils.ExcutorUtil;
 import com.zhiyicx.baseproject.widget.InputPasswordView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -35,7 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import butterknife.BindView;
+import javax.inject.Inject;
+
 
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
@@ -62,6 +63,12 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
 
     private CircleInfo mCircleInfo;
+    /**
+     * 仅用于构造
+     */
+    @Inject
+    CircleMainPresenter mCircleMainPresenter;
+
 
     @Override
     protected boolean setUseCenterLoading() {
@@ -71,6 +78,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected String setCenterTitle() {
         return getString(R.string.group);
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return 0;
     }
 
     @Override
@@ -132,6 +144,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         mActivity.runOnUiThread(() -> mCircleMainHeader.updateCircleCount(count));
     }
 
+
     @Override
     protected void setRightClick() {
         super.setRightClick();
@@ -142,6 +155,26 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         }
         mPresenter.checkCertification();
 
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -187,7 +220,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     public void onSureClick(View v, String text, InputPasswordView.PayNote payNote) {
-        mPresenter.dealCircleJoinOrExit(payNote.id.intValue(), mCircleInfo,payNote.psd);
+        mPresenter.dealCircleJoinOrExit(payNote.id.intValue(), mCircleInfo, payNote.psd);
     }
 
     @Override
@@ -195,6 +228,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         showInputPsdView(false);
         startActivity(new Intent(getActivity(), FindPasswordActivity.class));
     }
+
 
     @Override
     public void onCancle() {
@@ -205,6 +239,9 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected void initData() {
+        if (mPresenter == null) {
+            mPresenter = mCircleMainPresenter;
+        }
         if (mPresenter != null) {
             mCircleMainHeader = new CircleMainHeader(mActivity, mPresenter.getCircleTopAdvert(), 2341);
             mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
@@ -277,7 +314,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
             mIlvPassword.setPayNote(new InputPasswordView.PayNote(null, (long) position));
             showInputPsdView(true);
         } else {
-            mPresenter.dealCircleJoinOrExit(position, circleInfo,null);
+            mPresenter.dealCircleJoinOrExit(position, circleInfo, null);
         }
 
     }
@@ -291,7 +328,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
         if (isClosedCircle && !isJoined) {
             PreCircleActivity.startPreCircleActivity(mActivity, circleInfo.getId());
-//            showSnackErrorMessage(getString(R.string.circle_blocked));
+//          showSnackErrorMessage(getString(R.string.circle_blocked));
             return;
         }
 
@@ -389,4 +426,24 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
 
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        DaggerCircleMainPresenterComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .circleMainPresenterModule(new CircleMainPresenterModule(this))
+                .build().inject(CircleMainFragment.this);
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+//        return new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
+        return new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0);
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
 }

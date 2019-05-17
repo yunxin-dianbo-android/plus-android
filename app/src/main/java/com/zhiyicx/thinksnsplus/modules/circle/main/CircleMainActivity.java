@@ -12,11 +12,11 @@ public class CircleMainActivity extends TSActivity<CircleMainPresenter, CircleMa
 
     @Override
     protected void componentInject() {
-        DaggerCircleMainPresenterComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .circleMainPresenterModule(new CircleMainPresenterModule(mContanierFragment))
-                .build().inject(this);
+//        DaggerCircleMainPresenterComponent
+//                .builder()
+//                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+//                .circleMainPresenterModule(new CircleMainPresenterModule(mContanierFragment))
+//                .build().inject(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment2;
 
 import dagger.Component;
 
@@ -14,5 +15,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class, modules = CircleMainPresenterModule.class)
-public interface CircleMainPresenterComponent extends InjectComponent<CircleMainActivity> {
+public interface CircleMainPresenterComponent extends InjectComponent<CircleMainFragment> {
 }

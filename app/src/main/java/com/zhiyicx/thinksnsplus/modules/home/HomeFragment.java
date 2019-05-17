@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,13 +39,16 @@ import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
+import com.zhiyicx.thinksnsplus.modules.discover.DiscoveryMainFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment2;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
@@ -54,7 +59,9 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import cn.jzvd.JZVideoPlayerManager;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -118,6 +125,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @BindView(R.id.ll_bottom_container)
     LinearLayout mLlBottomContainer;
+    @BindView(R.id.v_home_bottom_line)
+    View vHomeBottomLine;
+    @BindView(R.id.v_discover_bottom_line)
+    View vDiscoverBottomLine;
+    @BindView(R.id.v_message_bottom_line)
+    View vMessageBottomLine;
+    //    @BindView(R.id.v_game_bottom_line)
+//    View vGameBottomLine;
+    @BindView(R.id.v_mine_bottom_line)
+    View vMineBottomLine;
+    Unbinder unbinder;
 
     private PhotoSelectorImpl mPhotoSelector;
 
@@ -364,12 +382,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
         mFragmentList.clear();
         mFragmentList.add(MainFragment.newInstance(this));
-        mFragmentList.add(FindFragment.newInstance());
+        mFragmentList.add(FindFragment2.newInstance());
+//        mFragmentList.add(FindFragment.newInstance());
+//        mFragmentList.add(DiscoveryMainFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MessageContainerFragment.instance());
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(MineFragment.newInstance());
+            mFragmentList.add(MineFragment2.newInstance());
         }
         //将 List 设置给 adapter
         homePager.bindData(mFragmentList);
@@ -444,16 +464,20 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * @param position 当前 viewpager 的位置
      */
     private void changeNavigationButton(int position) {
-        int checkedColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.themeColor);
-        int unckeckedColor = ContextCompat.getColor(getContext(), R.color.home_bottom_navigate_text_normal);
-        mIvHome.setImageResource(position == PAGE_HOME ? R.mipmap.common_ico_bottom_home_high : R.mipmap.common_ico_bottom_home_normal);
+        int checkedColor = ContextCompat.getColor(getContext().getApplicationContext(), R.color.white);
+        int unckeckedColor = ContextCompat.getColor(getContext(), R.color.color_cecece);
+        mIvHome.setImageResource(position == PAGE_HOME ? R.mipmap.ic_home_new_selected : R.mipmap.ic_home_new);
         mTvHome.setTextColor(position == PAGE_HOME ? checkedColor : unckeckedColor);
-        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.common_ico_bottom_discover_high : R.mipmap.common_ico_bottom_discover_normal);
+        mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.ic_discover_selected : R.mipmap.ic_discover_normal);
         mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
         mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
         mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
-        mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.common_ico_bottom_me_high : R.mipmap.common_ico_bottom_me_normal);
+        mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.ic_user_center_selected : R.mipmap.ic_user_center_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
+        vHomeBottomLine.setVisibility(position == PAGE_HOME ? View.VISIBLE : View.INVISIBLE);
+        vDiscoverBottomLine.setVisibility(position == PAGE_FIND ? View.VISIBLE : View.INVISIBLE);
+        vMessageBottomLine.setVisibility(position == PAGE_MESSAGE ? View.VISIBLE : View.INVISIBLE);
+        vMineBottomLine.setVisibility(position == PAGE_MINE ? View.VISIBLE : View.INVISIBLE);
     }
 
     /**
@@ -576,4 +600,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }

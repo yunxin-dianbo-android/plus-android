@@ -19,8 +19,8 @@ import cn.jzvd.JZVideoPlayerManager;
 public class SearchContainerActivity extends TSActivity {
 
     @Override
-    protected SearchContainerFragment getFragment() {
-        return new SearchContainerFragment();
+    protected SearchContainerFragment2 getFragment() {
+        return new SearchContainerFragment2();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SearchContainerActivity extends TSActivity {
         if (JZVideoPlayer.backPress()) {
             return;
         }
-        ((SearchContainerFragment) (mContanierFragment)).onBackPressed();
+        ((SearchContainerFragment2) (mContanierFragment)).onBackPressed();
     }
 
     @Override

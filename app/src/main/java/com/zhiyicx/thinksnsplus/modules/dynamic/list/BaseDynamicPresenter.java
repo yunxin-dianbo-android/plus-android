@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.fordownload.AppListPresenterForDownload;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -618,12 +619,19 @@ public abstract class BaseDynamicPresenter<V extends DynamicContract.View<P>, P 
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicBannerAdvert() == null) {
             return new ArrayList<>();
         }
-        return mAllAdvertListBeanGreenDao.getDynamicBannerAdvert().getMRealAdvertListBeen();
+        AllAdverListBean allAdverListBean = mAllAdvertListBeanGreenDao.getDynamicBannerAdvert();
+        if (allAdverListBean == null) {
+            return null;
+        }
+        return allAdverListBean.getMRealAdvertListBeen();
     }
 
     @Override
     public List<RealAdvertListBean> getListAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicListAdvert() == null) {
+            return new ArrayList<>();
+        }
+        if (mAllAdvertListBeanGreenDao.getDynamicListAdvert() == null) {
             return new ArrayList<>();
         }
         return mAllAdvertListBeanGreenDao.getDynamicListAdvert().getMRealAdvertListBeen();
@@ -656,7 +664,7 @@ public abstract class BaseDynamicPresenter<V extends DynamicContract.View<P>, P 
         subscribe = handleIntegrationBlance((long) amount)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.ts_pay_check_handle_doing)))
-                .flatMap(o -> mCommentRepository.paykNote(note,psd))
+                .flatMap(o -> mCommentRepository.paykNote(note, psd))
                 .flatMap(stringBaseJsonV2 -> {
                     if (isImage) {
                         return Observable.just(stringBaseJsonV2);

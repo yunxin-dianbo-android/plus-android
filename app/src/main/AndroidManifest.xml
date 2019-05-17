@@ -444,6 +444,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/activity_topin_bottomout"/>
         <activity
+            android:name=".modules.channel.ChannelManagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_topin_bottomout"/>
+        <activity
+            android:name=".modules.channel.VideoChannelActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_topin_bottomout"/>
+        <activity
             android:name=".modules.information.infosearch.SearchActivity"
             android:screenOrientation="portrait"/>
         <activity

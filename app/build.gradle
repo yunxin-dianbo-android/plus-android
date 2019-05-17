@@ -156,6 +156,18 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
+
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs =  [
+                    'src/main/res/layouts/home',
+                    'src/main/res/layouts/video',
+                    'src/main/res'
+            ]
+        }
+    }
 }
 // for kotlin extension
 androidExtensions {

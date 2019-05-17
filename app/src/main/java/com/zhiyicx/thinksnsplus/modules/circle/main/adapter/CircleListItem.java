@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
@@ -89,20 +91,19 @@ public class CircleListItem extends BaseCircleItem {
 
 
         // 设置封面
-        Glide.with(context)
-                .load(circleInfo.getAvatar()!= null ? circleInfo.getAvatar().getUrl() : "")
-                .error(R.drawable.shape_default_image)
-                .placeholder(R.drawable.shape_default_image)
-                .into(circleCover);
-
+//        Glide.with(context)
+//                .load(circleInfo.getAvatar()!= null ? circleInfo.getAvatar().getUrl() : "")
+//                .error(R.drawable.shape_default_image)
+//                .placeholder(R.drawable.shape_default_image)
+//                .into(circleCover);
+        GlideManager.glideCircle(BaseApplication.getContext(),circleCover,circleInfo.getAvatar()!= null ? circleInfo.getAvatar().getUrl() : "",R.mipmap.ic_default_user_head_circle);
         circleName.setText(circleInfo.getName());
-
         String feedCountNumber = ConvertUtils.numberConvert(circleInfo.getPosts_count());
         String feedContent = context.getString(R.string.circle_post) + " " + "<" +
                 feedCountNumber + ">";
         CharSequence feedString = ColorPhrase.from(feedContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(context, R.color.themeColor))
-                .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+                .innerColor(ContextCompat.getColor(context, R.color.white))
+                .outerColor(ContextCompat.getColor(context, R.color.white))
                 .format();
         circleFeedCount.setText(feedString);
         // 设置订阅人数
@@ -110,8 +111,8 @@ public class CircleListItem extends BaseCircleItem {
         String followContent = context.getString(R.string.circle_member) + " " + "<" +
                 followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(context, R.color.themeColor))
-                .outerColor(ContextCompat.getColor(context, R.color.normal_for_assist_text))
+                .innerColor(ContextCompat.getColor(context, R.color.white))
+                .outerColor(ContextCompat.getColor(context, R.color.white))
                 .format();
         circleMemberCount.setText(followString);
 
@@ -154,16 +155,16 @@ public class CircleListItem extends BaseCircleItem {
 
             TextView circleSubscribeFrame = holder.getView(R.id.tv_circle_subscrib_frame);
 
-            CheckBox circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
+            TextView circleSubscribe = holder.getView(R.id.tv_circle_subscrib);
             circleSubscribe.setVisibility(!isJoined ? View.VISIBLE : View.GONE);
             // 设置订阅状态
 
-            circleSubscribe.setChecked(isJoined);
+//            circleSubscribe.setChecked(isJoined);
             circleSubscribe.setText(isJoined ? context.getString(R.string.group_joined) : context
                     .getString(R.string.join_group));
-            circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R
-                    .dimen.spacing_small) : context.getResources()
-                    .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+//            circleSubscribe.setPadding(isJoined ? context.getResources().getDimensionPixelSize(R
+//                    .dimen.spacing_small) : context.getResources()
+//                    .getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
             circleSubscribe.setEnabled(false);
 
             boolean canChange = circleInfo.getAudit() == 1 && !isJoined;

@@ -40,23 +40,26 @@ public class CircleMainHeader {
 
     public CircleMainHeader(Context context, List<RealAdvertListBean> adverts, int count) {
         String circleCount = String.format(Locale.getDefault(), context.getString(R.string.group_count), count);
-        int lengh = (count + "").length();
-        SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
-        countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
-                .SPAN_INCLUSIVE_INCLUSIVE);
-        mCircleMainHeader = LayoutInflater.from(context).inflate(R.layout
-                .circle_main_header, null);
+//        int lengh = (count + "").length();
+//        SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
+//        countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
+//                .SPAN_INCLUSIVE_INCLUSIVE);
+        mCircleMainHeader = LayoutInflater.from(context).inflate(R.layout.circle_main_header, null);
 
         LinearLayout advertLinearLayout = (LinearLayout) mCircleMainHeader.findViewById(R.id.ll_advert);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) advertLinearLayout.getLayoutParams();
         params.setMargins(0, 0, 0, 0);
         mCircleCount = (CombinationButton) mCircleMainHeader.findViewById(R.id.tv_circle_count);
+        mCircleCount.setLeftImageResource(R.mipmap.ic_join_circle_left);
+        mCircleCount.setRightImage(R.mipmap.ic_arrow_right_white);
         mAdvertTag = mCircleMainHeader.findViewById(R.id.ll_advert_tag);
+        mCircleCount.setBackgroundResource(R.drawable.common_statubar_bg);
+
         mAdvertTag.setVisibility(View.GONE);
-        mCircleCount.setLeftTextSize(12f);
-        mCircleCount.setLeftTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
-        mCircleCount.setLeftText(countSpan);
+        mCircleCount.setLeftTextSize(13f);
+        mCircleCount.setLeftTextColor(SkinUtils.getColor(R.color.white));
+        mCircleCount.setLeftText(circleCount);
         mCircleCount.setOnClickListener(v -> context.startActivity(new Intent(context, AllCircleContainerActivity.class)));
         initAdvert(context, adverts);
     }
@@ -79,12 +82,12 @@ public class CircleMainHeader {
     public void updateCircleCount(int count) {
         Context context = mCircleCount.getContext();
         String circleCount = String.format(Locale.getDefault(), context.getString(R.string.group_count), count);
-        int lengh = (count + "").length();
-        SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
-        countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
-                .SPAN_INCLUSIVE_INCLUSIVE);
-        mCircleCount.setLeftText(countSpan);
+//        int lengh = (count + "").length();
+//        SpannableStringBuilder countSpan = new SpannableStringBuilder(circleCount);
+//        countSpan.setSpan(new RelativeSizeSpan(1.66f), 0, lengh, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//        countSpan.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.important_for_note)), 0, lengh, Spanned
+//                .SPAN_INCLUSIVE_INCLUSIVE);
+        mCircleCount.setLeftText(circleCount);
     }
 
     public DynamicDetailAdvertHeader getAdvertHeader() {

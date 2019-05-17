@@ -59,5 +59,7 @@
         <attr name="shadowRadius" format="dimension" />
         <attr name="borderColor" format="integer" />
     </declare-styleable>
-
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>

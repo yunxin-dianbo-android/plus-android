@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,20 +8,124 @@
         android:id="@+id/v_status_bar_placeholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"/>
-
+        android:background="@drawable/common_statubar_bg" />
+    <!-- android:background="@color/white"-->
     <com.zhiyicx.baseproject.widget.TabSelectView
         android:id="@+id/tsv_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_with_tab_height"
         android:layout_below="@id/v_status_bar_placeholder"
-        android:background="@color/white"/>
+        android:background="@drawable/common_statubar_bg" />
 
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rl_search_and_classify_content"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@id/tsv_toolbar"
+        android:background="@drawable/common_statubar_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_search_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/search_bar_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="18dp"
+                android:paddingTop="0dp"
+                android:paddingRight="22dp"
+                android:paddingBottom="0dp"
+                android:text="@string/recmond_search"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="13dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="7dp"
+                android:background="#66ffffff" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginRight="10dp"
+                android:padding="6dp"
+                android:src="@mipmap/ic_search" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/search_bar_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_video_classification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="17dp"
+                android:paddingTop="0dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="0dp"
+                android:text="喜剧"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_video_classification_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingTop="0dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="0dp"
+                android:text="标签二"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:src="@mipmap/ic_show_all" />
+
+            <TextView
+                android:id="@+id/tv_all_video_classification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="0dp"
+                android:text="全部"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+    <!-- android:background="@color/white"-->
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        android:layout_below="@id/tsv_toolbar"/>
+        android:layout_below="@+id/rl_search_and_classify_content"
+        android:background="@color/bgColor" />
 
 </RelativeLayout>

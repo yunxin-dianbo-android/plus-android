@@ -108,15 +108,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Observable.create(subscriber -> {
-            DaggerMinePresenterComponent.builder()
-                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                    .minePresenterModule(new MinePresenterModule(MineFragment.this))
-                    .build().inject(MineFragment.this);
-            subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io())
-                .subscribe(o -> {
-                }, Throwable::printStackTrace);
+//        Observable.create(subscriber -> {
+//            DaggerMinePresenterComponent.builder()
+//                    .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+//                    .minePresenterModule(new MinePresenterModule(MineFragment.this))
+//                    .build().inject(MineFragment.this);
+//            subscriber.onCompleted();
+//        }).subscribeOn(Schedulers.io())
+//                .subscribe(o -> {
+//                }, Throwable::printStackTrace);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_mine;
+        return R.layout.fragment_mine2;
     }
 
     @Override

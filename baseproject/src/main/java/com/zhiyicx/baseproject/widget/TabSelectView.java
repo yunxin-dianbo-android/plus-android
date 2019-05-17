@@ -48,11 +48,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class TabSelectView extends FrameLayout {
     // 定义默认样式值
-    private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.normal_for_assist_text;// 缺省的tab未选择文字
-    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.important_for_content;// 缺省的tab被选择文字
+    private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = R.color.color_cecece;// 缺省的tab未选择文字
+    private static final int DEFAULT_TAB_SELECTED_TEXTCOLOR = R.color.white;// 缺省的tab被选择文字
     private static final int DEFAULT_TAB_TEXTSIZE = R.integer.tab_text_size;// 缺省的tab文字大小
     private static final int DEFAULT_TAB_TEXTSIZE_BIG = R.integer.tab_text_size_big;// 缺省的tab文字大小
-    private static final int DEFAULT_TAB_LINE_COLOR = R.color.themeColor;// 缺省的tab的线的颜色
+    private static final int DEFAULT_TAB_LINE_COLOR = R.color.white;// 缺省的tab的线的颜色
     private int mTabMargin = R.integer.tab_margin;// 缺省的tab左padding
     private int mTabMargin1 = R.integer.tab_margin;// 缺省的tab右padding
 
@@ -96,8 +96,9 @@ public class TabSelectView extends FrameLayout {
         tvToolbarRight = (TextView) findViewById(R.id.tv_toolbar_right);
         tvToolbarLeftRight = (TextView) findViewById(R.id.tv_toolbar_right_left);
         mContext = context;
+        // TODO: 2019/4/28 间隔距离
         mTabSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-        showDivider(true);// 默认展示分割线
+        showDivider(false);// 默认展示分割线
         setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
     }
 

@@ -176,6 +176,7 @@
     <string name="info_unsubscribe">更多订阅</string>
     <string name="info_search">搜索</string>
     <string name="info_cancle">取消</string>
+    <string name="info_search_tip">请输入关键词</string>
     <string name="info_details">资讯详情</string>
     <string name="info_collect">收藏</string>
     <string name="info_hot">热门</string>

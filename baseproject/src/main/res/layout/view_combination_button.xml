@@ -6,8 +6,7 @@
     tools:ignore="MissingPrefix"
     android:id="@+id/rl_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/iv_left_img"
@@ -15,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
-        tools:src="@mipmap/login_ico_closeye"/>
+        tools:src="@mipmap/ic_join_circle_left" />
 
     <TextView
         android:id="@+id/tv_left_text"
@@ -24,7 +23,7 @@
         android:layout_centerVertical="true"
         android:paddingLeft="@dimen/spacing_normal"
         android:layout_toRightOf="@id/iv_left_img"
-        android:textColor="@color/important_for_content"
+        android:textColor="@color/white"
         android:textSize="@dimen/size_content"
         skin:enable="true"
         tools:text="我的订阅"

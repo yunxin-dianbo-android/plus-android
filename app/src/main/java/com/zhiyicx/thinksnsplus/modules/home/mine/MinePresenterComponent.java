@@ -16,5 +16,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(modules = MinePresenterModule.class, dependencies = AppComponent.class)
-public interface MinePresenterComponent extends InjectComponent<MineFragment> {
+public interface MinePresenterComponent extends InjectComponent<MineFragment2> {
 }

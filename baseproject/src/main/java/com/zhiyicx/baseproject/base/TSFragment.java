@@ -11,6 +11,7 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.MyStatusBarUtil;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -82,8 +84,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 默认的toolbar左边的图片，一般是返回键
      */
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.app_icon;
 
+    /**
+     * toolbar
+     */
+    Toolbar toolbar;
     /**
      * 顶部导航栏左边控件
      */
@@ -221,9 +227,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
                     .WHITE) {
                 mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+//                mStatusPlaceholderView.setBackgroundResource(R.drawable.common_statubar_bg);
             } else {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+//                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+                mStatusPlaceholderView.setBackgroundResource(R.drawable.common_statubar_bg);
             }
+//            mStatusPlaceholderView.setBackgroundResource(R.mipmap.ic_statu_bar);
             linearLayout.addView(mStatusPlaceholderView);
         }
         // 在需要显示toolbar时，进行添加
@@ -338,6 +347,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (needCenterLoadingDialog()) {
             mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
+//        MyStatusBarUtil.setTransparentForWindow(mActivity, bodyContainer);
         return linearLayout;
     }
 
@@ -1006,7 +1016,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 初始化toolbar布局,如果进行了自定义toolbar布局，就应该重写该方法
      */
     protected void initDefaultToolBar(View toolBarContainer) {
-        toolBarContainer.setBackgroundResource(setToolBarBackgroud());
+//        toolBarContainer.setBackgroundResource(setToolBarBackgroud());
+        toolBarContainer.setBackgroundResource(R.drawable.common_statubar_bg);
+        toolbar = toolBarContainer.findViewById(R.id.toolbar);
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
         mToolbarRightLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_left);

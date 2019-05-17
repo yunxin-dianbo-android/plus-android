@@ -21,7 +21,8 @@ import com.zhiyicx.baseproject.R;
  * @contact email:450127106@qq.com
  */
 public class DeleteEditText extends ByteLimitEditText implements OnFocusChangeListener{
-    private static final int DEFAULT_DELETE_IMG = R.mipmap.login_inputbox_clean;
+//    private static final int DEFAULT_DELETE_IMG = R.mipmap.login_inputbox_clean;
+    private static final int DEFAULT_DELETE_IMG = R.mipmap.ic_close;
     /**
      * 删除按钮的引用
      */

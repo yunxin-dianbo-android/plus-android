@@ -59,7 +59,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
             @Override
             public void buttonClick() {
-                setLeftClick();
+//                setLeftClick();
             }
         });
         mVpFragment.setOffscreenPageLimit(getOffsetPage());
@@ -73,7 +73,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         return false;
     }
     protected int setIndicatorMode() {
-        return LinePagerIndicator.MODE_WRAP_CONTENT;
+        return LinePagerIndicator.MODE_EXACTLY;
     }
 
     protected int getOffsetPage() {

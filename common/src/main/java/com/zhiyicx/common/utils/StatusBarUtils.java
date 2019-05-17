@@ -86,7 +86,8 @@ public class StatusBarUtils {
 
         int result = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_VISIBLE);
+            /*View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR*/
             result = STATUS_TYPE_ANDROID_M;
             MIUISetStatusBarLightMode(activity.getWindow(), true);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

@@ -52,6 +52,8 @@
     <color name="extend_btn_backgroup">#f2f2f2</color>
     <color name="call_backgroup">#252C39</color>
     <color name="send_location">#86cdad</color>
+    <color name="color_dedede">#dedede</color>
+    <color name="color_cecece">#cecece</color>
 
 
 </resources>

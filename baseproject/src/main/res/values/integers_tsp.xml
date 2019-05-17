@@ -101,14 +101,14 @@
     <!--tab的间距,单位dp-->
     <integer name="tab_right_margin">50</integer>
     <!--tab的指示器边缘和文字边缘的距离，单位dp-->
-    <integer name="tab_padding">7</integer>
+    <integer name="tab_padding">3</integer>
     <!--tab的指示器高度，单位dp-->
     <integer name="line_height">2</integer>
-    <integer name="line_width">30</integer>
+    <integer name="line_width">20</integer>
     <integer name="no_line_height">0</integer>
     <!--tab的文字大小，单位sp-->
-    <integer name="tab_text_size_big">18</integer>
-    <integer name="tab_text_size">16</integer>
+    <integer name="tab_text_size_big">16</integer>
+    <integer name="tab_text_size">13</integer>
     <integer name="tab_text_size_15">15</integer>
     <!--标签最多的个数-->
     <integer name="tag_max_nums">5</integer>

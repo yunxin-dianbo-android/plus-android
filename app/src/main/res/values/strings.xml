@@ -39,7 +39,11 @@
     <string name="ts_helper_default_tip">小助手在线，点击告诉我们你的需求，即时快速反应。</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
+    <string name="watch_history">观看历史</string>
+    <string name="my_invitation">我的帖子</string>
+    <string name="my_download">我的下载</string>
     <string name="my_info">我的文章</string>
+    <string name="feedback">意见反馈</string>
     <string name="ranking">排行榜</string>
     <string name="dig_ranking">点赞排行榜</string>
     <string name="gold">金币</string>
@@ -51,6 +55,7 @@
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
     <string name="mine_wallet">我的钱包</string>
+    <string name="mine_download">我的下载</string>
     <string name="me_music">购买的音乐</string>
 
     <string name="friends">好友</string>
@@ -307,11 +312,11 @@
     <string name="circle_master_manager">圈主和管理员</string>
     <string name="circle_dealing">操作中</string>
     <string name="administrator">管理员</string>
-    <string name="joined_group">我加入的</string>
+    <string name="joined_group">已加入</string>
     <string name="more_group">查看更多</string>
     <string name="more_all_group">查看全部</string>
     <string name="recommend_group">热门推荐</string>
-    <string name="exchange_group">换一批</string>
+    <string name="exchange_group">换一换</string>
     <string name="all_group">全部圈子</string>
     <string name="join_group">加入</string>
     <string name="quit_group">退出</string>
@@ -1041,6 +1046,7 @@
 
     <!--积分-->
     <string name="mine_integration">我的积分</string>
+    <string name="mine_collection">我的收藏</string>
     <string name="recharge_integration">充值积分</string>
     <string name="current_integration">当前积分</string>
     <string name="withdraw_integration">提取积分</string>

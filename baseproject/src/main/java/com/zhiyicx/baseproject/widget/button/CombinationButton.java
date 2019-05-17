@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
 
+import javax.annotation.Resource;
+
 /**
  * @author LiuChao
  * @describe 个人中心的组合控件，图片-文字-图片
@@ -31,6 +33,14 @@ public class CombinationButton extends FrameLayout {
     TextView mCombinedButtonRightText;
     View mVLine;
     View mVLineTop;
+
+    /**
+     * @param resourceId
+     */
+    public void setLeftImageResource(int resourceId) {
+        mCombinedButtonImgLeft.setVisibility(VISIBLE);
+        mCombinedButtonImgLeft.setImageResource(resourceId);
+    }
 
     public CombinationButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -189,5 +199,9 @@ public class CombinationButton extends FrameLayout {
             mCombinedButtonImgRight.setVisibility(VISIBLE);
         }
         mCombinedButtonImgRight.setImageResource(res);
+    }
+
+    public void setBackgroundResource(int resourceId) {
+        findViewById(R.id.rl_container).setBackgroundResource(resourceId);
     }
 }

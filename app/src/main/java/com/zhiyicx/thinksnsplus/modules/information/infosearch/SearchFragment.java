@@ -62,6 +62,11 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     }
 
     @Override
+    protected void setLeftClick() {
+        super.setLeftClick();
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

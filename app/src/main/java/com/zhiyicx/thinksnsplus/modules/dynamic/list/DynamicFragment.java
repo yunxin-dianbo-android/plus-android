@@ -27,6 +27,7 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.MyStatusBarUtil;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -48,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.aaaat.AtUserListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem4Video;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForAdvert;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForEightImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForFiveImage;
@@ -81,6 +83,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zycx.shortvideo.view.AutoPlayScrollListener;
 
@@ -132,7 +135,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
     /**
      * item 间距单位 dp , 由 5L 修改至 10L by tym 2018-5-15 14:55:58
      */
-    public static final long ITEM_SPACING = 10L;
+    public static final long ITEM_SPACING = 0L;
 
     /**
      * 仅用于构造
@@ -204,6 +207,14 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
     public void headClick(int position) {
         toAdvert(mHeaderAdvert.get(position).getAdvertFormat().getImage().getLink(),
                 mHeaderAdvert.get(position).getTitle());
+    }
+
+    @Override
+    protected View getContentView() {
+        return super.getContentView();
+        // TODO: 2019/4/30 add by wulianshu
+//        MyStatusBarUtil.setTransparentForWindow(mActivity, mToolbar);
+
     }
 
     private void toAdvert(String link, String title) {
@@ -307,6 +318,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
         return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.refresh_header_height) - getResources().getDimensionPixelOffset
                 (R.dimen.spacing_large);
     }
+
 
     @Override
     protected int setMarginBottom() {
@@ -545,34 +557,47 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
-        setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-        setAdapter(adapter, new DynamicListItemForwardWordFeed(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardMediaFeed(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardInfo(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardCircle(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardPost(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardQuestion(mActivity));
-        setAdapter(adapter, new DynamicListItemForwardAnswer(mActivity));
-        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
-            @Override
-            protected String videoFrom() {
-                return mDynamicType;
-            }
-        });
+        setAdapter(adapter, new DynamicListBaseItem4Video(getContext()));
+//        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+//        setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
+//        setAdapter(adapter, new DynamicListItemForwardWordFeed(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardMediaFeed(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardInfo(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardCircle(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardPost(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardQuestion(mActivity));
+//        setAdapter(adapter, new DynamicListItemForwardAnswer(mActivity));
+//        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
+//            @Override
+//            protected String videoFrom() {
+//                return mDynamicType;
+//            }
+//        });
         adapter.setOnItemClickListener(this);
         return adapter;
     }
 
+    protected void setAdapter(MultiItemTypeAdapter adapter, ItemViewDelegate
+            dynamicListBaseItem) {
+//        dynamicListBaseItem.setOnImageClickListener(this);
+//        dynamicListBaseItem.setOnSpanTextClickListener(this);
+//        dynamicListBaseItem.setOnUserInfoClickListener(this);
+//        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
+//        dynamicListBaseItem.setOnReSendClickListener(this);
+//        dynamicListBaseItem.setOnMoreCommentClickListener(this);
+//        dynamicListBaseItem.setOnCommentClickListener(this);
+//        dynamicListBaseItem.setOnCommentStateClickListener(this);
+        adapter.addItemViewDelegate(dynamicListBaseItem);
+    }
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem
             dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);

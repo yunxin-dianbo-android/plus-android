@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -168,6 +169,8 @@ TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TS
      */
     private TextView mTvNoMoredataText;
 
+    protected LinearLayout llRoot;
+
 
     /**
      * @return 页面布局 xml
@@ -304,6 +307,7 @@ TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TS
     @Override
     protected void initView(View rootView) {
         mRefreshlayout = rootView.findViewById(R.id.refreshlayout);
+        llRoot = rootView.findViewById(R.id.ll_root);
         mRvList = rootView.findViewById(R.id.swipe_target);
         mRefreshlayout.setEnableFooterFollowWhenLoadFinished(false);
         mRefreshlayout.setEnableScrollContentWhenLoaded(false);

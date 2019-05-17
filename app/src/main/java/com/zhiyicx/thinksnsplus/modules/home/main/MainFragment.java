@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -18,20 +21,25 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.modules.channel.ChannelManagerActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.VideoChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.gif.GifControl;
 import com.zhiyicx.thinksnsplus.modules.search.container.SearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.jzvd.JZVideoPlayerManager;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 主页 MainFragment
@@ -43,6 +51,16 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     public static final int PAGER_NEW_DYNAMIC_LIST_POSITION = 0;
     @BindView(R.id.v_status_bar_placeholder)
     View mStatusBarPlaceholder;
+    @BindView(R.id.rl_search_and_classify_content)
+    RelativeLayout llSearchAndClassifyContent;
+    @BindView(R.id.ll_search_parent)
+    LinearLayout llSearchParent;
+    @BindView(R.id.tv_video_classification)
+    TextView tvVideoClassification;
+    @BindView(R.id.tv_video_classification_2)
+    TextView tvVideoClassification2;
+    @BindView(R.id.tv_all_video_classification)
+    TextView tvAllVideoClassification;
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -70,7 +88,12 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -101,9 +124,52 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
         }
         //不需要返回键
-        mTsvToolbar.setLeftImg(0);
-        mTsvToolbar.setRightImg(R.mipmap.ico_search, R.color.white);
-        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, SearchContainerActivity.class)));
+//        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.setLeftImg(R.mipmap.app_icon);
+        mTsvToolbar.setRightImg(R.mipmap.ic_home_show_more_channel, R.color.transparent);
+//        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, SearchContainerActivity.class)));
+        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, ChannelManagerActivity.class)));
+        llSearchAndClassifyContent.setVisibility(View.VISIBLE);
+        RxView.clicks(llSearchParent)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        startActivity(new Intent(mActivity, SearchContainerActivity.class));
+                    }
+                });
+        RxView.clicks(tvVideoClassification)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // TODO: 2019/5/3 分类页面
+                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                    }
+                });
+        RxView.clicks(tvVideoClassification2)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // TODO: 2019/5/3 分类页面
+                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                    }
+                });
+        RxView.clicks(tvAllVideoClassification)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        // TODO: 2019/5/3 分类页面
+                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                    }
+                });
+//        RxView.clicks();
     }
 
     @Override
@@ -160,7 +226,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<String> initTitles() {
         return Arrays.asList(getString(R.string.the_last)
                 , getString(R.string.hot)
-                , getString(R.string.follow));
+                , getString(R.string.follow), getString(R.string.follow), getString(R.string.follow),
+                getString(R.string.follow), getString(R.string.follow), getString(R.string.follow));
     }
 
     @Override
@@ -172,15 +239,22 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
             mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
             mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
             // 游客处理
-            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
-                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
-            } else {
-                // 用于viewpager 占位
-                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
-            }
+//            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
+//                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+//            } else {
+            // 用于viewpager 占位
+//                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_EMPTY, this));
+//            }
         }
         return mFragmentList;
     }
@@ -190,7 +264,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         super.setUserVisibleHint(isVisibleToUser);
         try {
             ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).hiddenChanged(isVisibleToUser);
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
     }
 
     public boolean backPressed() {
