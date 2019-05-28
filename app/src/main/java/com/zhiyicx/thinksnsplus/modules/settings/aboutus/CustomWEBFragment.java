@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.zhiyicx.baseproject.base.TSWebFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -26,7 +27,9 @@ public class CustomWEBFragment extends TSWebFragment {
 
     private String mUrl = ApiConfig.APP_DOMAIN + ApiConfig.URL_ABOUT_US;
     private String mTitle = "";
-    private HashMap<String,String> mHeaders;
+    private HashMap<String, String> mHeaders;
+
+    private View vStatusBarPlaceHolder;
 
     public CustomWEBFragment() {
         // Required empty public constructor
@@ -41,20 +44,54 @@ public class CustomWEBFragment extends TSWebFragment {
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_for_web_contain_statu_bar;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        vStatusBarPlaceHolder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        vStatusBarPlaceHolder.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTitle = getString(R.string.about_us);
         if (getArguments() != null) {
             mUrl = getArguments().getString(BUNDLE_PARAMS_WEB_URL);
             mTitle = getArguments().getString(BUNDLE_PARAMS_WEB_TITLE);
-            mHeaders= (HashMap<String, String>) getArguments().getSerializable(BUNDLE_PARAMS_WEB_HEADERS);
+            mHeaders = (HashMap<String, String>) getArguments().getSerializable(BUNDLE_PARAMS_WEB_HEADERS);
         }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadUrl(mUrl,mHeaders);
+        loadUrl(mUrl, mHeaders);
     }
 
     @Override

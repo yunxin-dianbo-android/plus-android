@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wcy.overscroll.OverScrollLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overscroll"
+    android:background="#2D2E30"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -16,7 +16,30 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+
+            <ImageView
+                android:id="@+id/iv_app"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="36dp"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:text="点播"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#E1E1E1"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <LinearLayout
+
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 style="@style/style_edit_white_container">
 
                 <TextView
@@ -24,38 +47,47 @@
                     style="@style/style_small_text"
                     android:layout_width="wrap_content"
                     android:paddingRight="@dimen/spacing_normal_large"
-                    android:text="@string/login_account"/>
+                    android:text="@string/login_account"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/et_complete_input"
                     style="@style/style_edit"
                     android:layout_width="0dp"
                     android:layout_marginLeft="0dp"
-                    android:elevation="0dp"
                     android:layout_weight="1"
+                    android:background="#2D2E30"
                     android:completionThreshold="@integer/login_hint_mix_count"
+                    android:elevation="0dp"
                     android:hint="@string/login_account_hint"
                     android:imeOptions="actionNext"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:singleLine="true"
-                    android:visibility="visible"/>
+                    android:textColor="@color/white"
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/iv_clear"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:padding="15dp"
+                    android:background="#2D2E30"
                     android:src="@mipmap/login_inputbox_clean"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                     android:id="@+id/et_login_phone"
                     style="@style/style_edit"
                     android:hint="@string/login_account_hint"
                     android:inputType="textPersonName"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
 
-            <ImageView style="@style/style_divider_horizontal_light"/>
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                style="@style/style_divider_horizontal_light" />
 
 
             <RelativeLayout
@@ -64,19 +96,25 @@
                 android:visibility="gone">
 
                 <LinearLayout
+                    android:background="#2D2E30"
                     style="@style/style_edit_white_container">
 
                     <TextView
                         style="@style/style_small_text"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
-                        android:text="@string/vertify_code"/>
+                        android:text="@string/vertify_code" />
 
                     <EditText
+                        android:background="#2D2E30"
                         android:id="@+id/et_login_vertify_code"
                         style="@style/style_edit"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white"
                         android:hint="@string/vertify_code_input_hint"
                         android:inputType="number"
-                        android:maxLength="@integer/vertiry_code_lenght"/>
+                        android:maxLength="@integer/vertiry_code_lenght" />
                 </LinearLayout>
 
 
@@ -91,8 +129,8 @@
                         android:id="@+id/bt_login_send_vertify_code"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
                         android:background="@null"
                         android:enabled="false"
@@ -100,7 +138,7 @@
                         android:minWidth="@dimen/button_send_vertify_code_min_width"
                         android:text="@string/send_vertify_code"
                         android:textColor="@color/selector_text_color"
-                        android:textSize="@dimen/size_content"/>
+                        android:textSize="@dimen/size_content" />
 
                     <ImageView
                         android:id="@+id/iv_vertify_loading"
@@ -108,15 +146,17 @@
                         android:layout_height="@dimen/icon_for_assist_small"
                         android:layout_centerInParent="true"
                         android:src="@drawable/frame_loading_grey"
-                        android:visibility="invisible"/>
+                        android:visibility="invisible" />
                 </RelativeLayout>
 
                 <ImageView
                     style="@style/style_divider_horizontal_light"
-                    android:layout_alignParentBottom="true"/>
+                    android:layout_alignParentBottom="true" />
             </RelativeLayout>
 
             <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:id="@+id/ll_psd_container"
                 style="@style/style_edit_white_container">
 
@@ -124,27 +164,37 @@
                     style="@style/style_small_text"
                     android:layout_width="wrap_content"
                     android:paddingRight="@dimen/spacing_normal_large"
-                    android:text="@string/password"/>
+                    android:text="@string/password"
+                    android:visibility="gone" />
 
                 <com.zhiyicx.baseproject.widget.edittext.PasswordEditText
                     android:id="@+id/et_login_password"
                     style="@style/style_passward_edit"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:layout_marginLeft="0dp"
+                    android:background="#2D2E30"
+                    android:textColor="@color/white"
                     android:hint="@string/password_input_hint"
                     android:inputType="text"
-                    android:text=""/>
+                    android:text="" />
             </LinearLayout>
 
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                style="@style/style_divider_horizontal_light"
+                android:layout_alignParentBottom="true" />
             <!--登录异常相关提示-->
-            <include
-                layout="@layout/include_error_tip_text"/>
+            <include layout="@layout/include_error_tip_text" />
 
             <com.zhiyicx.baseproject.widget.button.LoadingButton
                 android:id="@+id/bt_login_login"
                 style="@style/style_login_button"
                 android:layout_marginTop="@dimen/button_login_margin_top"
+                android:background="@drawable/shape_button_corner_normal_solid_big2"
                 android:enabled="false"
-                app:text="@string/bt_login"/>
+                app:text="@string/bt_login" />
 
             <RelativeLayout
                 android:id="@+id/rl_touristor_container"
@@ -159,23 +209,22 @@
                     android:id="@+id/tv_look_around"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_mid"
+                    android:paddingBottom="@dimen/spacing_mid"
                     android:text="@string/no_login"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content_comment"
-                    />
+                    android:textSize="@dimen/size_content_comment" />
                 <!--忘记密码-->
                 <TextView
                     android:id="@+id/tv_forget_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:paddingBottom="@dimen/spacing_mid"
                     android:paddingTop="@dimen/spacing_mid"
+                    android:paddingBottom="@dimen/spacing_mid"
                     android:text="@string/forget_password"
                     android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_content_comment"/>
+                    android:textSize="@dimen/size_content_comment" />
             </RelativeLayout>
 
             <TextView
@@ -188,19 +237,20 @@
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/phone_verify_login"
                 android:textColor="@color/themeColor"
-                android:textSize="@dimen/size_content_assist"/>
+                android:textSize="@dimen/size_content_assist" />
 
             <!--第三方登陆-->
             <LinearLayout
+                android:id="@+id/ll_third_login_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="@dimen/margin_34"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/third_margin"
                 android:layout_marginRight="@dimen/third_margin"
+                android:layout_marginBottom="@dimen/margin_34"
                 android:layout_weight="1"
                 android:gravity="bottom"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -210,7 +260,7 @@
                     <ImageView
                         style="@style/style_divider_horizontal_light"
                         android:layout_width="0dp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -219,12 +269,12 @@
                         android:layout_marginRight="@dimen/spacing_normal"
                         android:text="@string/login_by_third_platform"
                         android:textColor="@color/general_for_hint"
-                        android:textSize="@dimen/size_icon_assist"/>
+                        android:textSize="@dimen/size_icon_assist" />
 
                     <ImageView
                         style="@style/style_divider_horizontal_light"
                         android:layout_width="0dp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -236,21 +286,21 @@
                         android:id="@+id/tv_login_by_qq"
                         style="@style/ThirdLoginButton"
                         android:drawableTop="@mipmap/login_qq"
-                        android:text="@string/third_qq"/>
+                        android:text="@string/third_qq" />
 
                     <TextView
                         android:id="@+id/tv_login_by_weibo"
                         style="@style/ThirdLoginButton"
                         android:layout_centerInParent="true"
                         android:drawableTop="@mipmap/login_weibo"
-                        android:text="@string/third_weibo"/>
+                        android:text="@string/third_weibo" />
 
                     <TextView
                         android:id="@+id/tv_login_by_wechat"
                         style="@style/ThirdLoginButton"
                         android:layout_alignParentRight="true"
                         android:drawableTop="@mipmap/login_wechat"
-                        android:text="@string/third_wechat"/>
+                        android:text="@string/third_wechat" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -261,6 +311,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 </com.wcy.overscroll.OverScrollLayout>

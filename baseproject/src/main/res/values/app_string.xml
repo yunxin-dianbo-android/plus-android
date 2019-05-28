@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mychannel">我的频道</string>
+    <string name="long_click_switch_channel">长按拖动顺序</string>
+    <string name="other_channel">其他频道</string>
+    <string name="click_add_to_my_channel">点击添加到我到频道</string>
+    <string name="recmond_search">推荐搜索</string>
+    <string name="channel_name">频道名</string>
+</resources>

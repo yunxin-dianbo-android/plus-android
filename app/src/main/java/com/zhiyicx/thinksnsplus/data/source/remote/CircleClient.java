@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleCommentZip;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 
@@ -86,6 +87,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMM
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST_NEW;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_SUPER_STAR;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UNDO_TOP_POST;
 
 /**
@@ -608,6 +611,23 @@ public interface CircleClient {
     @GET(APP_PATH_TOP_POST_LIST)
     Observable<List<TopPostListBean>> getPostReview(@Query("after") Integer after, @Query("limit")
             Integer limit, @Query("group") Long circleId);
+    /**
+     * 帖子申请置顶列表
+     *
+     * @return
+     */
+    @GET(APP_PATH_TOP_POST_LIST_NEW)
+    Observable<List<TopPostListBean>> getHotPost(@Query("after") Integer after, @Query("limit")
+            Integer limit, @Query("group") Long circleId);
+    /**
+     * 获取热门里面的明星列表
+     *
+     * @return
+     */
+    @GET(APP_PATH_TOP_POST_SUPER_STAR)
+    Observable<List<TopSuperStarBean>> getPostHotSuperStar();
+
+
 
     /**
      * 圈子待审核成员列表

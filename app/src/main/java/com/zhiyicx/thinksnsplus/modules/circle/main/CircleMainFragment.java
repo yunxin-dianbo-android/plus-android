@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
@@ -28,15 +29,22 @@ import com.zhiyicx.thinksnsplus.modules.circle.mine.joined.MyJoinedCircleActivit
 import com.zhiyicx.thinksnsplus.modules.circle.pre.PreCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.SyncOnSubscribe;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
@@ -50,7 +58,7 @@ import static com.zhiyicx.thinksnsplus.modules.certification.input.Certification
  * @Description 圈子首页
  */
 public class CircleMainFragment extends TSListFragment<CircleMainContract.Presenter, CircleInfo>
-        implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent {
+        implements CircleMainContract.View, BaseCircleItem.CircleItemItemEvent, DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
 
     public static final int DATALIMIT = 5;
     public static final int TITLEVOUNT = 2;
@@ -69,6 +77,9 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Inject
     CircleMainPresenter mCircleMainPresenter;
 
+
+    //    private List<RealAdvertListBean> mListAdvert;
+    private List<RealAdvertListBean> mHeaderAdvert;
 
     @Override
     protected boolean setUseCenterLoading() {
@@ -239,15 +250,98 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     @Override
     protected void initData() {
+
         if (mPresenter == null) {
             mPresenter = mCircleMainPresenter;
         }
+        initAdvert();
+//        initHeaderView();
+    }
+
+    void initHeaderView() {
         if (mPresenter != null) {
             mCircleMainHeader = new CircleMainHeader(mActivity, mPresenter.getCircleTopAdvert(), 2341);
             mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
             mPresenter.requestNetData(0L, false);
         }
     }
+
+    /**
+     * 初始化广告数据
+     */
+    private void initAdvert() {
+//        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+//            return;
+//        }
+        // TODO: 2019/5/17 test
+//        Observable.create(SyncOnSubscribe.createStateless(observer -> {
+//            observer.onNext(1);
+//            observer.onCompleted();
+//        })).subscribeOn(Schedulers.io());
+//        Observable.create(SyncOnSubscribe.createStateless(observer -> {
+//            observer.onNext(1);
+//            observer.onCompleted();
+//        })).observeOn(Schedulers.io());
+//        Observable.create(SyncOnSubscribe.createStateless(observer -> {
+//            observer.onNext(1);
+//            observer.onCompleted();
+//        })).flatMap(o -> {
+//            mHeaderAdvert = mPresenter.getBannerAdvert();
+//            mListAdvert = mPresenter.getListAdvert();
+//            return Observable.just(o);
+//        });
+
+
+        Observable.create(SyncOnSubscribe.createStateless(observer -> {
+            observer.onNext(1);
+            observer.onCompleted();
+        }))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(o -> {
+                    mHeaderAdvert = mPresenter.getAdvert();
+//                    mListAdvert = mPresenter.getListAdvert();
+                    return Observable.just(o);
+                })
+//                .filter(o -> mHeaderAdvert != null && !mHeaderAdvert.isEmpty())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    if (mHeaderAdvert != null && !mHeaderAdvert.isEmpty()) {
+                        List<String> advertTitle = new ArrayList<>();
+                        List<String> advertUrls = new ArrayList<>();
+                        List<String> advertLinks = new ArrayList<>();
+
+                        for (RealAdvertListBean advert : mHeaderAdvert) {
+                            advertTitle.add(advert.getTitle());
+                            advertUrls.add(advert.getAdvertFormat().getImage().getImage());
+                            advertLinks.add(advert.getAdvertFormat().getImage().getLink());
+                            if ("html".equals(advert.getType())) {
+                                showStickyHtmlMessage((String) advert.getData());
+                            }
+                        }
+                        if (advertUrls.isEmpty()) {
+                            return;
+                        }
+                        DynamicBannerHeader mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
+                        mDynamicBannerHeader.setHeadlerClickEvent(CircleMainFragment.this);
+                        DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
+                                DynamicBannerHeaderInfo();
+                        headerInfo.setTitles(advertTitle);
+                        headerInfo.setLinks(advertLinks);
+                        headerInfo.setUrls(advertUrls);
+                        headerInfo.setDelay(4000);
+                        headerInfo.setOnBannerListener(position -> {
+                        });
+                        mDynamicBannerHeader.setHeadInfo(headerInfo);
+                        mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+                        initHeaderView();
+                    } else {
+                        initHeaderView();
+                    }
+                });
+
+    }
+
 
     @Override
     protected boolean setUseShadowView() {
@@ -429,6 +523,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+//        DaggerCircleComponent
         DaggerCircleMainPresenterComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -445,5 +540,10 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     protected float getItemDecorationSpacing() {
         return 0;
+    }
+
+    @Override
+    public void headClick(int position) {
+
     }
 }

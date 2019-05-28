@@ -1,15 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.circle.all_circle.container;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.widget.TabSelectView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
@@ -46,6 +51,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     public static final String BUNDLE_ALL_CIRCLE_CATEGORY = "all_circle_category";
 
+    View mStatusBarPlaceholder;
+
     private CircleTypeBean mCircleTypeBean;
 
     private List<String> mTitle;
@@ -62,6 +69,39 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected boolean showToolBarDivider() {
+        return false;
+    }
+
+//    @Override
+//    protected boolean showToolbar() {
+//        return true;
+//    }
+
+    @Override
+    protected int setRightImg() {
+//        return R.mipmap.ico_createcircle;
+        return R.mipmap.ic_search;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+
+    @Override
+    protected int setRightLeftImg() {
+        return 0;
+    }
+
+//    @Override
+//    protected int getBodyLayoutId() {
+//        return R.layout.fragment_all_circle_viewpager;
+//    }
+
+
+    @Override
+    protected boolean setUseSatusbar() {
         return true;
     }
 
@@ -71,18 +111,19 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     }
 
     @Override
-    protected int setRightImg() {
-        return R.mipmap.ico_createcircle;
+    protected boolean setUseStatusView() {
+        return false;
     }
 
-    @Override
-    protected int setRightLeftImg() {
-        return R.mipmap.ico_search;
-    }
 
     @Override
     protected String setCenterTitle() {
         return getString(R.string.all_group);
+    }
+
+    @Override
+    protected void setCenterTextColor(int resId) {
+        super.setCenterTextColor(resId);
     }
 
     @Override
@@ -95,6 +136,23 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+//        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+//        mTsvToolbar.setBackgroundResource(R.drawable.common_statubar_bg_2);
+        mTsvToolbar.showDivider(true);
+        mTsvToolbar.setMyBackground(R.drawable.common_statubar_bg_2);
+        mTsvToolbar.setDividerBackground(R.drawable.common_statubar_bg_2);
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
+
+    @Override
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
         for (CircleTypeBean circleTypeBean : circleTypeList) {
             if (RECOMMEND_INFO.equals(circleTypeBean.getId().intValue() + "")) {
@@ -104,25 +162,28 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
             mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId() + ""));
         }
         mTsvToolbar.notifyDataSetChanged(mTitle);
+//        mTsvToolbar.setBackgroundColor(Color.parseColor("#38383A"));
         tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
         mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override
     protected void setRightClick() {
+//        super.setRightClick();
+//        // 发布提示 1、首先需要认证 2、需要付费
+//        if (mPresenter.handleTouristControl()) {
+//            return;
+//        }
+//        mPresenter.checkCertification();
         super.setRightClick();
-        // 发布提示 1、首先需要认证 2、需要付费
-        if (mPresenter.handleTouristControl()) {
-            return;
-        }
-        mPresenter.checkCertification();
+        CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
 
     }
 
     @Override
     protected void setRightLeftClick() {
-        super.setRightLeftClick();
-        CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
+//        super.setRightLeftClick();
+//        CircleSearchContainerActivity.startCircelSearchActivity(mActivity, CircleSearchContainerViewPagerFragment.PAGE_CIRCLE);
     }
 
     @Override
@@ -136,6 +197,29 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
 
     @Override
+    protected View getContentView() {
+        View contentView = super.getContentView();
+        mStatusBarPlaceholder = contentView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+        return contentView;
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return com.zhiyicx.baseproject.R.mipmap.ic_back;
+    }
+
+    protected void setToolBarTextColor() {
+        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
+        if (showToolbar()) {
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+        }
+    }
+
+    @Override
     protected void initViewPager(View rootView) {
 
         mVpFragment = rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
@@ -146,7 +230,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
         mTsvToolbar = rootView.findViewById(com.zhiyicx.baseproject.R.id.tsv_toolbar);
 
-        mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
+//        mTsvToolbar.setRightImg(R.mipmap.sec_nav_arrow, R.color.white);
+        mTsvToolbar.setRightImg(0, R.color.transparent);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
         mTsvToolbar.setDefaultTabLeftMargin(com.zhiyicx.baseproject.R.integer.tab_margin_10);
@@ -167,6 +252,7 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
             typeIntent.putExtras(bundle);
             startActivityForResult(typeIntent, REQUST_CODE_CATEGORY);
         });
+        mTsvToolbar.setBackgroundResource(R.drawable.common_statubar_bg_2);
 
     }
 

@@ -37,6 +37,7 @@ import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.share.Share;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
 import com.zhiyicx.baseproject.widget.InputPasswordView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -207,6 +208,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     @BindView(R.id.v_group_line)
     View mGroupLine;
 
+    View mStatusBarPlaceholder;
 
     protected PayPopWindow mPayPopWindow;
     private AppBarLayoutOverScrollViewBehavior myAppBarLayoutBehavoir;
@@ -223,6 +225,13 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         bundle.putLong(CIRCLE_ID, circle_id);
         circleDetailFragment.setArguments(bundle);
         return circleDetailFragment;
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -254,9 +263,46 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     }
 
     @Override
+    protected int setRightImg() {
+        return R.mipmap.ic_show_more_menu;
+    }
+
+    @Override
+    protected int setRightLeftImg() {
+        return R.mipmap.ic_share_white;
+    }
+
+    @Override
+    protected void setRightClick() {
+//        super.setRightClick();
+        boolean isOpen = mDrawer.isDrawerOpen(mLlCircleNavigationContainer);
+        if (isOpen) {
+            return;
+        }
+        mDrawer.openDrawer(Gravity.RIGHT);
+    }
+
+    @Override
+    protected void setRightLeftClick() {
+        UmengSharePolicyImpl.ShareBean forward = new UmengSharePolicyImpl.ShareBean(R.mipmap.detail_share_forwarding, getString(R.string.share_forward), Share.FORWARD);
+        UmengSharePolicyImpl.ShareBean letter = new UmengSharePolicyImpl.ShareBean(R.mipmap.detail_share_sent, getString(R.string.share_letter), Share.LETTER);
+        List<UmengSharePolicyImpl.ShareBean> data = new ArrayList<>();
+        data.add(forward);
+        data.add(letter);
+        mPresenter.shareCircle(mCircleInfo,
+                ConvertUtils.drawable2BitmapWithWhiteBg(mActivity, mIvCircleHead.getDrawable(), R.mipmap.icon), data);
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_circle_detail;
     }
+
 
     @Override
     protected boolean setUseSatusbar() {
@@ -273,10 +319,10 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         return false;
     }
 
-    @Override
-    protected int setToolBarBackgroud() {
-        return android.R.color.transparent;
-    }
+//    @Override
+//    protected int setToolBarBackgroud() {
+//        return android.R.color.transparent;
+//    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -285,7 +331,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
 
     @Override
     protected boolean showToolbar() {
-        return false;
+        return true;
     }
 
 
@@ -348,7 +394,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
             mCircleInfo.setUsers_count(memberListCount);
             mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
             mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_user_posts_count), mCircleInfo
-                    .getUsers_count(),mCircleInfo.getPosts_count()));
+                    .getUsers_count(), mCircleInfo.getPosts_count()));
             mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count() - mCircleInfo.getBlacklist_count()));
         } else if (requestCode == BlackListFragment.BLACKLISTCODE && resultCode == Activity.RESULT_OK && data != null) {
             int blackListCount = data.getIntExtra(MemberListFragment.BLACK_COUNT, 0);
@@ -356,7 +402,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
             // 重新统计成员数量
             mCircleInfo.setUsers_count(memberListCount);
             mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_user_posts_count), mCircleInfo
-                    .getUsers_count(),mCircleInfo.getPosts_count()));
+                    .getUsers_count(), mCircleInfo.getPosts_count()));
             if (blackListCount == 0) {
                 mLlMemberContainer.setRightText(String.valueOf(mCircleInfo.getUsers_count() - mCircleInfo.getBlacklist_count()));
                 mCircleInfo.setBlacklist_count(blackListCount);
@@ -390,6 +436,9 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         super.initView(rootView);
         initToolBar();
         initLisener();
+
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
         // 适配手机无法显示输入焦点
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(mActivity);
@@ -425,7 +474,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         }
 
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_user_posts_count), mCircleInfo
-                .getUsers_count(),mCircleInfo.getPosts_count()));
+                .getUsers_count(), mCircleInfo.getPosts_count()));
         mLlMemberContainer.setRightText(String.valueOf(circleInfo.getUsers_count() - mCircleInfo.getBlacklist_count()));
         setVisiblePermission(circleInfo);
         if (circleInfo.getJoined() == null && needFinish) {
@@ -668,20 +717,21 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         }
         mTvCircleDec.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_location), location));
         mTvCircleMember.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_user_posts_count), mCircleInfo
-                .getUsers_count(),mCircleInfo.getPosts_count()));
+                .getUsers_count(), mCircleInfo.getPosts_count()));
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
         mTvCircleIntroduce.setText(detail.getSummary());
 
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
-        mLine.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
+//        mLine.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
+        mLine.setVisibility(View.GONE);
 
         mLlGroupContainer.setVisibility(View.GONE);
         mGroupLine.setVisibility(View.GONE);
 
         mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
-        mLine.setVisibility(mLlIntroCountContainer.getVisibility());
+//        mLine.setVisibility(mLlIntroCountContainer.getVisibility());
         Observable.empty()
                 .delay(100, TimeUnit.MILLISECONDS)
                 .subscribe(new EmptySubscribe<Object>() {
@@ -695,28 +745,29 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                     }
                 });
 
-        Glide.with(mActivity)
-                .load(detail.getAvatar() != null ? detail.getAvatar().getUrl() : "")
-                .transform(new GlideStokeTransform(getActivity(), 5))
-                .error(R.drawable.shape_default_image)
-                .placeholder(R.drawable.shape_default_image)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        mIvCircleHeadBg.setImageResource(R.mipmap.default_pic_personal);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
-                            isFromMemoryCache, boolean isFirstResource) {
-                        Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
-                                .getIntrinsicHeight());
-                        mIvCircleHeadBg.setImageBitmap(bitmap);
-                        return false;
-                    }
-                })
-                .into(mIvCircleHead);
+        GlideManager.glideCircle(mActivity, mIvCircleHead, detail.getAvatar() != null ? detail.getAvatar().getUrl() : "", R.mipmap.ic_default_user_head_circle);
+//        Glide.with(mActivity)
+//                .load(detail.getAvatar() != null ? detail.getAvatar().getUrl() : "")
+//                .transform(new GlideStokeTransform(getActivity(), 5))
+//                .error(R.drawable.shape_default_image)
+//                .placeholder(R.drawable.shape_default_image)
+//                .listener(new RequestListener<String, GlideDrawable>() {
+//                    @Override
+//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                        mIvCircleHeadBg.setImageResource(R.mipmap.default_pic_personal);
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean
+//                            isFromMemoryCache, boolean isFirstResource) {
+//                        Bitmap bitmap = FastBlur.blurBitmap(ConvertUtils.drawable2Bitmap(resource), resource.getIntrinsicWidth(), resource
+//                                .getIntrinsicHeight());
+//                        mIvCircleHeadBg.setImageBitmap(bitmap);
+//                        return false;
+//                    }
+//                })
+//                .into(mIvCircleHead);
 
     }
 

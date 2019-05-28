@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.comment.DeleteComment;
 import com.zhiyicx.thinksnsplus.comment.SendComment;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainFragment;
 import com.zhiyicx.thinksnsplus.modules.discover.DiscoveryMainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment2;
@@ -42,6 +43,8 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(FindFragment findFragment);
 
     void inject(DeleteComment deleteComment);
+
+//    void inject(CircleMainFragment circleMainFragment);
 
     void inject(SendComment sendComment);
 

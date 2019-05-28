@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -72,6 +73,23 @@ public class MessageReviewRepository implements IMessageReviewRepository {
     @Override
     public Observable<List<TopPostListBean>> getPostReview(Long circleId, int after) {
         return mCircleClient.getPostReview(after, TSListFragment.DEFAULT_PAGE_SIZE, circleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    @Override
+    public Observable<List<TopPostListBean>> getHotPost(Long circleId, int after) {
+        return mCircleClient.getHotPost(after, TSListFragment.DEFAULT_PAGE_SIZE, circleId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取热名明星
+     * @return
+     */
+    @Override
+    public Observable<List<TopSuperStarBean>> getPostHotSuperStar() {
+        return mCircleClient.getPostHotSuperStar()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -2,9 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
 import android.view.View;
@@ -125,6 +127,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private boolean mIsVertifyCodeEnalbe = true;
 
+    View mStatusBarPlaceholder;
+
     public static LoginFragment newInstance(boolean isTourist) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -142,6 +146,19 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * 根据toolbar的背景设置它的文字颜色
+     */
+    protected void setToolBarTextColor() {
+        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
+        if (showToolbar()) {
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), getLeftTextColor()));
+        }
+    }
+
     @Override
     protected void initView(View rootView) {
         boolean openRegister = mSystemConfigBean.getRegisterSettings() == null
@@ -155,7 +172,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         // 游客判断
         mTvLookAround.setVisibility((!mIsToourist && mPresenter.isTourist()) ? View.VISIBLE : View.GONE);
         if (mIsToourist || !mPresenter.isTourist()) {
-            setLeftTextColor(R.color.themeColor);
+            setLeftTextColor(R.color.white);
         }
         //是否需要日志
         mRxPermissions.setLogging(true);
@@ -316,6 +333,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    @Override
     protected boolean usePermisson() {
         return true;
     }
@@ -325,9 +347,20 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         return R.layout.fragment_login;
     }
 
+//    @Override
+//    protected int setToolBarBackgroud() {
+//        return R.color.white;
+//    }
+
+
     @Override
-    protected int setToolBarBackgroud() {
-        return R.color.white;
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override
@@ -340,9 +373,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         return getString(R.string.regist);
     }
 
+
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override
@@ -355,12 +389,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected int setLeftImg() {
-        return 0;
+        return R.mipmap.ic_back;
     }
 
     @Override
     protected String setLeftTitle() {
-        return mIsToourist ? getString(R.string.cancel) : "";
+//        return mIsToourist ? getString(R.string.cancel) : "";
+        return "";
     }
 
 
@@ -370,6 +405,23 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mToolbarRight.setEnabled(false);
         mBtLoginLogin.handleAnimation(true);
         mBtLoginLogin.setEnabled(false);
+    }
+
+
+    @Override
+    protected View getContentView() {
+        View contentView = super.getContentView();
+        mStatusBarPlaceholder = contentView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+        return contentView;
+    }
+
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -576,6 +628,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
     };
 
+    @Override
+    protected void setRightText(String rightText) {
+        super.setRightText(rightText);
+    }
+
     /**
      * @param provider
      * @param access_token
@@ -601,6 +658,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         boolean isShow = mRlLoginByVertify.getVisibility() != View.VISIBLE;
         if (!isShow) {
             setOneKeyLoginShow(false);
+        }else{
+            com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
+            getActivity().finish();
         }
         return isShow;
     }
@@ -611,7 +671,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     private void setOneKeyLoginShow(boolean isShow) {
-        setToolBarLeftImage(isShow ? R.mipmap.topbar_back : 0);
+//        setToolBarLeftImage(isShow ? R.mipmap.topbar_back : 0);
+//        setToolBarLeftImage(isShow ? R.mipmap.topbar_back : 0);
+        setToolBarLeftImage(R.mipmap.ic_back);
         setCenterText(getString(isShow ? R.string.onekey_login : R.string.bt_login));
         mTvAccount.setText(isShow ? R.string.phone_number : R.string.login_account);
         mTvAccount.setPadding(0, 0, ConvertUtils.dp2px(mActivity, isShow ? 10 : 25), 0);

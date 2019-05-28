@@ -131,6 +131,14 @@ public class HeaderAndFooterWrapper<T> extends RecyclerView.Adapter<RecyclerView
         mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, view);
     }
 
+    public void clearHeaderView(){
+        mHeaderViews.clear();
+    }
+
+    public void clearFooterView(){
+        mFootViews.clear();
+    }
+
     public void addFootView(View view)
     {
         view.setTag(BASE_ITEM_TYPE_FOOTER);
@@ -146,4 +154,5 @@ public class HeaderAndFooterWrapper<T> extends RecyclerView.Adapter<RecyclerView
     {
         return mFootViews.size();
     }
+
 }

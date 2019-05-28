@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:background="#38383A"
+    android:gravity="center"
+    android:orientation="vertical">
+    <!--频道列表item-->
+    <LinearLayout
+        android:id="@+id/ll_iv_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_head_circle"
+        android:orientation="vertical"
+        android:padding="2dp">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_user_head"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:src="@mipmap/ic_default_user_head_circle" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="赵丽音"
+        android:textColor="@color/white"
+        android:textSize="11sp" />
+</LinearLayout>

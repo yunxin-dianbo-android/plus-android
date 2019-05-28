@@ -30,6 +30,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 
 /**
+ * 全部分类的Fragment
  * @author Jliuer
  * @Date 2017/11/28/14:28
  * @Email Jliuer@aliyun.com

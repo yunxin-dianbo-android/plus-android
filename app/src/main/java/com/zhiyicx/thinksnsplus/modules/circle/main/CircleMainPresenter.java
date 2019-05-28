@@ -60,6 +60,10 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
     AllAdvertListBeanGreenDaoImpl mAdvertListBeanGreenDao;
     @Inject
     BaseCircleRepository mBaseCircleRepository;
+
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+
     private Subscription subscribe;
 
     @Inject
@@ -385,7 +389,6 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
     }
 
     private void updateLookMoreItem(CircleInfo moreJoined) {
-
         if (moreJoined == null) {
             for (CircleInfo circle : mRootView.getListDatas()) {
                 if (circle.getId().equals(BaseCircleItem.MYJOINEDCIRCLE)) {
@@ -401,6 +404,23 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
                 moreJoined.setSummary("");
             }
         }
+    }
+
+    @Override
+    public List<RealAdvertListBean> getAdvert() {
+//        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicDetailAdvert() == null) {
+//            return new ArrayList<>();
+//        }
+//        return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();
+
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicBannerAdvert() == null) {
+            return new ArrayList<>();
+        }
+        AllAdverListBean allAdverListBean = mAllAdvertListBeanGreenDao.getDynamicBannerAdvert();
+        if (allAdverListBean == null) {
+            return null;
+        }
+        return allAdverListBean.getMRealAdvertListBeen();
     }
 
 

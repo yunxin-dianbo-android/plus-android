@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 
 import java.util.List;
 
@@ -28,6 +29,10 @@ public interface IMessageReviewRepository {
     Observable<List<TopCircleJoinReQuestBean>> getCircleJoinRequest(int after);
 
     Observable<List<TopPostListBean>> getPostReview(Long circleId, int after);
+
+    Observable<List<TopPostListBean>> getHotPost(Long circleId, int after);
+
+    Observable<List<TopSuperStarBean>> getPostHotSuperStar();
 
     Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id);
 

@@ -178,7 +178,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, circlePostListBean.getFriendlyTime());
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
             ((TextView) holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
-            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.important_for_content));
+            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.color_EA3378));
 
             String content = circlePostListBean.getFriendlyContent();
             SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);

@@ -40,6 +40,8 @@ public interface CircleMainContract {
         List<RealAdvertListBean> getCircleTopAdvert();
 
         void canclePay();
+
+        List<RealAdvertListBean> getAdvert();
     }
 
 }

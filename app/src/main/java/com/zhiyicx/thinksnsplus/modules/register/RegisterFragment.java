@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -77,6 +78,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @BindView(R.id.ll_register_by_email)
     LinearLayout mLlRegisterByEmail;
 
+    View mStatusBarPlaceholder;
     private AnimationDrawable mVertifyAnimationDrawable;
     private boolean isNameEdited;
     private boolean isPhoneEdited;
@@ -98,23 +100,77 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     }
 
     @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected View getContentView() {
+        View contentView = super.getContentView();
+        mStatusBarPlaceholder = contentView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+        return contentView;
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.ic_back;
+    }
+
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_register;
     }
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
-
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+//        return R.drawable.common_statubar_bg;
     }
 
     @Override
     protected String setCenterTitle() {
         return getString(R.string.register_by_phone);
+    }
+
+    @Override
+    protected void setCenterTextColor(int resId) {
+        super.setCenterTextColor(resId);
+    }
+
+    /**
+     * 根据toolbar的背景设置它的文字颜色
+     */
+    protected void setToolBarTextColor() {
+        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
+        if (showToolbar()) {
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), getLeftTextColor()));
+        }
     }
 
     @Override
@@ -242,7 +298,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
                     } else {
                         if (mPresenter
                                 .getSystemConfigBean().getSite().getClient_email().contains(mEtRegisterEmail.getText().toString().trim())
-                                ) {
+                        ) {
                             showMessage(getString(R.string.can_not_use_protected_email));
                             return;
                         }

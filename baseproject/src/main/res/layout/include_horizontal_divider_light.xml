@@ -2,6 +2,6 @@
 <View
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/v_horizontal_line"
-    android:background="@color/general_for_line_light"
+    android:background="#2D2E30"
     android:layout_width="match_parent"
     android:layout_height="@dimen/divider_line"/>

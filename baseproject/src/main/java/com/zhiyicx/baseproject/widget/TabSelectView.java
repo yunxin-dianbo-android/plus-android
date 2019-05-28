@@ -63,7 +63,7 @@ public class TabSelectView extends FrameLayout {
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
     private View divider;
-    private TextView tvToolbarLeft, tvToolbarRight,tvToolbarLeftRight;
+    private TextView tvToolbarLeft, tvToolbarRight, tvToolbarLeftRight;
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
     private CommonNavigator mCommonNavigator;
@@ -100,6 +100,14 @@ public class TabSelectView extends FrameLayout {
         mTabSpacing = getResources().getDimensionPixelOffset(R.dimen.spacing_large);
         showDivider(false);// 默认展示分割线
         setLeftImg(R.mipmap.topbar_back);// 默认左边为箭头
+    }
+
+    public void setMyBackground(int resId) {
+        findViewById(R.id.toolbar).setBackgroundResource(resId);
+    }
+
+    public void setDividerBackground(int resId){
+          divider.setBackgroundResource(resId);
     }
 
     public void initTabView(ViewPager viewPager, List<String> stringList) {
@@ -169,7 +177,7 @@ public class TabSelectView extends FrameLayout {
 
     public void setRightImg(int imgRes, @ColorRes int backgroud) {
         if (imgRes == 0 && TextUtils.isEmpty(tvToolbarRight.getText())) {
-            tvToolbarRight.setVisibility(INVISIBLE);
+            tvToolbarRight.setVisibility(GONE);
         } else {
             tvToolbarRight.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
             tvToolbarRight.setVisibility(View.VISIBLE);

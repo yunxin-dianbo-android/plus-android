@@ -84,7 +84,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 默认的toolbar左边的图片，一般是返回键
      */
-    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.app_icon;
+    private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.ic_back;
 
     /**
      * toolbar
@@ -224,14 +224,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mStatusPlaceholderView = new View(getContext());
             mStatusPlaceholderView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight
                     (getContext())));
-            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
-                    .WHITE) {
-                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+//            if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0 && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color
+//                    .WHITE) {
 //                mStatusPlaceholderView.setBackgroundResource(R.drawable.common_statubar_bg);
-            } else {
-//                mStatusPlaceholderView.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarBackgroud()));
+//            } else {
                 mStatusPlaceholderView.setBackgroundResource(R.drawable.common_statubar_bg);
-            }
+//            }
 //            mStatusPlaceholderView.setBackgroundResource(R.mipmap.ic_statu_bar);
             linearLayout.addView(mStatusPlaceholderView);
         }
@@ -1154,6 +1152,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), resId));
     }
 
+
+
     /**
      * 设置右边的标题
      */
@@ -1221,15 +1221,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void setToolBarTextColor() {
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
         if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
-            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
-            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.white));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.white));
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), getLeftTextColor()));
         }
     }
 
     protected int getLeftTextColor() {
-        return R.color.important_for_content;
+        return R.color.white;
     }
 
     /**

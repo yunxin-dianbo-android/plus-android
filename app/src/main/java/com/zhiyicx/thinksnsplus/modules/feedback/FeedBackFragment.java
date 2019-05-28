@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -33,7 +37,11 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     UserInfoInroduceInputView mEtDynamicContent;
     @BindView(R.id.tv_feedback_contract)
     EditText mTvFeedbackContract;
+    @BindView(R.id.bt_commit)
+    LoadingButton btCommit;
+    View vStatusBarPlaceHolder;
     Subscription subscription;
+
 
     private ActionPopupWindow mFeedBackInstructionsPopupWindow;
 
@@ -43,7 +51,17 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
 
     @Override
     protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
         return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override
@@ -51,14 +69,25 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
         return getString(R.string.feed_back);
     }
 
-    @Override
-    protected String setRightTitle() {
-        return getString(R.string.submit);
-    }
+//    @Override
+//    protected String setRightTitle() {
+//        return getString(R.string.submit);
+//    }
+
 
     @Override
     protected void initView(View rootView) {
         initRightSubmit();
+        vStatusBarPlaceHolder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+    }
+
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        vStatusBarPlaceHolder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -73,6 +102,22 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
 
 
     }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.ic_back;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    @Override
+    protected View getContentView() {
+        return super.getContentView();
+    }
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -92,13 +137,34 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
                 mToolbarRight.setEnabled(aBoolean)
         );
 
-        RxView.clicks(mToolbarRight)
+//        RxView.clicks(mToolbarRight)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .compose(this.bindToLifecycle())
+//                .subscribe(aVoid -> {
+//                    DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
+//                    mPresenter.submitFeedBack(mEtDynamicContent.getInputContent(), mTvFeedbackContract.getText().toString());
+//                });
+        RxView.clicks(btCommit)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
                     mPresenter.submitFeedBack(mEtDynamicContent.getInputContent(), mTvFeedbackContract.getText().toString());
                 });
+    }
+
+    /**
+     * 根据toolbar的背景设置它的文字颜色
+     */
+    @Override
+    protected void setToolBarTextColor() {
+        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
+        if (showToolbar()) {
+            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.white));
+            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), getLeftTextColor()));
+        }
     }
 
     @Override

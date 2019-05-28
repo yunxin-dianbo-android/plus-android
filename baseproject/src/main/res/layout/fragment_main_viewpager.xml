@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/common_statubar_bg"
     android:orientation="vertical">
 
     <View
@@ -16,7 +17,7 @@
         android:layout_height="@dimen/toolbar_with_tab_height"
         android:layout_below="@id/v_status_bar_placeholder"
         android:background="@drawable/common_statubar_bg" />
-
+   <!-- android:layout_height="@dimen/toolbar_with_tab_height"-->
     <RelativeLayout
         android:visibility="gone"
         android:id="@+id/rl_search_and_classify_content"
@@ -126,6 +127,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_search_and_classify_content"
-        android:background="@color/bgColor" />
+        android:background="@color/color_38383A" />
 
 </RelativeLayout>

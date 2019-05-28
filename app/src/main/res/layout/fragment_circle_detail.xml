@@ -35,7 +35,7 @@
 
                     <include layout="@layout/circle_head_bg"/>
 
-                    <include layout="@layout/circle_head"/>
+                    <include layout="@layout/circle_head" />
 
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/toolbar"

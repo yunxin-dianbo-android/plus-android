@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overscroll"
+    android:background="#2D2E30"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -23,24 +24,53 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
+                <ImageView
+                    android:id="@+id/iv_app"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="36dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:text="点播"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#E1E1E1"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
                 <LinearLayout
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="#2D2E30"
                     style="@style/style_edit_white_container">
 
                     <TextView
+                        android:visibility="gone"
                         style="@style/style_small_text"
                         android:text="@string/username"/>
 
                     <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                         android:id="@+id/et_regist_username"
                         style="@style/style_edit"
-                        app:need_word_byte_limit="true"
-                        app:word_byte_limit_lengh="@integer/username_max_byte_length"
                         android:layout_marginLeft="0dp"
+                        android:textColor="@color/white"
                         android:hint="@string/username_input_hint"
-                        android:inputType="textPersonName"/>
+                        android:inputType="textPersonName"
+                        app:need_word_byte_limit="true"
+                        app:word_byte_limit_lengh="@integer/username_max_byte_length" />
                 </LinearLayout>
 
-                <ImageView style="@style/style_divider_horizontal_light"/>
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    style="@style/style_divider_horizontal_light"/>
 
                 <RelativeLayout style="@style/style_edit_white_container">
 
@@ -51,16 +81,20 @@
                         android:layout_toStartOf="@+id/rl_send_vertify_code_container">
                         <!--手机注册-->
                         <LinearLayout
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:background="#2D2E30"
                             android:id="@+id/ll_register_by_phone"
                             style="@style/style_edit_white_container">
-
                             <TextView
+                                android:visibility="gone"
                                 style="@style/style_small_text"
                                 android:text="@string/phone_number"/>
 
                             <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                                 android:id="@+id/et_regist_phone"
                                 style="@style/style_edit"
+                                android:textColor="@color/white"
                                 android:layout_marginLeft="0dp"
                                 android:hint="@string/phone_number_input_hint"
                                 android:inputType="phone"
@@ -70,9 +104,13 @@
                         <!--邮箱注册-->
                         <LinearLayout
                             android:id="@+id/ll_register_by_email"
+                            android:background="#2D2E30"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
                             style="@style/style_edit_white_container">
 
                             <TextView
+                                android:visibility="gone"
                                 style="@style/style_small_text"
                                 android:text="@string/email_address"/>
 
@@ -80,9 +118,10 @@
                                 android:id="@+id/et_register_email"
                                 style="@style/style_edit"
                                 android:layout_marginLeft="0dp"
-
+                                android:background="#2D2E30"
+                                android:textColor="@color/white"
                                 android:hint="@string/email_address_input_hint"
-                                android:inputType="textEmailAddress"/>
+                                android:inputType="textEmailAddress" />
                         </LinearLayout>
 
                     </FrameLayout>
@@ -95,6 +134,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:paddingLeft="@dimen/spacing_mid"
+                        android:background="#2D2E30"
                         android:paddingRight="@dimen/spacing_mid"
                         >
 
@@ -102,8 +142,8 @@
                             android:id="@+id/bt_regist_send_vertify_code"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
                             android:background="@null"
                             android:enabled="false"
@@ -111,7 +151,7 @@
                             android:minWidth="@dimen/button_send_vertify_code_min_width"
                             android:text="@string/send_vertify_code"
                             android:textColor="@color/selector_text_color"
-                            android:textSize="@dimen/size_content"/>
+                            android:textSize="@dimen/size_content" />
 
                         <ImageView
                             android:id="@+id/iv_vertify_loading"
@@ -125,29 +165,45 @@
 
                 </RelativeLayout>
 
-                <ImageView style="@style/style_divider_horizontal_light"/>
+                <ImageView
+                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    style="@style/style_divider_horizontal_light"/>
 
-                <LinearLayout style="@style/style_edit_white_container">
+                <LinearLayout
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="#2D2E30"
+                    style="@style/style_edit_white_container">
 
                     <TextView
                         style="@style/style_small_text"
+                        android:visibility="gone"
                         android:text="@string/vertify_code"/>
 
                     <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                         android:id="@+id/et_regist_vertify_code"
                         style="@style/style_edit"
+                        android:textColor="@color/white"
                         android:layout_marginLeft="0dp"
                         android:hint="@string/vertify_code_input_hint"
                         android:inputType="number"
-                        android:maxLength="@integer/vertiry_code_lenght"/>
+                        android:maxLength="@integer/vertiry_code_lenght" />
                 </LinearLayout>
 
-                <ImageView style="@style/style_divider_horizontal_light"/>
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    style="@style/style_divider_horizontal_light"/>
 
                 <LinearLayout
+                    android:background="#2D2E30"
+                    android:layout_marginLeft="10dp"
+                    android:paddingRight="10dp"
                     style="@style/style_edit_white_container">
 
                     <TextView
+                        android:visibility="gone"
                         style="@style/style_small_text"
                         android:text="@string/password"/>
 
@@ -155,16 +211,30 @@
                         android:id="@+id/et_regist_password"
                         style="@style/style_passward_edit"
                         android:layout_marginLeft="0dp"
-
                         android:hint="@string/password_input_hint"
                         android:inputType="textPassword"
-                        android:maxLength="@integer/password_maxlenght"/>
+                        android:maxLength="@integer/password_maxlenght"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
-
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    style="@style/style_divider_horizontal_light"/>
                 <include
                     layout="@layout/include_error_tip_text"/>
+
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tv_app_rule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    android:text="用户协议"
+                    android:layout_marginLeft="16dp"
+                    android:textColor="#E73377" />
 
                 <com.zhiyicx.baseproject.widget.button.LoadingButton
                     android:id="@+id/bt_regist_regist"
@@ -198,13 +268,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <TextView
-            android:id="@+id/tv_app_rule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:padding="@dimen/spacing_large"
-            />
     </FrameLayout>
 
 </com.wcy.overscroll.OverScrollLayout>

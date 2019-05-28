@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/common_statubar_bg"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/v_status_bar_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/common_statubar_bg" />
+    <!-- android:background="@color/white"-->
+    <!--  <include
+          android:id="@+id/toolbar"
+          layout="@layout/toolbar_custom"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/v_status_bar_placeholder" />-->
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#38383A"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/mychannel"
+                android:textColor="#FF4081"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_my_channel_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="@string/long_click_switch_channel"
+                android:textColor="#99ffffff"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <com.zhiyicx.baseproject.widget.dragview.DragGridView
+            android:id="@+id/drag_grid_view_4_my_video_channel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:gravity="center"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="5"
+            android:scrollbars="vertical"
+            android:stretchMode="columnWidth"
+            app:columnscount="5"
+            app:fixed_num="3"
+            app:scale_num="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#99999999" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="@string/other_channel"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_other_channel_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="@string/click_add_to_my_channel"
+                android:textColor="#99ffffff"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <com.zhiyicx.baseproject.widget.dragview.DragGridView
+            android:id="@+id/drag_grid_view_4_other_video_channel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dip"
+            android:gravity="center"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="5"
+            android:scrollbars="vertical"
+            android:stretchMode="columnWidth"
+            app:columnscount="4"
+            app:fixed_num="100"
+            app:scale_num="1" />
+    </LinearLayout>
+</RelativeLayout>

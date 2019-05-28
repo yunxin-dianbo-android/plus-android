@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -99,6 +100,8 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
     @BindView(R.id.tv_choose_tip)
     @JvmField
     var mTvChooseTip: TextView? = null
+
+    var mStatusBarPlaceholder: View? = null
     private var mIsDefualtCheck = true
 
     private var mLoginoutPopupWindow: ActionPopupWindow? = null// 退出登录选择弹框
@@ -107,6 +110,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
     override fun getBodyLayoutId(): Int {
         return R.layout.fragment_settings
     }
+
 
     override fun setCenterTitle(): String {
         return getString(R.string.setting)
@@ -117,13 +121,27 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
     }
 
     override fun showToolBarDivider(): Boolean {
+        return false
+    }
+
+    override fun getToolBarLayoutId(): Int {
+        return R.layout.toolbar_custom_contain_status_bar
+    }
+
+    override fun setUseStatusView(): Boolean {
+        return false
+    }
+
+    override fun setUseSatusbar(): Boolean {
         return true
     }
+
 
     override fun initView(rootView: View) {
         initListener()
         if (com.zhiyicx.common.BuildConfig.USE_DOMAIN_SWITCH) {
-            mRbDaysGroup!!.visibility = View.VISIBLE
+//            mRbDaysGroup!!.visibility = View.VISIBLE
+            mRbDaysGroup!!.visibility = View.GONE
             mRbOne!!.visibility = View.VISIBLE
             mRbOne!!.text = getString(R.string.domain_formal)
             mRbTwo!!.visibility = View.VISIBLE
@@ -170,7 +188,15 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
             mRbDaysGroup!!.visibility = View.GONE
             mTvChooseTip!!.visibility = View.GONE
         }
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder)
+        initStatusBar();
+    }
 
+    fun initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(context))
+        mStatusBarPlaceholder!!.setLayoutParams(layoutParams)
     }
 
     override fun initData() {
@@ -254,7 +280,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                         bundle.putParcelable(BUNDLE_BIND_DATA, userInfoBean)
                         intent.putExtras(bundle)
                         activity?.startActivity(intent)
-                    }else{
+                    } else {
                         startActivity(Intent(activity, ChangePasswordActivity::class.java))
                     }
                 }

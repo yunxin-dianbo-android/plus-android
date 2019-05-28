@@ -100,6 +100,17 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     @Transient
     private String friendlyContent;
 
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    @Transient
+    private String group_name;
+
     @Override
     public Long getMaxId() {
         return id;
@@ -795,6 +806,14 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 
+    public String getExcellent_at() {
+        return this.excellent_at;
+    }
+
+    public void setExcellent_at(String excellent_at) {
+        this.excellent_at = excellent_at;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -829,14 +848,7 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         dest.writeTypedList(this.digs);
         dest.writeString(this.friendlyTime);
         dest.writeString(this.friendlyContent);
-    }
-
-    public String getExcellent_at() {
-        return this.excellent_at;
-    }
-
-    public void setExcellent_at(String excellent_at) {
-        this.excellent_at = excellent_at;
+        dest.writeString(this.group_name);
     }
 
     protected CirclePostListBean(Parcel in) {
@@ -867,6 +879,7 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         this.digs = in.createTypedArrayList(PostDigListBean.CREATOR);
         this.friendlyTime = in.readString();
         this.friendlyContent = in.readString();
+        this.group_name = in.readString();
     }
 
     public static final Creator<CirclePostListBean> CREATOR = new Creator<CirclePostListBean>() {

@@ -65,6 +65,8 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         mVpFragment.setOffscreenPageLimit(getOffsetPage());
     }
 
+
+
     protected int tabSpacing() {
         return getResources().getDimensionPixelOffset(R.dimen.spacing_large);
     }

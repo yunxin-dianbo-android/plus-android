@@ -54,6 +54,11 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected boolean setUseStatusView() {
         return false;
     }
@@ -139,7 +144,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
 
     @Override
     public void onSureClick(View v, String text, InputPasswordView.PayNote payNote) {
-        mPresenter.dealCircleJoinOrExit(payNote.id.intValue(), mCircleInfo,payNote.psd);
+        mPresenter.dealCircleJoinOrExit(payNote.id.intValue(), mCircleInfo, payNote.psd);
     }
 
     @Override
@@ -213,7 +218,7 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
             mIlvPassword.setPayNote(new InputPasswordView.PayNote(null, (long) position));
             showInputPsdView(true);
         } else {
-            mPresenter.dealCircleJoinOrExit(position, circleInfo,null);
+            mPresenter.dealCircleJoinOrExit(position, circleInfo, null);
         }
     }
 }
