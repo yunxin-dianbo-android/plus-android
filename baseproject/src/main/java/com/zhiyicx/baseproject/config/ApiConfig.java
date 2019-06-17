@@ -34,8 +34,8 @@ public class ApiConfig {
     //    public static final String APP_DOMAIN_DEV = "https://dev.zhibocloud.cn/";// 模拟在线正式服务器
 //    public static final String APP_DOMAIN_TEST = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_DOMAIN_TEST = "http://47.97.249.200/";// 在线测试服务器
-    public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
-//    public static final String APP_DOMAIN_FORMAL = "https://47.97.249.200/";// 正式服务器
+//    public static final String APP_DOMAIN_FORMAL = "https://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_DOMAIN_FORMAL = "http://47.97.249.200/";// 正式服务器
 
     public static final String APP_DOMAIN_FOR_TEARCHER_QIAO = "http://192.168.2.152/";// 乔老师本地服务器
     public static final String APP_DOMAIN_DEV = APP_DOMAIN_FOR_TEARCHER_QIAO;// 模拟在线正式服务器
@@ -1193,4 +1193,9 @@ public class ApiConfig {
 
     // 禁用用户
     public static final String APP_PATH_DIABLEUSER_FORMAT = "api/" + API_VERSION_2 + "/system/disabled/%d";
+
+   // 影视频道
+    public static final String APP_PATH_VIDEO_CHANNEL = "api/" + API_VERSION_2 + "/dianbo/channels";
+
+
 }

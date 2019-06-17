@@ -25,10 +25,11 @@
                 app:elevation="0dp"
                 app:layout_behavior="@string/appbar_overscroll_behavior">
 
+                <!--  android:background="@android:color/white"-->
                 <android.support.design.widget.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
+                    android:background="#38383A"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -64,10 +65,10 @@
                 android:layout_width="@dimen/channel_detail_float_btn_height"
                 android:layout_height="@dimen/channel_detail_float_btn_height"
                 android:layout_gravity="bottom|right"
-                android:layout_marginBottom="@dimen/spacing_normal_large"
+                android:layout_marginBottom="105dp"
                 android:layout_marginEnd="@dimen/spacing_normal_large"
                 android:scaleType="fitXY"
-                android:src="@mipmap/channel_btn_suspension"
+                android:src="@mipmap/ic_publish_post"
                 app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"/>
 
         </android.support.design.widget.CoordinatorLayout>

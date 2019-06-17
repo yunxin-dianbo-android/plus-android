@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.share.ShareModule;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailPresenterModuleNew;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.DaggerCirclePostDetailComponentNew;
 
 
 /**
@@ -12,8 +16,8 @@ import com.zhiyicx.baseproject.base.TSActivity;
  * @Date 2016/12/22
  * @Contact master.jungle68@gmail.com
  */
-
-public class VideoChannelActivity extends TSActivity {
+//<CirclePostDetailPresenterNew, CirclePostDetailFragmentNew>
+public class VideoChannelActivity extends TSActivity<VideoChannelFragmentPresenter, VideoChannelFragment2> {
 
     @Override
     protected boolean useEventBus() {
@@ -25,11 +29,23 @@ public class VideoChannelActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
+
+        DaggerVideoChannelFragmentComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(this))
+                .videoChannelFragmentPresenterModule(new VideoChannelFragmentPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 
     @Override
-    protected Fragment getFragment() {
+    protected VideoChannelFragment2 getFragment() {
         return VideoChannelFragment2.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+
     }
 
     @Override

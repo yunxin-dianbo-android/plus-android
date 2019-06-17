@@ -31,8 +31,6 @@ import cn.jzvd.JZVideoPlayerManager;
  */
 
 public class ChannelManagerActivity extends TSActivity {
-//    public static final String BUNDLE_JPUSH_MESSAGE = "jpush_message";
-//    private NetChangeReceiver mNetChangeReceiver;
 
     @Override
     protected boolean useEventBus() {
@@ -41,54 +39,19 @@ public class ChannelManagerActivity extends TSActivity {
 
 
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (JZVideoPlayerManager.getCurrentJzvd() != null) {
-//            if (JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING
-//                    || JZVideoPlayerManager.getCurrentJzvd().currentState == ZhiyiVideoView.CURRENT_STATE_PREPARING_CHANGING_URL) {
-//                ZhiyiVideoView.releaseAllVideos();
-//            }
-//        }
-//        ZhiyiVideoView.goOnPlayOnPause();
-//    }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        UmengSharePolicyImpl.onDestroy(this);
-//        if (mNetChangeReceiver != null) {
-//            unregisterReceiver(mNetChangeReceiver);
-//        }
-//    }
-
     @Override
     protected void componentInject() {
     }
 
     @Override
     protected Fragment getFragment() {
-        return ChannelFragment.newInstance(getIntent().getExtras());
+        return ChannelFragment.newInstance();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (mContanierFragment instanceof HomeFragment) {
-//            if (((HomeFragment) (mContanierFragment)).getMainFragment().backPressed()) {
-//                return;
-//            }
-//        }
-//        if (JZVideoPlayer.backPress()) {
-//            return;
-//        }
-//        ActivityUtils.goHome(this);
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
-//        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
 }

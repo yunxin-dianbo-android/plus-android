@@ -43,7 +43,7 @@ import com.zhiyicx.thinksnsplus.modules.aaaat.AtUserActivity;
 import com.zhiyicx.thinksnsplus.modules.aaaat.AtUserListFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailCommentItem;
-import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderView;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter.PostDetailHeaderViewNew;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
@@ -119,7 +119,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
 
     private CirclePostListBean mCirclePostDetailBean;
 
-    private PostDetailHeaderView mPostDetailHeaderView;
+    private PostDetailHeaderViewNew mPostDetailHeaderView;
 
     private RewardsCountBean mRewardsCountBean;
     private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
@@ -492,7 +492,7 @@ public class CirclePostDetailFragment extends TSListFragment<CirclePostDetailCon
     }
 
     private void initHeaderView(boolean canGotoCircle) {
-        mPostDetailHeaderView = new PostDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mPostDetailHeaderView = new PostDetailHeaderViewNew(getContext(), mPresenter.getAdvert());
 //        mPostDetailHeaderView.setWebLoadListener(this);
         mPostDetailHeaderView.setCanGotoCircle(canGotoCircle);
         mPostDetailHeaderView.setShowMessageListener(this::showSnackErrorMessage);

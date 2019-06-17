@@ -5,7 +5,7 @@
           android:layout_height="wrap_content"
           android:layout_marginRight="@dimen/spacing_small"
           android:layout_marginTop="@dimen/spacing_small"
-          android:background="@drawable/item_react_bg_gray"
+          android:background="@drawable/video_tag_bg"
           android:drawablePadding="@dimen/spacing_small"
           android:gravity="center_vertical"
           android:paddingBottom="@dimen/spacing_small"
@@ -14,8 +14,9 @@
           android:paddingRight="@dimen/spacing_normal"
           android:paddingStart="@dimen/spacing_normal"
           android:paddingTop="@dimen/spacing_small"
-          android:textColor="@color/normal_for_dynamic_list_content"
+          android:textColor="@color/white"
           android:textSize="@dimen/size_icon_assist"
           tools:text="Helloworld">
 
+  <!--  android:background="@drawable/item_react_bg_gray"-->
 </TextView>

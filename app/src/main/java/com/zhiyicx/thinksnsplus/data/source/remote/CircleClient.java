@@ -85,6 +85,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_CIRCLE_RE
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFUSE_POST_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEND_DYNAMIC_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SET_CIRCLE_PERMISSIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOP_POST_LIST_NEW;
@@ -284,6 +285,18 @@ public interface CircleClient {
                                                      @Query("type") String type,
                                                      @Query("excellent") Integer excellent);
 
+    /**
+     * 获取圈子下帖子列表
+     *
+     * @param circleId
+     * @param offset
+     * @return
+     */
+    @GET(APP_PATH_SEND_DYNAMIC_V2)
+    Observable<CirclePostBean> getPostListFromCircleV2(@Query("group_id") long circleId,
+                                                     @Query("limit") Integer limit,
+                                                     @Query("offset") int offset,
+                                                     @Query("type") String type);
     /**
      * 预览帖子列表接口
      *
@@ -619,6 +632,21 @@ public interface CircleClient {
     @GET(APP_PATH_TOP_POST_LIST_NEW)
     Observable<List<TopPostListBean>> getHotPost(@Query("after") Integer after, @Query("limit")
             Integer limit, @Query("group") Long circleId);
+
+    /**
+     * 获取发现里面的热门帖子
+     *
+     * @param circleId
+     * @param offset
+     * @return
+     */
+    @GET(APP_PATH_SEND_DYNAMIC_V2)
+    Observable<CirclePostBean> getHotPostV2(@Query("group_id") Long circleId,
+                                                   @Query("limit") Integer limit,
+                                                   @Query("offset") int offset,
+                                                   @Query("type") String type);
+
+
     /**
      * 获取热门里面的明星列表
      *

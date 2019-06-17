@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.fordownload.ITSListPresenterForDownload;
 import com.zhiyicx.thinksnsplus.base.fordownload.ITSListViewForDownload;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;

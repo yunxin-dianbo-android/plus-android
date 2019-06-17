@@ -2,7 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.base.fordownload.ITSListPresenterForDownload;
+import com.zhiyicx.thinksnsplus.base.fordownload.ITSListViewForDownload;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
@@ -17,7 +20,7 @@ import java.util.List;
  * @Description
  */
 public interface CircleHotContract {
-    interface View extends ITSListView<TopPostListBean, Presenter> {
+    interface View extends ITSListViewForDownload<CirclePostListBean, Presenter> {
 //        void updateCircleCount(int count);
 //
 //        List<CircleInfo> getJoinedCircles();
@@ -31,19 +34,7 @@ public interface CircleHotContract {
         void onNetSuccessHotSuperStar(List<TopSuperStarBean> topSuperStarBeans);
     }
 
-    interface Presenter extends ITSListPresenter<TopPostListBean> {
-        //        void getRecommendCircle();
-//
-//        void dealCircleJoinOrExit(int position, CircleInfo circleInfo, String psd);
-//
-//        void checkCertification();
-//
-//        List<RealAdvertListBean> getCircleTopAdvert();
-//
-//        void canclePay();
-//        List<RealAdvertListBean> getBannerAdvert();
-//
-//        List<RealAdvertListBean> getListAdvert();
+    interface Presenter extends ITSListPresenterForDownload<CirclePostListBean> {
 
     }
 

@@ -50,6 +50,16 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     @Id(autoincrement = true)
     private Long id;
     private String feed_title;
+
+    public long getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(long group_id) {
+        this.group_id = group_id;
+    }
+
+    private long group_id;
     private String feed_content;
     private String feed_from;
     @Unique
@@ -411,30 +421,6 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeString(this.feed_title);
-        dest.writeString(this.feed_content);
-        dest.writeString(this.feed_from);
-        dest.writeString(this.feed_mark);
-        dest.writeString(this.feed_latitude);
-        dest.writeString(this.feed_longtitude);
-        dest.writeString(this.feed_geohash);
-        dest.writeValue(this.amount);
-        dest.writeTypedList(this.images);
-        dest.writeTypedList(this.photos);
-        dest.writeParcelable(this.video, flags);
-        dest.writeParcelable(this.mVideoInfo, flags);
-        dest.writeList(this.topics);
-        dest.writeTypedList(this.topicListBeans);
-    }
-
     public String getRepostable_type() {
         return this.repostable_type;
     }
@@ -451,32 +437,14 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.repostable_id = repostable_id;
     }
 
-    protected SendDynamicDataBeanV2(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_title = in.readString();
-        this.feed_content = in.readString();
-        this.feed_from = in.readString();
-        this.feed_mark = in.readString();
-        this.feed_latitude = in.readString();
-        this.feed_longtitude = in.readString();
-        this.feed_geohash = in.readString();
-        this.amount = (Long) in.readValue(Long.class.getClassLoader());
-        this.images = in.createTypedArrayList(StorageTaskBean.CREATOR);
-        this.photos = in.createTypedArrayList(ImageBean.CREATOR);
-        this.video = in.readParcelable(Video.class.getClassLoader());
-        this.mVideoInfo = in.readParcelable(VideoInfo.class.getClassLoader());
-        this.topics = new ArrayList<Integer>();
-        in.readList(this.topics, Integer.class.getClassLoader());
-        this.topicListBeans = in.createTypedArrayList(TopicListBean.CREATOR);
-    }
-
-    @Generated(hash = 1040333862)
-    public SendDynamicDataBeanV2(Long id, String feed_title, String feed_content, String feed_from,
-                                 String feed_mark, String feed_latitude, String feed_longtitude, String feed_geohash,
-                                 String repostable_type, Long repostable_id, Long amount, List<StorageTaskBean> images,
-                                 List<ImageBean> photos, Video video, VideoInfo mVideoInfo, List<Integer> topics) {
+    @Generated(hash = 1020227537)
+    public SendDynamicDataBeanV2(Long id, String feed_title, long group_id, String feed_content, String feed_from,
+            String feed_mark, String feed_latitude, String feed_longtitude, String feed_geohash, String repostable_type,
+            Long repostable_id, Long amount, List<StorageTaskBean> images, List<ImageBean> photos, Video video,
+            VideoInfo mVideoInfo, List<Integer> topics) {
         this.id = id;
         this.feed_title = feed_title;
+        this.group_id = group_id;
         this.feed_content = feed_content;
         this.feed_from = feed_from;
         this.feed_mark = feed_mark;
@@ -491,6 +459,55 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.video = video;
         this.mVideoInfo = mVideoInfo;
         this.topics = topics;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.feed_title);
+        dest.writeLong(this.group_id);
+        dest.writeString(this.feed_content);
+        dest.writeString(this.feed_from);
+        dest.writeString(this.feed_mark);
+        dest.writeString(this.feed_latitude);
+        dest.writeString(this.feed_longtitude);
+        dest.writeString(this.feed_geohash);
+        dest.writeString(this.repostable_type);
+        dest.writeValue(this.repostable_id);
+        dest.writeValue(this.amount);
+        dest.writeTypedList(this.images);
+        dest.writeTypedList(this.photos);
+        dest.writeParcelable(this.video, flags);
+        dest.writeParcelable(this.mVideoInfo, flags);
+        dest.writeList(this.topics);
+        dest.writeTypedList(this.topicListBeans);
+    }
+
+    protected SendDynamicDataBeanV2(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_title = in.readString();
+        this.group_id = in.readLong();
+        this.feed_content = in.readString();
+        this.feed_from = in.readString();
+        this.feed_mark = in.readString();
+        this.feed_latitude = in.readString();
+        this.feed_longtitude = in.readString();
+        this.feed_geohash = in.readString();
+        this.repostable_type = in.readString();
+        this.repostable_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.amount = (Long) in.readValue(Long.class.getClassLoader());
+        this.images = in.createTypedArrayList(StorageTaskBean.CREATOR);
+        this.photos = in.createTypedArrayList(ImageBean.CREATOR);
+        this.video = in.readParcelable(Video.class.getClassLoader());
+        this.mVideoInfo = in.readParcelable(VideoInfo.class.getClassLoader());
+        this.topics = new ArrayList<Integer>();
+        in.readList(this.topics, Integer.class.getClassLoader());
+        this.topicListBeans = in.createTypedArrayList(TopicListBean.CREATOR);
     }
 
     public static final Creator<SendDynamicDataBeanV2> CREATOR = new Creator<SendDynamicDataBeanV2>() {

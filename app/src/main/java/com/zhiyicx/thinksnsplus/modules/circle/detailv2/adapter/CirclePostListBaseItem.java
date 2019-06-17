@@ -75,8 +75,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
     protected AuthBean mAuthBean;
 
     private boolean showToolMenu = true;// 是否显示工具栏:默认显示
-    private boolean showCommentList = true;// 是否显示评论内容:默认显示
-    private boolean showReSendBtn = true;// 是否显示重发按钮
+    private boolean showCommentList = false;// 是否显示评论内容:默认显示
+    private boolean showReSendBtn = false;// 是否显示重发按钮
     private boolean showPostFrom = false;// 是否显示帖子来源
     private boolean showPostExcelentTag = false;// 是否显示帖子加精标识
 
@@ -178,8 +178,9 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_time, circlePostListBean.getFriendlyTime());
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
             ((TextView) holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
-            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.color_EA3378));
-
+//            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.color_EA3378));
+            TextView tvTitle = holder.getView(R.id.tv_title);
+            tvTitle.setVisibility(View.GONE);
             String content = circlePostListBean.getFriendlyContent();
             SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
             TextView contentFrom = holder.getView(R.id.tv_from);
@@ -196,14 +197,14 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setBackgroundResource(R.drawable.shape_post_top_flag);
                 topFlagView.setTextColor(Color.WHITE);
-                topFlagView.setPadding(8,4,8,4);
+                topFlagView.setPadding(8, 4, 8, 4);
                 topFlagView.setVisibility(circlePostListBean.getPinned() ?
                         View.VISIBLE : View.GONE);
 
                 TextView excelentFlagView = holder.getView(R.id.tv_excelent_flag);
                 excelentFlagView.setBackgroundResource(R.drawable.shape_post_excelent_flag);
                 excelentFlagView.setTextColor(Color.WHITE);
-                excelentFlagView.setPadding(8,4,8,4);
+                excelentFlagView.setPadding(8, 4, 8, 4);
                 excelentFlagView.setVisibility(showPostExcelentTag && !TextUtils.isEmpty(circlePostListBean.getExcellent_at()) ?
                         View.VISIBLE : View.GONE);
                 excelentFlagView.setText(R.string.circle_post_excelent_tag);
@@ -225,7 +226,8 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
             holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
             // 分割线跟随工具栏显示隐藏
-            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+//            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+            holder.setVisible(R.id.v_line, View.GONE);
             if (showToolMenu) {
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
@@ -271,7 +273,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 } else {
                     comment.setVisibility(View.VISIBLE);
                 }
-
+                comment.setVisibility(View.GONE);
                 comment.setData(circlePostListBean);
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
@@ -479,7 +481,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color
                             .general_for_hint))
                     .setHighlightAlpha(.8f)
-                    .setOnClickListener((clickedText, linkMetadata) -> CustomWEBActivity.startToOutWEBActivity(mContext,clickedText))
+                    .setOnClickListener((clickedText, linkMetadata) -> CustomWEBActivity.startToOutWEBActivity(mContext, clickedText))
                     .setOnLongClickListener((clickedText, linkMetadata) -> {
 
                     })

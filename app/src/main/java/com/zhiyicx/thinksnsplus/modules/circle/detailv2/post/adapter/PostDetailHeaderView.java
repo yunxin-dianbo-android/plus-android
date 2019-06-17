@@ -363,12 +363,12 @@ public class PostDetailHeaderView extends BaseWebLoad {
      */
     public void updateCommentView(CirclePostListBean circlePostDetailBean) {
         // 评论信息
-        if (circlePostDetailBean.getComments_count() != 0) {
+//        if (circlePostDetailBean.getComments_count() != 0) {
             mCommentHintView.setVisibility(View.VISIBLE);
             mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, circlePostDetailBean.getComments_count() + ""));
-        } else {
-            mCommentHintView.setVisibility(View.GONE);
-        }
+//        } else {
+//            mCommentHintView.setVisibility(View.GONE);
+//        }
     }
 
     /**

@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.RankClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.TopicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.VideoChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 
 import javax.inject.Singleton;
@@ -192,6 +193,12 @@ public class ServiceModule {
     @Provides
     TopicClient provideTopicClient(Retrofit retrofit) {
         return retrofit.create(TopicClient.class);
+    }
+
+    @Singleton
+    @Provides
+    VideoChannelClient provideVideoChannelClient(Retrofit retrofit) {
+        return retrofit.create(VideoChannelClient.class);
     }
 
 }

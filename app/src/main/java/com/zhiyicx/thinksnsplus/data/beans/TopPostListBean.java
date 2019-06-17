@@ -4,6 +4,8 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import java.util.List;
+
 /**
  * @Author Jliuer
  * @Date 2017/12/22/13:05
@@ -12,6 +14,14 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  */
 public class TopPostListBean extends BaseListBean {
 
+
+    public long getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(long group_id) {
+        this.group_id = group_id;
+    }
 
     /**
      * id : 13
@@ -31,6 +41,7 @@ public class TopPostListBean extends BaseListBean {
      */
 
     private Long id;
+    private long group_id;//": 1,
     private String channel;
     private int raw;
     private long target;
@@ -38,12 +49,35 @@ public class TopPostListBean extends BaseListBean {
     private long target_user;
     private int amount;
     private int day;
+
+
     private String expires_at;
     private int status;
     private String created_at;
     private String updated_at;
     private UserInfoBean user;
     private CirclePostListBean post;
+
+    private int likes_count;//": 0,
+    private int comments_count;//": 0,
+    private int views_count;//": 2,
+    private boolean liked;//": false,
+    private boolean collected;//": false,
+    private int hot;//": 0,
+    private List<CommentedBean> comments;
+    private String summary;//": "\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50\u6211\u662f\u5e16\u5b50",
+    private List<CirclePostListBean.ImagesBean> images;
+
+
+    public CircleInfo getGroup() {
+        return group;
+    }
+
+    public void setGroup(CircleInfo group) {
+        this.group = group;
+    }
+
+    private CircleInfo group;
 
     public UserInfoBean getCommentUser() {
         return user;
@@ -161,6 +195,81 @@ public class TopPostListBean extends BaseListBean {
         this.post = post;
     }
 
+    public int getLikes_count() {
+        return likes_count;
+    }
+
+    public void setLikes_count(int likes_count) {
+        this.likes_count = likes_count;
+    }
+
+    public int getComments_count() {
+        return comments_count;
+    }
+
+    public void setComments_count(int comments_count) {
+        this.comments_count = comments_count;
+    }
+
+    public int getViews_count() {
+        return views_count;
+    }
+
+    public void setViews_count(int views_count) {
+        this.views_count = views_count;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void setCollected(boolean collected) {
+        this.collected = collected;
+    }
+
+    public int getHot() {
+        return hot;
+    }
+
+    public void setHot(int hot) {
+        this.hot = hot;
+    }
+
+    public List<CommentedBean> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentedBean> comments) {
+        this.comments = comments;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public List<CirclePostListBean.ImagesBean> getImages() {
+        return images;
+    }
+
+    public void setImages(List<CirclePostListBean.ImagesBean> images) {
+        this.images = images;
+    }
+
+
+    public TopPostListBean() {
+    }
 
     @Override
     public int describeContents() {
@@ -171,6 +280,7 @@ public class TopPostListBean extends BaseListBean {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeValue(this.id);
+        dest.writeLong(this.group_id);
         dest.writeString(this.channel);
         dest.writeInt(this.raw);
         dest.writeLong(this.target);
@@ -184,14 +294,22 @@ public class TopPostListBean extends BaseListBean {
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.user, flags);
         dest.writeParcelable(this.post, flags);
-    }
-
-    public TopPostListBean() {
+        dest.writeInt(this.likes_count);
+        dest.writeInt(this.comments_count);
+        dest.writeInt(this.views_count);
+        dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.hot);
+        dest.writeTypedList(this.comments);
+        dest.writeString(this.summary);
+        dest.writeTypedList(this.images);
+        dest.writeParcelable(this.group, flags);
     }
 
     protected TopPostListBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.group_id = in.readLong();
         this.channel = in.readString();
         this.raw = in.readInt();
         this.target = in.readLong();
@@ -205,6 +323,15 @@ public class TopPostListBean extends BaseListBean {
         this.updated_at = in.readString();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.post = in.readParcelable(CirclePostListBean.class.getClassLoader());
+        this.likes_count = in.readInt();
+        this.comments_count = in.readInt();
+        this.views_count = in.readInt();
+        this.liked = in.readByte() != 0;
+        this.collected = in.readByte() != 0;
+        this.hot = in.readInt();
+        this.summary = in.readString();
+        this.images = in.createTypedArrayList(CirclePostListBean.ImagesBean.CREATOR);
+        this.group = in.readParcelable(CircleInfo.class.getClassLoader());
     }
 
     public static final Creator<TopPostListBean> CREATOR = new Creator<TopPostListBean>() {

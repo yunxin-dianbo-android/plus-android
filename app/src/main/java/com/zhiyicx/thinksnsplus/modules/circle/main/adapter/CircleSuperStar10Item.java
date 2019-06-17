@@ -54,7 +54,7 @@ public class CircleSuperStar10Item implements ItemViewDelegate {
         datas.add("4444");
         datas.add("4444");
 
-        CircleHotAdapter circleHotAdapter = new CircleHotAdapter();
+        CircleHotAdapter circleHotAdapter = new CircleHotAdapter(mContext);
         circleHotAdapter.setDatas(datas);
 //        MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter(mContext, datas);
 //        SuperStarHeadItem superStarHeadItem = new SuperStarHeadItem();

@@ -16,11 +16,11 @@ import com.zhiyicx.thinksnsplus.modules.circle.pre.PreCircleActivity;
  * @Email Jliuer@aliyun.com
  * @Description 帖子详情
  */
-public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresenter, CirclePostDetailFragment> {
+public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresenterNew, CirclePostDetailFragmentNew> {
 
     @Override
-    protected CirclePostDetailFragment getFragment() {
-        return CirclePostDetailFragment.newInstance(getIntent().getExtras());
+    protected CirclePostDetailFragmentNew getFragment() {
+        return CirclePostDetailFragmentNew.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -31,10 +31,10 @@ public class CirclePostDetailActivity extends TSActivity<CirclePostDetailPresent
 
     @Override
     protected void componentInject() {
-        DaggerCirclePostDetailComponent.builder()
+        DaggerCirclePostDetailComponentNew.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .shareModule(new ShareModule(this))
-                .circlePostDetailPresenterModule(new CirclePostDetailPresenterModule(mContanierFragment))
+                .circlePostDetailPresenterModuleNew(new CirclePostDetailPresenterModuleNew(mContanierFragment))
                 .build().inject(this);
     }
 

@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -22,6 +24,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -64,12 +67,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import cn.jzvd.JZUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_CIRCLE_POST;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 import static com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository.CircleMinePostType.PUBLISH;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
@@ -501,6 +506,102 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
         }
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity(), data);
     }
+
+
+
+
+
+    /**
+     * 分享
+     * @param dynamicBean
+     * @param bitmap
+     */
+    public void sharePost4ShortVideo(CirclePostListBean dynamicBean, Bitmap bitmap) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        if (dynamicBean.getFeed_from() == DEFAULT_ADVERT_FROM_TAG) {
+            //广告的连接放在了 deleted_at 中
+            shareContent.setUrl(dynamicBean.getDeleted_at());
+        } else {
+            shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                    == null ? "" : dynamicBean.getId())));
+        }
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    public void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean
+                .getId()
+                == null ? "" : dynamicBean.getId())));
+        mSharePolicy.setShareContent(shareContent);
+        switch (type) {
+            case QQ:
+                mSharePolicy.shareQQ(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case QZONE:
+                mSharePolicy.shareZone(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN:
+                mSharePolicy.shareWechat(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN_CIRCLE:
+                mSharePolicy.shareMoment(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case SINA:
+                mSharePolicy.shareWeibo(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case MORE:
+                String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
+                        dynamicBean.getVideo().getVideo_id());
+                downloadFile(videoUrl);
+                break;
+            default:
+        }
+
+    }
+
+    public void downloadFile(String url) {
+//        if (!JZUtils.isWifiConnected(mContext) && !SharePreferenceUtils.getBoolean(mContext, ALLOW_GPRS)) {
+//            initWarningDialog(url);
+//        } else {
+//            download(url);
+//        }
+    }
+
+
+
 
     /**
      * 分享圈子

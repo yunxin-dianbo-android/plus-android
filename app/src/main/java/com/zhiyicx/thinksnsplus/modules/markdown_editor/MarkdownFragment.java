@@ -416,6 +416,14 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
         initListener();
 
+       View mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+       initStatusBar(mStatusBarPlaceholder);
+    }
+    private void initStatusBar(View mStatusBarPlaceholder) {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -468,7 +476,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override
@@ -476,6 +484,19 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
         return getString(R.string.publish_post);
     }
 
+    @Override
+    protected boolean showToolbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
     /**
      * 插入链接按钮点击
      */
@@ -620,6 +641,11 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_markd_down;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
     }
 
     @Override

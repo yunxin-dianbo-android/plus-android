@@ -15,11 +15,12 @@
 
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ccc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:layout_marginBottom="@dimen/spacing_mid">
-     <!--   android:layout_marginTop="@dimen/circle_detail_header_magin"-->
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="25dp">
+        <!--   android:layout_marginTop="@dimen/circle_detail_header_magin"-->
 
         <LinearLayout
             android:id="@+id/ll_head_icon_container"
@@ -44,10 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/ll_head_icon_container"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_toLeftOf="@+id/tv_circle_subscrib"
             android:layout_toRightOf="@+id/ll_head_icon_container"
+
             android:ellipsize="end"
-            android:layout_marginTop="5dp"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:text="啦啦啦"
@@ -63,9 +66,9 @@
             android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
             android:layout_toRightOf="@+id/ll_head_icon_container"
             android:text="23"
-            android:visibility="gone"
             android:textColor="@color/general_for_bg_light"
-            android:textSize="@dimen/size_icon_assist" />
+            android:textSize="@dimen/size_icon_assist"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_circle_dec"
@@ -77,19 +80,19 @@
             android:layout_toRightOf="@+id/ll_head_icon_container"
             android:ellipsize="end"
             android:maxLines="1"
-            android:visibility="gone"
             android:text="秒速5毫米"
             android:textColor="@color/general_for_bg_light"
-            android:textSize="@dimen/size_icon_assist" />
+            android:textSize="@dimen/size_icon_assist"
+            android:visibility="gone" />
 
         <LinearLayout
-            android:layout_marginBottom="5dp"
             android:id="@+id/ll_postnum_membernum_content"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ll_head_icon_container"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
             android:layout_toLeftOf="@+id/tv_circle_subscrib"
             android:layout_toRightOf="@+id/ll_head_icon_container"
             android:orientation="horizontal">
@@ -115,9 +118,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:includeFontPadding="false"
+                    android:lines="1"
                     android:text="分享 3.4万"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -142,13 +146,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:includeFontPadding="false"
+                    android:lines="1"
                     android:text="关注 2.6万"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
 
-        <CheckBox
+        <TextView
             android:id="@+id/tv_circle_subscrib"
             style="@style/TextShadowStyle"
             android:layout_width="@dimen/channel_subscrib_btn_width"
@@ -159,9 +164,9 @@
             android:layout_marginRight="@dimen/spacing_normal"
             android:background="@drawable/video_channel_fixed_bg"
             android:button="@null"
-            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:drawablePadding="0dp"
             android:gravity="center"
-            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingLeft="0dp"
             android:text="@string/join_group"
             android:textColor="@color/white"
             android:textSize="@dimen/size_content_comment" />
@@ -226,6 +231,7 @@
          android:layout_marginLeft="10dp"
          android:layout_marginRight="10dp"
          android:background="#424244"/>
+
     <LinearLayout
         android:id="@+id/ll_intro_container"
         android:layout_width="match_parent"

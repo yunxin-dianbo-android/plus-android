@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/input_view_bg_color">
-
+    android:background="@color/input_view_bg_color"
+   >
+<!-- android:background="@color/input_view_bg_color"-->
     <View
         style="@style/style_divider_horizontal"/>
 

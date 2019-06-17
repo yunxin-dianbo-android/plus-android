@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -26,6 +28,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -89,7 +92,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @BindView(R.id.rl_change_head_container)
     RelativeLayout mRlChangeHeadContainer;
     @BindView(R.id.et_circle_name)
-    DeleteEditText mEtCircleName;
+    TextView mEtCircleName;
     @BindView(R.id.tv_circle_type)
     TextView mTvCircleType;
     @BindView(R.id.tv_circle_head)
@@ -168,6 +171,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     private boolean isTollCheck;
 
+    View mStatusBarPlaceholder;
+
     public static CreateCircleFragment newInstance(Bundle bundle) {
         CreateCircleFragment createCircleFragment = new CreateCircleFragment();
         createCircleFragment.setArguments(bundle);
@@ -181,7 +186,7 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override
@@ -208,8 +213,37 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
             mTvUseAgreeMent.setVisibility(canUpdate ? View.VISIBLE : View.GONE);
         }
         initListener();
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
     }
 
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -303,11 +337,12 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
 
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
-        Glide.with(getActivity())
-                .load(photoList.get(0).getImgUrl())
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_image)
-                .into(mIvHeadIcon);
+//        Glide.with(getActivity())
+//                .load(photoList.get(0).getImgUrl())
+//                .placeholder(R.drawable.shape_default_image)
+//                .error(R.drawable.shape_default_image)
+//                .into(mIvHeadIcon);
+        GlideManager.glideCircle(getActivity(),mIvHeadIcon,photoList.get(0).getImgUrl(),R.mipmap.ic_default_user_head_circle);
         mHeadImage = photoList.get(0).getImgUrl();
         hasHeadImage = true;
         createCirclepreHandle(emptyFlag != 0);
@@ -531,11 +566,13 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         isRestoreData = true;
         mToolbarRight.setText(setRightTitle());
         mToolbarCenter.setText(setCenterTitle());
-        Glide.with(getActivity())
-                .load(mCircleInfo.getAvatar()!= null ? mCircleInfo.getAvatar().getUrl() : "")
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_image)
-                .into(mIvHeadIcon);
+//        Glide.with(getActivity())
+//                .load(mCircleInfo.getAvatar()!= null ? mCircleInfo.getAvatar().getUrl() : "")
+//                .placeholder(R.drawable.shape_default_image)
+//                .error(R.drawable.shape_default_image)
+//                .into(mIvHeadIcon);
+
+        GlideManager.glideCircle(getActivity(),mIvHeadIcon,mCircleInfo.getAvatar()!= null ? mCircleInfo.getAvatar().getUrl() : "",R.mipmap.ic_default_user_head_circle);
         mHeadImage = null;
         if (!TextUtils.isEmpty(mCircleInfo.getLatitude()) && !TextUtils.isEmpty(mCircleInfo.getLongitude())) {
             try {

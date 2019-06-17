@@ -5,29 +5,36 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.dragview.DragAdapter;
-import com.zhiyicx.baseproject.widget.dragview.DragAdapter2;
-import com.zhiyicx.baseproject.widget.dragview.DragGridView;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
+import com.zhiyicx.thinksnsplus.widget.dragview.DragAdapter;
+import com.zhiyicx.thinksnsplus.widget.dragview.DragAdapter2;
+import com.zhiyicx.thinksnsplus.widget.dragview.DragGridView;
+import com.zhiyicx.thinksnsplus.widget.dragview.listener.OnDragItemClickLisnter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ChannelFragment<P extends IBasePresenter> extends TSFragment {
-
-
+public class ChannelFragment extends TSFragment implements ChannelFragmentContract.View {
+    /*<P extends ChannelFragmentContract.Presenter>*/
     @BindView(R.id.v_status_bar_placeholder)
     View vStatusBarPlaceholder;
     @BindView(R.id.drag_grid_view_4_my_video_channel)
@@ -44,15 +51,27 @@ public class ChannelFragment<P extends IBasePresenter> extends TSFragment {
     DragAdapter dragAdapter1;
     DragAdapter2 dragAdapter2;
 
+    @Inject
+    ChannelFragmentPresenter channelFragmentPresenter;
+    List<VideoChannelBean> testData1 = new ArrayList<>();
+    List<VideoChannelBean> testData2 = new ArrayList<>();
 
-    List<String> testData1 = new ArrayList<>();
-    List<String> testData2 = new ArrayList<>();
+    @Override
+    public void showMessage(String message) {
+        ToastUtils.showToast(message);
+    }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolBar();
+        DaggerChannelPresenterComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .channelPresenterModule(new ChannelPresenterModule(this))
+                .build().inject(ChannelFragment.this);
     }
+
 
     private void initToolBar() {
         // toolBar设置状态栏高度的marginTop
@@ -126,19 +145,9 @@ public class ChannelFragment<P extends IBasePresenter> extends TSFragment {
         return "编辑";
     }
 
-    //    protected void setToolBarTextColor() {
-//        // 如果toolbar背景是白色的，就将文字颜色设置成黑色
-//        if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
-//            mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), com.zhiyicx.baseproject.R.color.important_for_content));
-//            mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.selector_text_color));
-//            mToolbarRightLeft.setTextColor(ContextCompat.getColorStateList(getContext(), com.zhiyicx.baseproject.R.color.selector_text_color));
-//            mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), getLeftTextColor()));
-//        }
-//    }
 
-    public static ChannelFragment newInstance(Bundle args) {
+    public static ChannelFragment newInstance() {
         ChannelFragment fragment = new ChannelFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -153,29 +162,63 @@ public class ChannelFragment<P extends IBasePresenter> extends TSFragment {
     @Override
     protected void initData() {
         super.initData();
-        testData1.add("1111");
-        testData1.add("2222");
-        testData1.add("3333");
-        testData1.add("5555");
-        testData1.add("6666");
-        testData1.add("7777");
-        testData1.add("8888");
-        testData1.add("9999");
-        testData1.add("1010");
-        testData1.add("1212");
-        testData1.add("1313");
-        testData2.add("1414");
-        testData2.add("1414");
-        testData2.add("1515");
-        testData2.add("11616");
-        testData2.add("1717");
-        testData2.add("1818");
-        testData2.add("1919");
+        if (channelFragmentPresenter != null) {
+            channelFragmentPresenter.requestNetData();
+        }
         dragAdapter1 = new DragAdapter(getContext(), testData1);
         dragAdapter2 = new DragAdapter2(getContext(), testData2);
         dragGridView4MyVideoChannel.setAdapter(dragAdapter1);
         dragGridView4OtherVideoChannel.setAdapter(dragAdapter2);
-//        dragGridView4OtherVideoChannel.
+        dragGridView4MyVideoChannel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (dragAdapter1.isModifyMode()) {
+                    VideoChannelBean item = testData1.get(i);
+                    testData1.remove(i);
+                    dragAdapter1.notifyDataSetChanged();
+                    testData2.add(item);
+                    dragAdapter2.notifyDataSetChanged();
+                    channelFragmentPresenter.deleteVideoChannel(item.getId() + "");
+
+                }
+            }
+        });
+        dragGridView4OtherVideoChannel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (dragAdapter2.isModifyMode()) {
+                    VideoChannelBean item = testData2.get(i);
+                    testData2.remove(i);
+                    testData1.add(item);
+                    dragAdapter1.notifyDataSetChanged();
+                    dragAdapter2.notifyDataSetChanged();
+                    channelFragmentPresenter.addVideoChannel(item.getId() + "");
+
+                }
+            }
+        });
+//        dragAdapter1.setOnDragItemClickLisnter(new OnDragItemClickLisnter() {
+//            @Override
+//            public void onItemClickListener(Object object, int position) {
+//                if (dragAdapter1.isModifyMode()) {
+//                    testData1.remove(position);
+//                    dragAdapter1.notifyDataSetChanged();
+//                    testData2.add((VideoChannelBean) object);
+//                    dragAdapter2.notifyDataSetChanged();
+//                }
+//            }
+//        });
+//        dragAdapter2.setOnDragItemClickLisnter(new OnDragItemClickLisnter() {
+//            @Override
+//            public void onItemClickListener(Object object, int position) {
+//                if (dragAdapter2.isModifyMode()) {
+//                    testData2.remove(position);
+//                    testData1.add((VideoChannelBean) object);
+//                    dragAdapter1.notifyDataSetChanged();
+//                    dragAdapter2.notifyDataSetChanged();
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -198,5 +241,20 @@ public class ChannelFragment<P extends IBasePresenter> extends TSFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onNetResponseSuccess(VideoChannelListBean datas) {
+        LogUtils.e("wulianshu", "onNetSuccess");
+        datas.user_channels.addAll(datas.other_channels);
+        testData1.addAll(datas.user_channels);
+        testData2.addAll(datas.other_channels);
+        dragAdapter1.notifyDataSetChanged();
+        dragAdapter2.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showMsg(String msg) {
+        ToastUtils.showToast(msg + "");
     }
 }

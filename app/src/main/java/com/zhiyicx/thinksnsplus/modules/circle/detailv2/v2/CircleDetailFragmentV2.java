@@ -1,5 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.v2;
 
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,10 +35,15 @@ import com.bumptech.glide.request.target.Target;
 import com.hyphenate.easeui.EaseConstant;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nineoldandroids.view.ViewHelper;
+import com.yalantis.ucrop.UCrop;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.share.Share;
 import com.zhiyicx.baseproject.utils.glide.GlideManager;
@@ -45,13 +54,18 @@ import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FastBlur;
+import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.EmptySubscribe;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
@@ -74,12 +88,17 @@ import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReporReviewFragmen
 import com.zhiyicx.thinksnsplus.modules.circle.manager.report.ReportReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.pre.PreCircleActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.search.onlypost.CirclePostSearchActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.markdown_editor.BaseMarkdownActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.videostore.VideoSelectActivity;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.AppBarLayoutOverScrollViewBehavior;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,8 +113,10 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static me.iwf.photopicker.PhotoPicker.DEFAULT_REQUST_ALBUM;
 
 /**
  * @author Jliuer
@@ -104,15 +125,23 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Description
  */
 public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailContract.PresenterV2>
-        implements CircleDetailContract.ViewV2, PostListFragment.OnEventListener {
+        implements CircleDetailContract.ViewV2, PostListFragment.OnEventListener, PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String CIRCLE_ID = "circle_id";
 
     /**
+     * 动态还是圈子动态
+     */
+    private int mType = SendDynamicDataBean.GROUP_DYNAMIC;
+
+    public static final String GROUP_ID = "group_id";
+
+    private TopicListBean mTopicBean;
+    /**
      * 加入圈子
      */
     @BindView(R.id.tv_circle_subscrib)
-    CheckBox mTvCircleSubscrib;
+    TextView mTvCircleSubscrib;
 
     /**
      * 退出圈子
@@ -219,6 +248,8 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
 
     private boolean childDataLoaded;
 
+    private PhotoSelectorImpl mPhotoSelector;
+
     public static CircleDetailFragmentV2 newInstance(long circle_id) {
         CircleDetailFragmentV2 circleDetailFragment = new CircleDetailFragmentV2();
         Bundle bundle = new Bundle();
@@ -275,11 +306,12 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     @Override
     protected void setRightClick() {
 //        super.setRightClick();
-        boolean isOpen = mDrawer.isDrawerOpen(mLlCircleNavigationContainer);
-        if (isOpen) {
-            return;
-        }
-        mDrawer.openDrawer(Gravity.RIGHT);
+//        boolean isOpen = mDrawer.isDrawerOpen(mLlCircleNavigationContainer);
+//        if (isOpen) {
+//            return;
+//        }
+//        mDrawer.openDrawer(Gravity.RIGHT);
+        CreateCircleActivity.startUpdateActivity(mActivity, mCircleInfo);
     }
 
     @Override
@@ -303,6 +335,10 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         return R.layout.fragment_circle_detail;
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     protected boolean setUseSatusbar() {
@@ -423,12 +459,34 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
             showComment = Observable.timer(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> showCommentView());
+        }else if((requestCode == PhotoSelectorImpl.CAMERA_PHOTO_CODE || requestCode == UCrop.REQUEST_CROP || requestCode == DEFAULT_REQUST_ALBUM)&& resultCode == Activity.RESULT_OK){
+            if (mPhotoSelector != null) {
+                mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+            }
         }
+
+//        if (mPhotoSelector != null) {
+//            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+//        }
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_PHOT_FIRST_OPEN_SEND_DYNAMIC_PAGE)
+    public void sendDynamicPhotFirstOpenSendDynamicPage(Intent data) {
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(DEFAULT_REQUST_ALBUM, RESULT_OK, data);
+        }
+    }
     @Override
     protected void initData() {
         mPresenter.getCircleInfo();
+
+
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
     }
 
     @Override
@@ -501,6 +559,11 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         setCircleData(mCircleInfo);
     }
 
+    private void clickSendPhotoTextDynamic() {
+        mPhotoSelector.getPhotoListFromSelector(SendDynamicFragment.MAX_PHOTOS, null);
+    }
+
+
     private void showCommentView() {
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
@@ -508,6 +571,15 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         mIlvComment.getFocus();
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(mActivity, mIlvComment.getEtContent());
+    }
+    /**
+     * 是否需要使用权限验证
+     *
+     * @return
+     */
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     private void initLisener() {
@@ -559,7 +631,77 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                         if (mCircleInfo.getPermissions().contains(mCircleInfo.getJoined().getRole())) {
                             if (mCircleInfo.getJoined()
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
-                                BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, mCircleInfo);
+                                ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 90);
+                                valueAnimator.setDuration(500);
+                                valueAnimator.start();
+                                valueAnimator.addListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animator) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animator) {
+                                        if (mBtnSendPost != null) {
+                                            mBtnSendPost.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    PublishPostMenuDialog publishPostMenuDialog = new PublishPostMenuDialog(getContext());
+                                                    publishPostMenuDialog.showDialog(new PublishPostMenuDialog.OnPublishListener() {
+                                                        @Override
+                                                        public void ondetachFromWindow() {
+                                                            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", -90);
+                                                            valueAnimator.setDuration(500);
+                                                            valueAnimator.start();
+                                                        }
+
+                                                        @Override
+                                                        public void onUploadPicClick() {
+//                                                            BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, mCircleInfo);
+                                                            clickSendPhotoTextDynamic();
+                                                        }
+
+                                                        @Override
+                                                        public void onUploadVideoClick() {
+                                                            mRxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                                                                    .subscribe(aBoolean -> {
+                                                                        if (aBoolean) {
+                                                                            if (DeviceUtils.getSDCardAvailableSize() >= 100) {
+                                                                                SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils
+                                                                                        .VIDEO_DYNAMIC);
+                                                                                if (checkVideoDraft(sendDynamicDataBean)) {
+                                                                                    SendDynamicActivity.startToSendDynamicActivity(getContext(),sendDynamicDataBean);/*mTopicBean*/
+                                                                                } else {
+                                                                                    VideoSelectActivity.startVideoSelectActivity(mActivity, false,null );/*mTopicBean*/
+                                                                                }
+                                                                                closeActivity();
+                                                                            } else {
+                                                                                showSnackErrorMessage(getString(R.string.storage_no_free));
+                                                                            }
+                                                                        } else {
+                                                                            showSnackWarningMessage(getString(R.string.please_open_camera_and_mic_permisssion));
+
+                                                                        }
+                                                                    });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animator) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animator) {
+
+                                    }
+                                });
+
+//                                BaseMarkdownActivity.startActivityForPublishPostInCircle(mActivity, mCircleInfo);
                             }
                         } else if (CircleMembers.BLACKLIST.equals(mCircleInfo.getJoined().getRole())) {
                             //被拉到了黑名单
@@ -721,16 +863,16 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
-        mTvCircleIntroduce.setText(detail.getSummary());
+        mTvCircleIntroduce.setText(detail.getSummary() + "");
 
-        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
+//        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
 //        mLine.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
         mLine.setVisibility(View.GONE);
 
         mLlGroupContainer.setVisibility(View.GONE);
         mGroupLine.setVisibility(View.GONE);
 
-        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
+//        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
 //        mLine.setVisibility(mLlIntroCountContainer.getVisibility());
         Observable.empty()
                 .delay(100, TimeUnit.MILLISECONDS)
@@ -1068,4 +1210,39 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     public CircleInfo getCurrentCircleInfo() {
         return mCircleInfo;
     }
+
+    private boolean checkVideoDraft(SendDynamicDataBean sendDynamicDataBean) {
+
+        if (sendDynamicDataBean != null) {
+            boolean hasVideo = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getPath());
+//            boolean hasCover = FileUtils.isFileExists(sendDynamicDataBean.getVideoInfo().getCover());
+            return hasVideo;
+//            return hasCover && hasVideo;
+        }
+        return false;
+    }
+    public void closeActivity() {
+        getActivity().finish();
+//        getActivity().overridePendingTransition(R.anim.animate_noting, R.anim.send_type_colse_fade_out);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(0);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        if (getArguments() != null) {
+            sendDynamicDataBean.setDynamicChannlId(getArguments().getLong(CIRCLE_ID));
+        }
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean, mTopicBean);
+//        closeActivity();
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
 }

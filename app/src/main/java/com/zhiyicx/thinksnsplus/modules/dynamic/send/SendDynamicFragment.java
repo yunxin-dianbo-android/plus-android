@@ -287,12 +287,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected String setLeftTitle() {
-        return getString(R.string.cancel);
+//        return getString(R.string.cancel);
+        return super.setLeftTitle();
     }
 
     @Override
     protected int setLeftImg() {
-        return 0;
+        return R.mipmap.ic_back;
     }
 
     @Override
@@ -331,7 +332,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @Override
@@ -401,11 +402,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void initTollState() {
         boolean canPay = mPresenter.getSystemConfigBean().getFeed().hasPaycontrol() && mLetter == null;
-        mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
-        mTollLine.setVisibility(mTvToll.getVisibility());
-        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
-            mTitleUnderLine.setVisibility(View.GONE);
-        }
+//        mTvToll.setVisibility(canPay && dynamicType != SendDynamicDataBean.VIDEO_TEXT_DYNAMIC ? View.VISIBLE : View.GONE);
+//        mTollLine.setVisibility(mTvToll.getVisibility());
+//        if (dynamicType == SendDynamicDataBean.VIDEO_TEXT_DYNAMIC) {
+//            mTitleUnderLine.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -672,7 +673,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 if (mRvTopicList.getVisibility() == View.GONE) {
                     mRvTopicList.setVisibility(View.VISIBLE);
                     mLineTopicBottom.setVisibility(View.VISIBLE);
-                    mTvAddTopic.setVisibility(View.GONE);
+//                    mTvAddTopic.setVisibility(View.GONE);
                 }
             }
         } else if (requestCode == AtUserListFragment.REQUES_USER) {
@@ -742,7 +743,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 if (getActivity() != null) {
                     if (mTopicBean == null && gotoHome) {
                         // 在话题详情发的就不跳转
-                        startActivity(new Intent(getActivity(), HomeActivity.class));
+//                        startActivity(new Intent(getActivity(), HomeActivity.class));
+                        mActivity.finish();
                     } else {
                         mActivity.finish();
                     }
@@ -767,11 +769,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void setRightClick() {
         // 圈子
-        if (isFromGroup) {
-            mPresenter.sendGroupDynamic(packageGroupDynamicData());
-        } else {
-            mPresenter.sendDynamicV2(packageDynamicData());
-        }
+//        if (isFromGroup) {
+//            mPresenter.sendGroupDynamic(packageGroupDynamicData());
+//        } else {
+//            mPresenter.sendDynamicV2(packageDynamicData());
+//        }
+        mPresenter.sendDynamicV2(packageDynamicData());
     }
 
     /**
@@ -817,6 +820,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         sendDynamicDataBeanV2.setPhotos(photos);
         sendDynamicDataBeanV2.setStorage_task(storageTask);
+//        sendDynamicDataBeanV2.setGroup_id();
+        sendDynamicDataBeanV2.setGroup_id((int) getDynamicSendData().getDynamicChannlId());
     }
 
     @Override
@@ -916,6 +921,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
 
+        dynamicDetailBeanV2.setGroup_id((int) getDynamicSendData().getDynamicChannlId());
         // 浏览量没有 0 ，从1 开始
         dynamicDetailBeanV2.setFeed_view_count(1);
         dynamicDetailBeanV2.setFeed_mark(feedMark);
@@ -1207,7 +1213,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         if (mSelectedTopics.size() == 1) {
                             mRvTopicList.setVisibility(View.GONE);
                             mLineTopicBottom.setVisibility(View.GONE);
-                            mTvAddTopic.setVisibility(View.VISIBLE);
+//                            mTvAddTopic.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -1217,12 +1223,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (mTopicBean != null) {
             mRvTopicList.setVisibility(View.VISIBLE);
             mLineTopicBottom.setVisibility(View.VISIBLE);
-            mTvAddTopic.setVisibility(View.GONE);
+//            mTvAddTopic.setVisibility(View.GONE);
         } else {
-            mTvAddTopic.setVisibility(View.VISIBLE);
+//            mTvAddTopic.setVisibility(View.VISIBLE);
         }
         mTvAddTopic.setOnClickListener(view -> SearchTopicActivity.startSearchTopicActivity(mActivity, true));
         mRvTopicList.setAdapter(mTopicAdapter);
+
     }
 
     private void initLetterForward(Letter letter) {
@@ -1338,7 +1345,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
             if (mSendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
                 isFromGroup = true;
-                mTvToll.setVisibility(View.GONE);
+//                mTvToll.setVisibility(View.GONE);
             }
         }
         switch (dynamicType) {
@@ -1470,7 +1477,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 clipboardManager.setPrimaryClip(mClipData);
             }
         }
-
     }
+
 
 }

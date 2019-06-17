@@ -16,6 +16,14 @@ public class TopSuperStarBean extends BaseListBean {
         return avatar;
     }
 
+    public void setGroup_id(long group_id) {
+        this.group_id = group_id;
+    }
+
+    public static Creator<TopSuperStarBean> getCREATOR() {
+        return CREATOR;
+    }
+
     /**
      * id : 1
      * group_id : 1
@@ -28,7 +36,7 @@ public class TopSuperStarBean extends BaseListBean {
      */
 
     private int id;
-    private int group_id;
+    private long group_id;
     private String name;
     private int sort;
     private Avatar avatar;
@@ -44,7 +52,7 @@ public class TopSuperStarBean extends BaseListBean {
         this.id = id;
     }
 
-    public int getGroup_id() {
+    public long getGroup_id() {
         return group_id;
     }
 
@@ -108,7 +116,7 @@ public class TopSuperStarBean extends BaseListBean {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(this.id);
-        dest.writeInt(this.group_id);
+        dest.writeLong(this.group_id);
         dest.writeString(this.name);
         dest.writeInt(this.sort);
         dest.writeParcelable(this.avatar, flags);
@@ -120,13 +128,13 @@ public class TopSuperStarBean extends BaseListBean {
     protected TopSuperStarBean(Parcel in) {
         super(in);
         this.id = in.readInt();
-        this.group_id = in.readInt();
+        this.group_id = in.readLong();
         this.name = in.readString();
         this.sort = in.readInt();
         this.avatar = in.readParcelable(Avatar.class.getClassLoader());
         this.created_at = in.readString();
         this.updated_at = in.readString();
-//        this.deleted_at = in.readParcelable(Object.class.getClassLoader());
+        this.deleted_at = in.readParcelable(Object.class.getClassLoader());
     }
 
     public static final Creator<TopSuperStarBean> CREATOR = new Creator<TopSuperStarBean>() {

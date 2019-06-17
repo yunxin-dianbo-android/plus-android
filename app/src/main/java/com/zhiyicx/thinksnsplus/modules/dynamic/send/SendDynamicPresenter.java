@@ -78,7 +78,8 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
         EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        mRootView.sendDynamicComplete(true);// 发送动态放到后台任务处理，关闭当前的动态发送页面
+//        mRootView.sendDynamicComplete(true);// 发送动态放到后台任务处理，关闭当前的动态发送页面
+        mRootView.sendDynamicComplete(false);// 发送动态放到后台任务处理，关闭当前的动态发送页面
 
     }
 
@@ -150,6 +151,7 @@ public class SendDynamicPresenter extends AppBasePresenter<SendDynamicContract.V
 
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        mRootView.sendDynamicComplete(dynamicBean.getMLetter() == null);// 发送动态放到后台任务处理，关闭当前的动态发送页面
+//        mRootView.sendDynamicComplete(dynamicBean.getMLetter() == null);// 发送动态放到后台任务处理，关闭当前的动态发送页面
+        mRootView.sendDynamicComplete(false);// 发送动态放到后台任务处理，关闭当前的动态发送页面
     }
 }

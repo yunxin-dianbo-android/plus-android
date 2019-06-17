@@ -180,15 +180,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         return R.color.white;
     }
 
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
 
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
+
 
     @Override
     protected boolean showToolBarDivider() {
@@ -609,5 +602,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 }

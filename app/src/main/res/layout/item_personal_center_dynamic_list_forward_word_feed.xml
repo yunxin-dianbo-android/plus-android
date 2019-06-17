@@ -118,7 +118,7 @@
                 android:layout_marginBottom="@dimen/spacing_mid"
                 layout="@layout/detail_forward_for_word_feed"/>
 
-            <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+            <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
                 android:id="@+id/dltv_topic"
                 android:visibility="gone"
                 android:layout_width="match_parent"

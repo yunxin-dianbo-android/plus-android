@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,31 +15,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.channel.adapter.FilterChannelTagAdapter;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem4Video;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
-public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragment implements MultiItemTypeAdapter.OnItemClickListener {
-
-    //    @BindView(R.id.rv_filtering_condition_1)
+public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentContract.Presenter, DynamicDetailBeanV2> implements VideoChannelFragmentContract.View, MultiItemTypeAdapter.OnItemClickListener {
     RecyclerView rvFilteringCondition1;
-    //    @BindView(R.id.rv_filtering_condition_2)
     RecyclerView rvFilteringCondition2;
     //    @BindView(R.id.rv_filtering_condition_3)
     RecyclerView rvFilteringCondition3;
@@ -53,11 +47,11 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
     //    @BindView(R.id.rl_content)
     RelativeLayout rlContent;
     List<String> testData1 = new ArrayList<>();
-    //    Unbinder unbinder;
 //    @BindView(R.id.iv_filter_content_arrow)
     ImageView ivFilterContentArrow;
     //    @BindView(R.id.tv_filter_content)
     TextView tvFilterContent;
+    LinearLayout llChoosedChannel;
 
     FilterChannelTagAdapter filterChannelTagAdapter1;
     FilterChannelTagAdapter filterChannelTagAdapter2;
@@ -65,22 +59,26 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
     FilterChannelTagAdapter filterChannelTagAdapter4;
     FilterChannelTagAdapter filterChannelTagAdapter5;
 
+//    @Inject
+//    VideoChannelFragmentPresenter mPresenter;
+
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
 
-        View channalView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_video_channel, llRoot, false);
-        llRoot.addView(channalView, 0);
+//        View channalView = LayoutInflater.from(getContext()).inflate(, llRoot, false);
+//        llRoot.addView(channalView, 0);
 
-        rvFilteringCondition1 = channalView.findViewById(R.id.rv_filtering_condition_1);
-        rvFilteringCondition2 = channalView.findViewById(R.id.rv_filtering_condition_2);
-        rvFilteringCondition3 = channalView.findViewById(R.id.rv_filtering_condition_3);
-        rvFilteringCondition4 = channalView.findViewById(R.id.rv_filtering_condition_4);
-        rvFilteringCondition5 = channalView.findViewById(R.id.rv_filtering_condition_5);
-        llFilteringChannelContent = channalView.findViewById(R.id.ll_filtering_channel_content);
-        llFilterRVParent = channalView.findViewById(R.id.ll_filter_rv_parent);
-        ivFilterContentArrow = channalView.findViewById(R.id.iv_filter_content_arrow);
-        tvFilterContent = channalView.findViewById(R.id.tv_filter_content);
+        rvFilteringCondition1 = rootView.findViewById(R.id.rv_filtering_condition_1);
+        rvFilteringCondition2 = rootView.findViewById(R.id.rv_filtering_condition_2);
+        rvFilteringCondition3 = rootView.findViewById(R.id.rv_filtering_condition_3);
+        rvFilteringCondition4 = rootView.findViewById(R.id.rv_filtering_condition_4);
+        rvFilteringCondition5 = rootView.findViewById(R.id.rv_filtering_condition_5);
+        llFilteringChannelContent = rootView.findViewById(R.id.ll_filtering_channel_content);
+        llFilterRVParent = rootView.findViewById(R.id.ll_filter_rv_parent);
+        ivFilterContentArrow = rootView.findViewById(R.id.iv_filter_content_arrow);
+        tvFilterContent = rootView.findViewById(R.id.tv_filter_content);
+        llChoosedChannel = rootView.findViewById(R.id.ll_choosed_channel);
         initToolBar();
     }
 
@@ -97,15 +95,17 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
 //        //不需要返回键
     }
 
+
+
     @Override
     protected boolean showToolBarDivider() {
         return false;
     }
 
-//    @Override
-//    protected int getBodyLayoutId() {
-//        return R.layout.fragment_video_channel;
-//    }
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_video_channel;
+    }
 
     @Override
     protected boolean showToolbar() {
@@ -189,9 +189,13 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
         rvFilteringCondition3.setAdapter(filterChannelTagAdapter3);
         rvFilteringCondition4.setAdapter(filterChannelTagAdapter4);
         rvFilteringCondition5.setAdapter(filterChannelTagAdapter5);
-
+//        rvFilteringCondition1.setVisibility(View.GONE);
+//        rvFilteringCondition2.setVisibility(View.GONE);
+//        rvFilteringCondition3.setVisibility(View.GONE);
+//        rvFilteringCondition4.setVisibility(View.GONE);
+//        rvFilteringCondition5.setVisibility(View.GONE);
 //      llFilterRVParent.addView();
-        RxView.clicks(tvFilterContent)
+        RxView.clicks(llChoosedChannel)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
@@ -208,19 +212,24 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
                     }
                 });
 //        llFilteringChannelContent.set
+//        if(mPresenter!=null){
+//            mPresenter.requestNetData(1l,true);
+//        }
     }
-
+    MultiItemTypeAdapter myAdapter;
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem4Video(getContext()));
-        adapter.setOnItemClickListener(this);
-        return adapter;
+        myAdapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
+        setAdapter(myAdapter, new DynamicListBaseItem4Video(getContext()));
+        myAdapter.setOnItemClickListener(this);
+        return myAdapter;
     }
+
     protected void setAdapter(MultiItemTypeAdapter adapter, ItemViewDelegate
             dynamicListBaseItem) {
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
+
     @Override
     protected void setRightClick() {
 
@@ -245,5 +254,55 @@ public class VideoChannelFragment2<P extends IBasePresenter> extends TSListFragm
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
+    }
+
+
+    @Override
+    public void onNetResponseSuccess(List<DynamicDetailBeanV2> first) {
+
+    }
+
+    @Override
+    public void onNetResponseSuccess(List data, boolean isLoadMore) {
+        hideLoading();
+        super.onNetResponseSuccess(data,isLoadMore);
+//        myAdapter.setmDatas(data);
+//         mRvList.setAdapter(mHeaderAndFooterWrapper);
+//        mRvList.setBackgroundColor(getResources().getColor(R.color.color_EA3378));
+    }
+
+    @Override
+    public void onCacheResponseSuccess(List data, boolean isLoadMore) {
+        super.onCacheResponseSuccess(data,isLoadMore);
+    }
+
+    @Override
+    public void refreshData(List datas) {
+        super.refreshData(datas);
+    }
+
+    /**
+     * 是否进入页面进行懒加载
+     *
+     * @return
+     */
+    protected boolean isLayzLoad() {
+        return true;
+    }
+
+    /**
+     * 进入页面是否自动调用下拉刷新请求新数据
+     */
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    /**
+     * 当缓存为空的时候自动刷新
+     *
+     * @return
+     */
+    protected boolean isNeedRequestNetDataWhenCacheDataNull() {
+        return true;
     }
 }

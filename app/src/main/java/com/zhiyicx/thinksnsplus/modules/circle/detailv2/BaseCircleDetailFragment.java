@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -46,6 +47,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForNineImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForOneImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForShorVideo;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForSixImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
@@ -56,9 +58,11 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
+import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -91,12 +95,12 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         CirclePostListCommentView.OnCommentClickListener,
         CirclePostListBaseItem.OnMenuItemClickLisitener, CirclePostListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         CirclePostListCommentView.OnMoreCommentClickListener, MultiItemTypeAdapter.OnItemClickListener
-        , PhotoSelectorImpl.IPhotoBackListener, CirclePostListBaseItem.OnPostFromClickListener {
+        , PhotoSelectorImpl.IPhotoBackListener, CirclePostListBaseItem.OnPostFromClickListener, ZhiyiVideoView.ShareInterface {
 
     public static final String CIRCLE_ID = "circle_id";
     public static final String CIRCLE = "circle";
     public static final String CIRCLE_TYPE = "circle_type";
-
+    private String mDynamicType = "topic_dynamic";
     @Inject
     CircleDetailPresenter mCircleDetailPresenter;
 
@@ -223,6 +227,13 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         setAdapter(adapter, new CirclePostListItemForSevenImage(getContext()));
         setAdapter(adapter, new CirclePostListItemForEightImage(getContext()));
         setAdapter(adapter, new CirclePostListItemForNineImage(getContext()));
+
+        setAdapter(adapter, new CirclePostListItemForShorVideo(getContext(), this) {
+            @Override
+            protected String videoFrom() {
+                return mDynamicType;
+            }
+        });
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -827,7 +838,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     }
 
     protected boolean showToolMenu() {
-        return true;
+        return false;
     }
 
     protected boolean showCommentList() {
@@ -971,5 +982,40 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     @Override
     public void showDeleteTipPopupWindow(CirclePostListBean circlePostListBean) {
         showDeleteTipPopupWindow(getString(R.string.delete_post), true, circlePostListBean, 0);
+    }
+
+    @Override
+    public void share(int position) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        if (mListDatas.get(position).getId() > 0) {
+            Bitmap shareBitMap = getShareBitmap(position, R.id.thumb);
+            mPresenter.sharePost(mListDatas.get(position), shareBitMap);
+        }
+    }
+
+    @Override
+    public void shareWihtType(int position, SHARE_MEDIA type) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        if (mListDatas.get(position).getId() > 0) {
+            mPresenter.sharePost(mListDatas.get(position), getShareBitmap(position, R.id.thumb),type);
+        }
+    }
+    /**
+     * 获取分享动态需要的图片
+     *
+     * @param position
+     * @param id
+     * @return
+     */
+    private Bitmap getShareBitmap(int position, int id) {
+        Bitmap shareBitMap = null;
+        try {
+            ImageView imageView = layoutManager.findViewByPosition
+                    (position + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(id);
+            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
+                    .getDrawable(), R.mipmap.icon);
+        } catch (Exception e) {
+        }
+        return shareBitMap;
     }
 }

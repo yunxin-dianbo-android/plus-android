@@ -18,6 +18,6 @@ public class CirclePostListItemForZeroImage extends CirclePostListBaseItem {
 
     @Override
     public boolean isForViewType(CirclePostListBean item, int position) {
-        return item.getId() != null && (item.getImages() == null || item.getImages().isEmpty());
+        return item.getId() != null && (item.getImages() == null || item.getImages().isEmpty()) && item.video ==null;
     }
 }

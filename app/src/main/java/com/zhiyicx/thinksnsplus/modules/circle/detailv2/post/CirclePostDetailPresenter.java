@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.share.SharePolicy;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.config.MarkdownConfig;
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -69,6 +70,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.POST_LIST_DELETE
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@FragmentScoped
 public class CirclePostDetailPresenter extends AppBasePresenter<CirclePostDetailContract.View>
         implements CirclePostDetailContract.Presenter, OnShareCallbackListener {
 

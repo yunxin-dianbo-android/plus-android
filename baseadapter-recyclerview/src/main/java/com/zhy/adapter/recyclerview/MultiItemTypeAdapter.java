@@ -18,6 +18,10 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected Context mContext;
     protected List<T> mDatas;
 
+    public void setmDatas(List<T> mDatas) {
+        this.mDatas = mDatas;
+    }
+
     protected ItemViewDelegateManager mItemViewDelegateManager;
     protected OnItemClickListener mOnItemClickListener;
 

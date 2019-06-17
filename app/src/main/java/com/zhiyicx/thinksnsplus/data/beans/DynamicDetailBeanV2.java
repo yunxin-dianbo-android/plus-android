@@ -167,6 +167,17 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = LetterConvert.class, columnType = String.class)
     private Letter mLetter;
 
+
+    public int getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(int group_id) {
+        this.group_id = group_id;
+    }
+
+    private int group_id;
+
     /**
      * 审核操作 PinnedBean
      */
@@ -1348,13 +1359,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         myDao.update(this);
     }
 
-    @Generated(hash = 219573899)
+    @Generated(hash = 622234646)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content, int feed_from,
-                               int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-                               int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid,
-                               List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, UserInfoBean userInfoBean, Integer hot, Long hot_creat_time,
-                               boolean isFollowed, int state, String sendFailMessage, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward,
-                               Video video, int index, List<TopicListBean> topics, String repostable_type, Long repostable_id, Letter mLetter) {
+            int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash, int audit_status,
+            Long feed_mark, boolean has_digg, boolean has_collect, long amount, List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images,
+            List<Integer> diggs, PaidNote paid_node, UserInfoBean userInfoBean, Integer hot, Long hot_creat_time, boolean isFollowed, int state,
+            String sendFailMessage, int top, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, Video video, int index, List<TopicListBean> topics,
+            String repostable_type, Long repostable_id, Letter mLetter, int group_id) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -1393,6 +1404,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.repostable_type = repostable_type;
         this.repostable_id = repostable_id;
         this.mLetter = mLetter;
+        this.group_id = group_id;
     }
 
     /**

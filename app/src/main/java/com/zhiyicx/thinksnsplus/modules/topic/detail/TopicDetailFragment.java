@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -26,8 +25,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.zhiyi.rxdownload3.core.Status;
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
@@ -44,7 +41,6 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.fordownload.TSListFragmentForDownload;
@@ -81,7 +77,6 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForw
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardQuestion;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardWordFeed;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankIndexUserAdapter;
@@ -95,10 +90,9 @@ import com.zhiyicx.thinksnsplus.modules.topic.detail.joined.JoinedUserActivity;
 import com.zhiyicx.thinksnsplus.modules.topic.search.SearchTopicFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhiyicx.thinksnsplus.widget.coordinatorlayout.TopicDetailBehavior;
-import com.zhiyicx.thinksnsplus.widget.popwindow.DownloadPopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zycx.shortvideo.view.AutoPlayScrollListener;
@@ -125,7 +119,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
 
 /**
  * ThinkSNS Plus
@@ -141,7 +134,7 @@ public class TopicDetailFragment extends TSListFragmentForDownload<TopicDetailCo
         DynamicListCommentView.OnCommentClickListener,
         DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
-        DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, DynamicListTopicView.OnTopicClickListener,
+        DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, CirclePostListTopicView.OnTopicClickListener,
         MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener,
         ZhiyiVideoView.ShareInterface {
 

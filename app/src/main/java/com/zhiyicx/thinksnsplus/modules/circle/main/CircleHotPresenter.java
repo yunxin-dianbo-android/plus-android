@@ -1,12 +1,28 @@
 package com.zhiyicx.thinksnsplus.modules.circle.main;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.baseproject.share.OnShareCallbackListener;
+import com.zhiyicx.baseproject.share.Share;
+import com.zhiyicx.baseproject.share.ShareContent;
+import com.zhiyicx.baseproject.share.SharePolicy;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
-import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
+import com.zhiyicx.thinksnsplus.base.fordownload.AppListPresenterForDownload;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
@@ -14,19 +30,24 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageReviewRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import cn.jzvd.JZUtils;
 import rx.Observable;
 import rx.Subscription;
 
-@FragmentScoped
-public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View> implements CircleHotContract.Presenter {
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
+@FragmentScoped
+public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotContract.View> implements CircleHotContract.Presenter, OnShareCallbackListener {
+//extends AppListPresenterForDownload<V>
     @Inject
     CircleInfoGreenDaoImpl mCircleInfoGreenDao;
     @Inject
@@ -42,7 +63,7 @@ public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View>
     MessageReviewRepository mMessageReviewRepository;
     private Subscription subscribe;
 
-
+    protected SharePolicy mSharePolicy;
     @Inject
     public CircleHotPresenter(CircleHotContract.View rootView/*, AllAdvertListBeanGreenDaoImpl allAdvertListBeanGreenDao*/) {
         super(rootView);
@@ -62,7 +83,7 @@ public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View>
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<TopPostListBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
         return false;
     }
 
@@ -153,7 +174,16 @@ public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View>
         Subscription commentSub = observable.subscribe(new BaseSubscribeForV2() {
             @Override
             protected void onSuccess(Object data) {
-                List<TopPostListBean> result = (List<TopPostListBean>) data;
+
+                List<CirclePostListBean> result = (List<CirclePostListBean>) data;
+//                CirclePostBean circlePostBean = (CirclePostBean) data;
+//                List<CirclePostListBean> result = new ArrayList<>();
+//                if (circlePostBean.getPinned() != null) {
+//                    result.addAll(circlePostBean.getPinned());
+//                }
+//                if (circlePostBean.getFeeds() != null) {
+//                    result.addAll(circlePostBean.getFeeds());
+//                }
                 mRootView.onNetResponseSuccess(result, isLoadMore);
             }
 
@@ -174,6 +204,119 @@ public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View>
 
     }
 
+    /**
+     * 分享
+     * @param dynamicBean
+     * @param bitmap
+     */
+    public void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        if (dynamicBean.getFeed_from() == DEFAULT_ADVERT_FROM_TAG) {
+            //广告的连接放在了 deleted_at 中
+            shareContent.setUrl(dynamicBean.getDeleted_at());
+        } else {
+            shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                    == null ? "" : dynamicBean.getId())));
+        }
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    public void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
+        if (mSharePolicy == null) {
+            if (mRootView instanceof Fragment) {
+                mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
+            } else {
+                return;
+            }
+        }
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        if (bitmap != null) {
+            shareContent.setBitmap(bitmap);
+        } else {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon)));
+        }
+        shareContent.setUrl(TSShareUtils.convert2ShareUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean
+                .getId()
+                == null ? "" : dynamicBean.getId())));
+        mSharePolicy.setShareContent(shareContent);
+        switch (type) {
+            case QQ:
+                mSharePolicy.shareQQ(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case QZONE:
+                mSharePolicy.shareZone(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN:
+                mSharePolicy.shareWechat(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case WEIXIN_CIRCLE:
+                mSharePolicy.shareMoment(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case SINA:
+                mSharePolicy.shareWeibo(((TSFragment) mRootView).getActivity(), this);
+                break;
+            case MORE:
+                String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
+                        dynamicBean.getVideo().getVideo_id());
+                downloadFile(videoUrl);
+                break;
+            default:
+        }
+
+    }
+
+    public void downloadFile(String url) {
+        if (!JZUtils.isWifiConnected(mContext) && !SharePreferenceUtils.getBoolean(mContext, ALLOW_GPRS)) {
+            initWarningDialog(url);
+        } else {
+            download(url);
+        }
+    }
+
+    @Override
+    public void cancelDownload(String url) {
+
+    }
+
+    @Override
+    public void onStart(Share share) {
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
+    }
+
 //    @Override
 //    public List<RealAdvertListBean> getBannerAdvert() {
 //        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicBannerAdvert() == null) {
@@ -185,6 +328,7 @@ public class CircleHotPresenter extends AppBasePresenter<CircleHotContract.View>
 //        }
 //        return allAdverListBean.getMRealAdvertListBeen();
 //    }
+
 
 //    @Override
 //    public List<RealAdvertListBean> getListAdvert() {

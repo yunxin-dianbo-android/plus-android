@@ -33,6 +33,7 @@ public class ServiceManager {
     private CircleClient mCircleClient;
     private EasemobClient mEasemobClient;
     private TopicClient mTopicClient;
+    private VideoChannelClient videoChannelClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -58,7 +59,7 @@ public class ServiceManager {
             , RankClient rankClient
             , CircleClient circleClient
             , EasemobClient easemobClient
-            , TopicClient topicClient) {
+            , TopicClient topicClient,VideoChannelClient videoChannelClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mQAClient = qAClient;
@@ -77,6 +78,7 @@ public class ServiceManager {
         this.mCircleClient = circleClient;
         this.mEasemobClient = easemobClient;
         this.mTopicClient = topicClient;
+        this.videoChannelClient = videoChannelClient;
     }
 
     public CommonClient getCommonClient() {
@@ -149,5 +151,13 @@ public class ServiceManager {
 
     public TopicClient getTopicClient() {
         return mTopicClient;
+    }
+
+    public VideoChannelClient getVideoChannelClient() {
+        return videoChannelClient;
+    }
+
+    public void setVideoChannelClient(VideoChannelClient videoChannelClient) {
+        this.videoChannelClient = videoChannelClient;
     }
 }

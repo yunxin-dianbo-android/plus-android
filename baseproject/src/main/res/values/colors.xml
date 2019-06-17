@@ -47,7 +47,10 @@
     <color name="certification_result_hint_bg">#b34bb893</color>
     <color name="info_top">#49b691</color>
     <color name="more_pop_bg">#f6f6f6</color>
-    <color name="color_EA3378">#EA3378</color>
     <color name="color_E73377">#E73377</color>
     <color name="color_38383A">#38383A</color>
+    <color name="color_4C4C4E">#4C4C4E</color>
+    <color name="color_99999999">#99999999</color>
+    <color name="color_EA3378">#EA3378</color>
+    <color name="color_cccccc">#cccccc</color>
 </resources>

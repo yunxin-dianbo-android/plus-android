@@ -5,15 +5,17 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
+import java.util.List;
 
 /**
  * @author Jliuer
@@ -37,7 +39,19 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
      */
 
     @Id
+    @SerializedName(value = "_id")
     private Long id;
+
+
+    @Unique
+    @SerializedName(value = "comment_id", alternate = {"id"})
+    public Long comment_id;// 评论的id
+
+
+    public Long feed_mark;// 属于哪条动态
+
+    public String updated_at;// 评论更新的时间
+
     @Unique
     @SerializedName(value = "comment_mark", alternate = {"group_post_comment_mark"})
     private Long comment_mark;
@@ -46,19 +60,48 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
     private long user_id;// 谁发的这条评论
     @ToOne(joinProperty = "user_id")
     private UserInfoBean commentUser;
-    @SerializedName(value = "content", alternate = {"body"})
+    @SerializedName(value = "content", alternate = {"body", "comment_content"})
     private String content;
     private String commentable_type;
     private long commentable_id;
+
     @SerializedName(value = "reply_to_user_id", alternate = {"reply_user"})
     private long reply_to_user_id;// 评论要发给谁
+
     @ToOne(joinProperty = "reply_to_user_id")
+    @SerializedName("reply")
     private UserInfoBean replyUser;
     private String created_at;
-    @SerializedName(value = "to_user_id", alternate = {"target_user"})
+    @SerializedName(value = "to_user_id", alternate = {"target_user", "feed_user_id"})
     private long to_user_id;// 发动态人的 id
+//    @SerializedName(value="feed_user_id", alternate={"target_user"})
+//    private long feed_user_id; // 发动态人的 idcontent
+
+
     private int state = SEND_ING;
-    private boolean pinned ;// 是否是被固定
+    private boolean pinned;// 是否是被固定
+
+
+
+//    @SerializedName("reply")
+//    @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
+//    private UserInfoBean replyUser;// 被评论的用户信息
+
+    @Transient
+    private List<CirclePostCommentBean> testReply;
+
+    public List<CirclePostCommentBean> getTestReply() {
+        return testReply;
+    }
+
+    public String getComment_content() {
+        return content;
+    }
+
+    public void setTestReply(List<CirclePostCommentBean> reply) {
+        this.testReply = reply;
+    }
+
 
     @Override
     public Long getMaxId() {
@@ -199,7 +242,9 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 397031426)
     public UserInfoBean getCommentUser() {
         long __key = this.user_id;
@@ -218,7 +263,9 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         return commentUser;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1714457217)
     public void setCommentUser(@NotNull UserInfoBean commentUser) {
         if (commentUser == null) {
@@ -232,7 +279,9 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 2112537803)
     public UserInfoBean getReplyUser() {
         long __key = this.reply_to_user_id;
@@ -251,7 +300,9 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         return replyUser;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1942204408)
     public void setReplyUser(@NotNull UserInfoBean replyUser) {
         if (replyUser == null) {
@@ -323,11 +374,14 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         this.pinned = in.readByte() != 0;
     }
 
-    @Generated(hash = 2049682898)
-    public CirclePostCommentBean(Long id, Long comment_mark, int circle_id, int post_id, long user_id,
-            String content, String commentable_type, long commentable_id, long reply_to_user_id,
-            String created_at, long to_user_id, int state, boolean pinned) {
+    @Generated(hash = 488611437)
+    public CirclePostCommentBean(Long id, Long comment_id, Long feed_mark, String updated_at, Long comment_mark,
+                                 int circle_id, int post_id, long user_id, String content, String commentable_type, long commentable_id,
+                                 long reply_to_user_id, String created_at, long to_user_id, int state, boolean pinned) {
         this.id = id;
+        this.comment_id = comment_id;
+        this.feed_mark = feed_mark;
+        this.updated_at = updated_at;
         this.comment_mark = comment_mark;
         this.circle_id = circle_id;
         this.post_id = post_id;
@@ -353,10 +407,14 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
             return new CirclePostCommentBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 408533568)
     private transient CirclePostCommentBeanDao myDao;
     @Generated(hash = 734177030)
@@ -390,6 +448,30 @@ public class CirclePostCommentBean extends BaseListBean implements Serializable 
         result = 31 * result + circle_id;
         result = 31 * result + post_id;
         return result;
+    }
+
+    public Long getComment_id() {
+        return this.comment_id;
+    }
+
+    public void setComment_id(Long comment_id) {
+        this.comment_id = comment_id;
+    }
+
+    public Long getFeed_mark() {
+        return this.feed_mark;
+    }
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
+    }
+
+    public String getUpdated_at() {
+        return this.updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 
     /** called by internal mechanisms, do not call yourself. */

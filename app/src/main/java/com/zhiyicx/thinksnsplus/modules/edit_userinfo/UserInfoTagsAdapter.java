@@ -43,11 +43,12 @@ public class UserInfoTagsAdapter extends TagAdapter<UserTagBean> {
     public View getView(FlowLayout parent, int position, UserTagBean qaTopicBean) {
         TextView tv = (TextView) mInflater.inflate(R.layout.item_userinfo_tags,
                 parent, false);
-        if (mIsCircleRadus) {
-            tv.setBackgroundResource(R.drawable.shape_default_radus_circle_gray);
-        } else {
-            tv.setBackgroundResource(R.drawable.item_react_bg_gray);
-        }
+//        if (mIsCircleRadus) {
+//            tv.setBackgroundResource(R.drawable.shape_default_radus_circle_gray);
+//        } else {
+//            tv.setBackgroundResource(R.drawable.item_react_bg_gray);
+//        }
+        tv.setBackgroundResource(R.drawable.video_tag_bg);
         tv.setText(qaTopicBean.getTagName());
         return tv;
     }

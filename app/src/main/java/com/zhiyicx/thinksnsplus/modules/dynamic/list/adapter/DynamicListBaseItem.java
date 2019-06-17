@@ -10,16 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.ImageVideoWrapper;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkMetadata;
@@ -43,16 +35,14 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.gif.GifControl;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -135,11 +125,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
     protected DynamicListCommentView.OnCommentClickListener mOnCommentClickListener;
 
-    private DynamicListTopicView.OnTopicClickListener mOnTopicClickListener;
+    private CirclePostListTopicView.OnTopicClickListener mOnTopicClickListener;
 
     protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
 
-    public void setOnTopicClickListener(DynamicListTopicView.OnTopicClickListener onTopicClickListener) {
+    public void setOnTopicClickListener(CirclePostListTopicView.OnTopicClickListener onTopicClickListener) {
         mOnTopicClickListener = onTopicClickListener;
     }
 
@@ -333,7 +323,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             // 设置评论内容
             DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-            DynamicListTopicView topics = holder.getView(R.id.dltv_topic);
+            CirclePostListTopicView topics = holder.getView(R.id.dltv_topic);
             boolean showTopic = showTopicTags && (dynamicBean.getTopics() != null && !dynamicBean.getTopics().isEmpty());
             if (!showTopic) {
                 topics.setVisibility(View.GONE);
@@ -341,9 +331,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 topics.setVisibility(View.VISIBLE);
                 topics.setOnTopicClickListener(mOnTopicClickListener);
                 if (mOnTopicClickListener != null) {
-                    topics.setData(dynamicBean, mOnTopicClickListener.doNotShowThisTopic());
+//                    topics.setData(dynamicBean, mOnTopicClickListener.doNotShowThisTopic());
                 } else {
-                    topics.setData(dynamicBean, null);
+//                    topics.setData(dynamicBean, null);
                 }
 
             }
@@ -351,7 +341,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 comment.setVisibility(View.GONE);
             } else {
                 comment.setVisibility(View.VISIBLE);
-                comment.setData(dynamicBean);
+//                comment.setData(dynamicBean);
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
                 comment.setOnCommentStateClickListener(mOnCommentStateClickListener);

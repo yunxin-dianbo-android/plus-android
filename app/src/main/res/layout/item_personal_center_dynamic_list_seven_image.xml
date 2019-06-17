@@ -215,7 +215,7 @@
 
     </LinearLayout>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
         android:id="@+id/dltv_topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/ll_time_container"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView>
+    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView>
 
     <View
         android:id="@+id/v_line"

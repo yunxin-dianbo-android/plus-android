@@ -103,7 +103,7 @@
         android:layout_toRightOf="@+id/iv_headpic"
         layout="@layout/forward_for_info"/>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
         android:id="@+id/dltv_topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

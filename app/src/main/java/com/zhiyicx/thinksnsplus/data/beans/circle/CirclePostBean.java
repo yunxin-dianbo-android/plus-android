@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans.circle;
 
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
 import java.util.List;
 
@@ -12,15 +13,26 @@ import java.util.List;
  */
 public class CirclePostBean {
 
-    private List<CirclePostListBean> pinneds;
+    private List<CirclePostListBean> pinned;
+    private List<CirclePostListBean> feeds;
     private List<CirclePostListBean> posts;
 
-    public List<CirclePostListBean> getPinneds() {
-        return pinneds;
+    public List<CirclePostListBean> getFeeds() {
+        return feeds;
+    }
+
+    public void setFeeds(List<CirclePostListBean> feeds) {
+        this.feeds = feeds;
+    }
+
+
+
+    public List<CirclePostListBean> getPinned() {
+        return pinned;
     }
 
     public void setPinneds(List<CirclePostListBean> pinneds) {
-        this.pinneds = pinneds;
+        this.pinned = pinneds;
     }
 
     public List<CirclePostListBean> getPosts() {

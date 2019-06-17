@@ -52,7 +52,7 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.dragview.DragGridView
+        <com.zhiyicx.thinksnsplus.widget.dragview.DragGridView
             android:id="@+id/drag_grid_view_4_my_video_channel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <com.zhiyicx.baseproject.widget.dragview.DragGridView
+        <com.zhiyicx.thinksnsplus.widget.dragview.DragGridView
             android:id="@+id/drag_grid_view_4_other_video_channel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

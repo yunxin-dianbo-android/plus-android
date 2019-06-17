@@ -102,7 +102,7 @@
         android:layout_below="@+id/tv_content"
         layout="@layout/detail_forward_for_post"/>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
         android:id="@+id/dltv_topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

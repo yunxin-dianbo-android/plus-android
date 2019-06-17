@@ -13,15 +13,13 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_dynamic_detail_like"
             android:layout_width="@dimen/icon_for_assist_small"
             android:layout_height="@dimen/icon_for_assist_small"
-            android:src="@mipmap/home_ico_good_normal"
-            />
+            android:src="@mipmap/home_ico_good_normal" />
 
         <TextView
             android:id="@+id/tv_dynamic_detail_like"
@@ -30,8 +28,7 @@
             android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
             android:text="@string/like"
             android:textColor="@color/normal_for_disable_button_text"
-            android:textSize="@dimen/size_note_assist"
-            />
+            android:textSize="@dimen/size_note_assist" />
     </LinearLayout>
 
     <LinearLayout

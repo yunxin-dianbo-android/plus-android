@@ -4,21 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:background="@color/color_2D2E30"
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
+        android:background="@color/color_2D2E30"
         android:id="@+id/sl_send_dynamic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:fillViewport="true"
         android:overScrollMode="never">
 
         <LinearLayout
+            android:background="@color/color_2D2E30"
             android:id="@+id/ll_send_dynamic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="vertical">
 
             <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
@@ -46,18 +47,20 @@
 
             <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                 android:id="@+id/et_dynamic_content"
+                android:padding="8dp"
                 style="@style/style_edit_cursor"
+                android:background="@drawable/bg_et_post_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_normal"
                 android:layout_marginLeft="@dimen/spacing_large"
-                android:layout_marginRight="@dimen/spacing_large"
                 android:layout_marginTop="@dimen/spacing_large"
-                app:content_size="@dimen/size_content"
+                android:layout_marginRight="@dimen/spacing_large"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                app:content_size="13sp"
                 app:hintContent="@string/dynamic_content_hint"
                 app:limitSize="@integer/dynamic_content_max_size"
                 app:showLimitSize="@integer/dynamic_content_input_size"
-                app:showLines="@integer/dynamic_content_show_lines"/>
+                app:showLines="@integer/dynamic_content_show_lines" />
 
             <FrameLayout
                 android:id="@+id/fl_froward_content"
@@ -80,13 +83,14 @@
 
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/tv_at_user"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginLeft="@dimen/spacing_normal"
                 app:leftText="@string/at_user"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"
-                app:showTopLine="true"/>
+                app:showTopLine="true" />
 
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/tv_add_topic"
@@ -96,9 +100,11 @@
                 app:leftText="@string/dynamic_publish_select_topic"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"
+                android:visibility="gone"
                 app:showTopLine="true"/>
 
             <View
+                android:visibility="gone"
                 style="@style/style_divider_horizontal_light"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_line"
@@ -120,6 +126,7 @@
 
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/tv_toll"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginLeft="@dimen/spacing_normal"
@@ -132,13 +139,14 @@
                 layout="@layout/include_horizontal_divider_light"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_line"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/spacing_normal"/>
 
             <LinearLayout
                 android:id="@+id/send_dynamic_ll_toll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/color_2D2E30"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -151,7 +159,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/full_button_height"
-                    android:background="@color/white"
+                    android:background="@color/color_2D2E30"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/spacing_mid"
@@ -202,7 +210,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/color_2D2E30"
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
@@ -211,10 +219,10 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:paddingStart="@dimen/spacing_large"
-            android:background="@color/bgColor"
+            android:background="@color/color_2D2E30"
             android:drawableStart="@mipmap/ico_tougao_face"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/spacing_large" />
 
         <com.zhiyi.emoji.EmojiKeyboard
             android:id="@+id/emojiview"

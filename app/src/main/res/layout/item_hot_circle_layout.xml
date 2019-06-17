@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_2D2E30"
@@ -90,6 +89,8 @@
         <RelativeLayout
             android:id="@+id/rl_circle_text_content"
             android:layout_width="match_parent"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -97,24 +98,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:lineSpacingExtra="3dp"
-                android:maxLines="3"
-                android:maxEms="80"
                 android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:maxEms="80"
+                android:maxLines="3"
                 android:text="照片前速度来陪我我二姨额时尚大气儿童阿斯顿发爱上我；咯片慷慨解囊了镂空设计哦为u了你麻痹 v速度去品味u啊是低级趣味卡吧     "
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
+                android:gravity="center_vertical"
                 android:layout_alignRight="@+id/tv_circle_content"
                 android:layout_alignBottom="@+id/tv_circle_content"
-                android:drawableLeft="@mipmap/ic_arrow_down_small"
-                android:text="查看全文"
-                android:drawablePadding="5dp"
-                android:textColor="#EA3378"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/ic_arrow_down_small" />
+
+                <TextView
+                    android:id="@+id/tv_see_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="8dp"
+                    android:text="查看全文"
+                    android:textColor="#EA3378"
+                    android:textSize="10sp" />
+            </LinearLayout>
         </RelativeLayout>
 
 
@@ -130,16 +145,17 @@
                     android:textSize="13sp" />-->
 
         <RelativeLayout
+            android:id="@+id/rl_only_one_img_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
 
-            <ImageView
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
                 android:id="@+id/iv_video_bg"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/default_video_img"></ImageView>
+                android:src="@drawable/shape_default_image"></com.zhiyicx.baseproject.widget.imageview.FilterImageView>
 
             <ImageView
                 android:id="@+id/iv_play_video"
@@ -161,7 +177,8 @@
                 android:layout_marginRight="15dp"
                 android:text="广告"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
         </RelativeLayout>
 
 
@@ -171,25 +188,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -201,27 +228,77 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_5"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
 
-            <ImageView
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_6"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_default_hot_star_circle" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_img_line_three"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_7"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
+
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
+
+            <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+                android:id="@+id/iv_pic_9"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/shape_default_image"
+                app:rciv_radius="@dimen/dp3" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -251,9 +328,9 @@
 
             <View
                 android:layout_width="0.5dp"
-                android:layout_height="30dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/recall_white_54" />
+                android:background="@color/color_99999999" />
 
             <LinearLayout
                 android:id="@+id/ll_comment_num"
@@ -281,9 +358,9 @@
 
             <View
                 android:layout_width="0.5dp"
-                android:layout_height="30dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/recall_white_54" />
+                android:background="@color/color_99999999" />
 
             <LinearLayout
                 android:id="@+id/ll_collection_num"
@@ -297,7 +374,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:padding="3dp"
-                    android:src="@mipmap/ic_collection" />
+                    android:src="@mipmap/ic_like" />
 
                 <TextView
                     android:id="@+id/tv_like_count"

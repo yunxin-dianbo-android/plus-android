@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.detailv2;
 
 import android.graphics.Bitmap;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
@@ -48,7 +49,7 @@ public interface CircleDetailContract {
 
         void loadAllError();
 
-        void updateCircleInfo(CircleInfo circleInfo,boolean needFinish);
+        void updateCircleInfo(CircleInfo circleInfo, boolean needFinish);
 
         /**
          * 是否是圈外搜索，用于处理搜索记录
@@ -63,6 +64,7 @@ public interface CircleDetailContract {
 
         /**
          * 是否是我的帖子
+         *
          * @return
          */
         boolean isFromMine();
@@ -72,6 +74,7 @@ public interface CircleDetailContract {
         void showBottomView(boolean b);
 
         void handleCollect(int dataPosition);
+
         void handleExcellent(int dataPosition);
 
         void managerStickTop(Long id, int position);
@@ -89,6 +92,10 @@ public interface CircleDetailContract {
         void deletePost(CirclePostListBean circlePostListBean, int position);
 
         void sharePost(CirclePostListBean circlePostListBean, Bitmap shareBitMap);
+
+        void sharePost4ShortVideo(CirclePostListBean dynamicBean, Bitmap bitmap);
+
+        void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap, SHARE_MEDIA type);
 
         void shareCircle(CircleInfo CircleInfo, Bitmap shareBitMap, List<UmengSharePolicyImpl.ShareBean> data);
 
@@ -110,9 +117,10 @@ public interface CircleDetailContract {
 
         /**
          * 加入/退出圈子
+         *
          * @param circleInfo
          */
-        void dealCircleJoinOrExit(CircleInfo circleInfo,String psd);
+        void dealCircleJoinOrExit(CircleInfo circleInfo, String psd);
 
         /**
          * 圈主和管理员置顶帖子
@@ -121,7 +129,7 @@ public interface CircleDetailContract {
          * @param day
          * @return
          */
-        void stickTopPost(Long postId,int position,int day);
+        void stickTopPost(Long postId, int position, int day);
 
         /**
          * 圈主和管理员撤销置顶帖子
@@ -129,7 +137,7 @@ public interface CircleDetailContract {
          * @param postId
          * @return
          */
-        void undoTopPost(Long postId,int position);
+        void undoTopPost(Long postId, int position);
 
     }
 
@@ -139,9 +147,10 @@ public interface CircleDetailContract {
 
         /**
          * 加入/退出圈子
+         *
          * @param circleInfo
          */
-        void dealCircleJoinOrExit(CircleInfo circleInfo,String psd);
+        void dealCircleJoinOrExit(CircleInfo circleInfo, String psd);
 
         void getCircleInfo();
 
@@ -155,7 +164,7 @@ public interface CircleDetailContract {
 
         void loadAllError();
 
-        void updateCircleInfo(CircleInfo circleInfo,boolean needFinish);
+        void updateCircleInfo(CircleInfo circleInfo, boolean needFinish);
     }
 
 }

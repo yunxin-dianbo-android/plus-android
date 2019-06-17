@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GifRequestBuilder;
 import com.bumptech.glide.Glide;
@@ -72,6 +70,7 @@ import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView;
 import com.zhiyicx.thinksnsplus.widget.popwindow.LetterPopWindow;
 
@@ -106,6 +105,7 @@ public class DynamicDetailHeader {
     private FrameLayout mFlcommentcountcontainer;
     private FrameLayout mFlForwardContainer;
     private ReWardView mReWardView;
+//    private CirclePostListTopicView mDynamicListTopicView;
     private DynamicListTopicView mDynamicListTopicView;
     private Context mContext;
     private int screenWidth;

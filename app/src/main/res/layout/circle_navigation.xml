@@ -63,8 +63,7 @@
         app:lineColor="@color/circle_navigation_txt_color"
         app:rightImage="@mipmap/ico_circle_arrow"
         app:rightTextColor="@color/general_for_hint"
-        app:showLine="true"
-        />
+        app:showLine="true" />
 
     <!--举报圈子-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton

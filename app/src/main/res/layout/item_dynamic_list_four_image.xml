@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/color_38383A"
     android:descendantFocusability="blocksDescendants"
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
@@ -23,16 +23,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_normal_8dp"
-        android:includeFontPadding="false"
         android:layout_toRightOf="@id/iv_headpic"
+        android:includeFontPadding="false"
         android:maxLength="@integer/username_max_byte_length"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small_3dp"
-        android:textColor="@color/important_for_content"
+        android:textColor="@color/color_EA3378"
         android:textSize="@dimen/size_content_comment"
-        tools:text="张三"/>
+        tools:text="张三" />
 
     <TextView
         android:id="@+id/tv_top_flag"
@@ -57,7 +57,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/tv_name"
-        android:layout_toLeftOf="@+id/tv_time"
         android:background="@drawable/shape_post_excelent_flag"
         android:gravity="center"
         android:maxLength="@integer/excelent_maxlength"
@@ -67,7 +66,7 @@
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag"/>
-
+<!--
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
@@ -79,22 +78,62 @@
         android:maxLines="1"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="2016-05-06"/>
+        tools:text="2016-05-06"/>-->
+
+
+    <LinearLayout
+        android:id="@+id/ll_tv_time_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:gravity="right"
+            android:maxLines="1"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="2016-05-06" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="来自"
+            android:textColor="@color/general_for_hint"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_come_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="萌宠集中营"
+            android:textColor="@color/color_EA3378"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_name"
+        android:layout_below="@+id/ll_tv_time_parent"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
         android:includeFontPadding="false"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:textColor="@color/themeColor"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:textColor="@color/color_cccccc"
         android:textSize="@dimen/size_sub_title"
-        tools:text="了解到富士康垃圾管理的高考了了"/>
+        tools:text="了解到富士康垃圾管理的高考了了" />
 
     <com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize
         android:id="@+id/tv_content"
@@ -103,15 +142,15 @@
         android:layout_below="@+id/tv_title"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:ellipsize="end"
+        android:layout_marginTop="10dp"
+        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLines="@integer/dynamic_list_content_show_lines"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingBottom="@dimen/spacing_normal"
-        android:textColor="@color/normal_for_dynamic_list_content"
+        android:textColor="@color/white"
         android:textSize="@dimen/size_content_assist"
-        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
-        />
+        tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送" />
 
     <LinearLayout
         android:id="@+id/nrv_image"
@@ -121,7 +160,7 @@
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/dynamic_list_image_marginright"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:background="@color/white"
+        android:background="@color/color_38383A"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
@@ -183,7 +222,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
         android:id="@+id/dltv_topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -193,7 +232,7 @@
         android:layout_toEndOf="@+id/iv_headpic"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"
         android:paddingLeft="@dimen/spacing_normal">
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView>
+    </com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView>
 
     <TextView
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"
@@ -212,7 +251,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_line"
         android:layout_below="@+id/tv_from"
-        android:background="@color/general_for_line_light"/>
+        android:background="@color/color_38383A"/>
 
     <com.zhiyicx.baseproject.widget.DynamicListMenuView
         android:id="@+id/dlmv_menu"
@@ -227,16 +266,118 @@
     </com.zhiyicx.baseproject.widget.DynamicListMenuView>
 
     <include
+        android:visibility="gone"
         android:id="@+id/fl_tip"
         layout="@layout/view_hint_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dlmv_menu"
-        android:layout_toRightOf="@+id/iv_headpic"
-        />
+        android:layout_toRightOf="@+id/iv_headpic" />
 
     <include
         layout="@layout/include_dynamic_list_comment_view"
         />
 
+
+    <LinearLayout
+        android:id="@+id/ll_share_comment_like_parent"
+        android:layout_below="@+id/v_line"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_share_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="3dp"
+                android:src="@mipmap/ic_share" />
+
+            <TextView
+                android:id="@+id/tv_share_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="9999"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/color_99999999" />
+
+        <LinearLayout
+            android:id="@+id/ll_comment_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="3dp"
+                android:src="@mipmap/ic_feedback" />
+
+            <TextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="9999"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/color_99999999" />
+
+        <LinearLayout
+            android:id="@+id/ll_collection_num"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="3dp"
+                android:src="@mipmap/ic_like" />
+
+            <TextView
+                android:id="@+id/tv_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="9999"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_below="@+id/ll_share_comment_like_parent"
+        android:layout_marginTop="13dp"
+        android:background="@color/color_2D2E30" />
 </RelativeLayout>

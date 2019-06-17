@@ -1,9 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.adapter;
 
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.UnderlineSpan;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -12,6 +22,7 @@ import com.zhiyicx.common.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -75,6 +86,14 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
                 mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
+
+        holder.setOnClickListener(R.id.iv_reply_comment, v -> {
+            // TODO: 2019/6/12 回复
+            ToastUtils.showToast("回复评论");
+        });
+        holder.setOnClickListener(R.id.iv_like_comment, v -> {
+            ToastUtils.showToast("点赞评论");
+        });
         holder.setOnLongClickListener(R.id.tv_content, v -> {
             if (mOnCommentItemListener != null) {
                 mOnCommentItemListener.onItemLongClick(v, holder, position);
@@ -87,7 +106,7 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
 
         List<Link> links = setLiknks(holder, circlePostCommentBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links,false);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links, false);
         }
         holder.itemView.setOnClickListener(v -> {
             if (mOnCommentItemListener != null) {
@@ -100,8 +119,87 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
             }
             return true;
         });
+
+
         setUserInfoClick(holder.getView(R.id.tv_name), circlePostCommentBean.getCommentUser());
         setUserInfoClick(holder.getView(R.id.iv_headpic), circlePostCommentBean.getCommentUser());
+        LinearLayout llCommentParent = holder.getView(R.id.ll_comment_parent);
+        llCommentParent.removeAllViews();
+        List<CirclePostCommentBean> reply = circlePostCommentBean.getTestReply();
+
+        if (false/*reply == null || reply.size() == 0*/) {
+            llCommentParent.setVisibility(View.GONE);
+        } else {
+            llCommentParent.setVisibility(View.VISIBLE);
+            for (int i = 0; i < 3/*reply.size()*/; i++) {
+
+                TextView replyCommentView = (TextView) LayoutInflater.from(holder.getmContext()).inflate(R.layout.item_reply_comment_layout, llCommentParent, false);
+                String myName = "张三";
+                String replyName = "李四";
+                String replyContent = "这只是一个测试的回复评论";
+                llCommentParent.addView(replyCommentView);
+                //回复
+                String content = myName + " 回复 " + replyName + " : " + replyContent;
+                SpannableStringBuilder sb = new SpannableStringBuilder(content);
+
+
+//                sb.setSpan(new ClickableSpan() {
+//                    @Override
+//                    public void onClick(View widget) {
+//                        int[] location = new int[2];
+//                        shuoshuoCommentView.getLocationOnScreen(location);
+//                        int yPosition = location[1] + shuoshuoCommentView.getMeasuredHeight();
+//                        StarCircleCommentInputDialog.showDialog(mContext, shuoShuoData, yPosition, 1, commentInfo);
+//                    }
+//                }, (commentInfo.ReplyUserName + "").length() + 4 + (commentInfo.UserName + "").length() + 2, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+                UnderlineSpan colorSpan0 = new UnderlineSpan() {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setColor(holder.getmContext().getResources().getColor(R.color.white));//设置颜色
+                        ds.setUnderlineText(false);//去掉下划线
+                    }
+                };
+                UnderlineSpan colorSpan1 = new UnderlineSpan() {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setColor(holder.getmContext().getResources().getColor(R.color.white));//设置颜色
+                        ds.setUnderlineText(false);//去掉下划线
+                    }
+                };
+
+                UnderlineSpan colorSpan2 = new UnderlineSpan() {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setColor(holder.getmContext().getResources().getColor(R.color.color_EA3378));//设置颜色
+                        ds.setUnderlineText(false);//去掉下划线
+                    }
+                };
+
+                UnderlineSpan colorSpan3 = new UnderlineSpan() {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setColor(holder.getmContext().getResources().getColor(R.color.color_cccccc));//设置颜色
+                        ds.setUnderlineText(false);//去掉下划线
+                    }
+                };
+                sb.setSpan(colorSpan0, 0, (myName + "").length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(colorSpan2, (myName + "").length(), (myName + "").length() + 4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(colorSpan1, (myName + "").length() + 4, (myName + "").length() + 4 + (replyName + "").length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.setSpan(colorSpan3, (myName + "").length() + 4 + (replyName + "").length(), content.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                replyCommentView.setText(sb);
+                replyCommentView.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+            if (true/*reply.size()>3*/) {
+                View moreContentView = LayoutInflater.from(holder.getmContext()).inflate(R.layout.item_reply_comment_see_more, llCommentParent, false);
+                TextView tvMoreInfoTip = moreContentView.findViewById(R.id.tv_more_info_tip);
+                tvMoreInfoTip.setTextColor(holder.getmContext().getResources().getColor(R.color.color_EA3378));
+                tvMoreInfoTip.setText("查看全部55条回复");
+//                tvMoreInfoTip.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_arrow_down, 0, 0, 0);
+                llCommentParent.addView(moreContentView);
+            }
+        }
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
@@ -169,6 +267,7 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
 
     public interface OnCommentItemListener {
         void onItemClick(View view, RecyclerView.ViewHolder holder, int position);
+
         void onItemLongClick(View view, RecyclerView.ViewHolder holder, int position);
 
         void onUserInfoClick(UserInfoBean userInfoBean);

@@ -3,53 +3,33 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.jakewharton.rxbinding.view.RxView;
-import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkMetadata;
-import com.klinker.android.link_builder.NetUrlHandleBean;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
-import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
-import com.zhiyicx.common.config.MarkdownConfig;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
-import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView;
+import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
 
 /**
  * @Describe 动态列表适配器基类
@@ -125,11 +105,11 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
 
     protected DynamicListCommentView.OnCommentClickListener mOnCommentClickListener;
 
-    private DynamicListTopicView.OnTopicClickListener mOnTopicClickListener;
+    private CirclePostListTopicView.OnTopicClickListener mOnTopicClickListener;
 
     protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
 
-    public void setOnTopicClickListener(DynamicListTopicView.OnTopicClickListener onTopicClickListener) {
+    public void setOnTopicClickListener(CirclePostListTopicView.OnTopicClickListener onTopicClickListener) {
         mOnTopicClickListener = onTopicClickListener;
     }
 

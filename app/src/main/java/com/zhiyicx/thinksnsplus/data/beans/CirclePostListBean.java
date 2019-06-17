@@ -7,10 +7,16 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.google.gson.annotations.SerializedName;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.common.config.MarkdownConfig;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.LetterConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.TopicListConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -28,6 +34,8 @@ import java.util.List;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_HEIGHT;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem.DEFALT_IMAGE_WITH;
 
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2.Video;
+
 /**
  * @author Jliuer
  * @Date 2017/11/29/15:44
@@ -42,6 +50,9 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     public static final int SEND_SUCCESS = 2;
     private static final long serialVersionUID = 9154485538884327047L;
 
+    public static final int TOP_SUCCESS = 1;
+    public static final int TOP_NONE = 0;
+    public static final int TOP_REVIEW = 2;
     /**
      * id : 88
      * group_id : 1
@@ -65,20 +76,34 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     @Id
     private Long id;
     @Unique
+    @SerializedName(value = "post_mark", alternate = {"feed_mark"})
     private Long post_mark;
+
+    public long getFeed_mark(){
+        return post_mark;
+    }
+
     private long group_id;
     private Long user_id;
     private String title;
+    @SerializedName(value = "summary", alternate = {"feed_content"})
     private String summary;
+    @SerializedName(value = "likes_count", alternate = {"like_count", "feed_digg_count"})
     private int likes_count;
+    @SerializedName(value = "comments_count", alternate = {"feed_comment_count"})
     private int comments_count;
+    @SerializedName(value = "views_count", alternate = {"feed_view_count"})
     private int views_count;
+    @SerializedName(value = "liked", alternate = {"has_digg", "has_like"})
     private boolean liked;
+    @SerializedName(value = "collected", alternate = {"has_collect"})
     private boolean collected;
     private String created_at;
     private String updated_at;
     private String excellent_at; //如果存在，则表示精华
+
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
+    @SerializedName(value = "user", alternate = {"userInfoBean"})
     private UserInfoBean user;
     @Convert(converter = CirclePostImageConvert.class, columnType = String.class)
     private List<ImagesBean> images;
@@ -96,20 +121,85 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
     private List<PostDigListBean> digs;
 
     @Transient
-    private String friendlyTime;
+    public String friendlyTime;
     @Transient
-    private String friendlyContent;
-
-    public String getGroup_name() {
-        return group_name;
-    }
-
-    public void setGroup_name(String group_name) {
-        this.group_name = group_name;
-    }
-
+    public String friendlyContent;
     @Transient
-    private String group_name;
+    public int startPosition;
+    @Transient
+    public String userCenterFriendlyTimeUp;
+    @Transient
+    public String userCenterFriendlyTimeDonw;
+
+
+    //动态 feed_content
+    public String deleted_at;
+
+
+    public int feed_from;
+
+    public Integer hot;// 用于热门排序
+
+    public Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
+
+    public boolean isFollowed;// 是否关注了该条动态（用户）
+    public String feed_latitude;
+    public String feed_longtitude;
+    public String feed_geohash;
+    private String sendFailMessage;
+    public int audit_status;
+    public int top = TOP_NONE;// 置顶状态 0：无置顶状态 1：置顶成功 -1：置顶审核中
+
+    @Convert(converter = DynamicDetailBeanV2.IntegerParamsConverter.class, columnType = String.class)
+    public List<Integer> diggs;
+    @Convert(converter = PaidNoteConverter.class, columnType = String.class)
+    public PaidNote paid_node;
+
+    @Convert(converter = DynamicDetailBeanV2.DynamicDigListBeanConverter.class, columnType = String.class)
+    public List<DynamicDigListBean> digUserInfoList;// 点赞用户的信息列表
+
+    @Convert(converter = DynamicDetailBeanV2.RewardCountBeanConverter.class, columnType = String.class)
+    public RewardsCountBean reward;// 打赏总额
+    public long amount;
+
+    @Convert(converter = DynamicDetailBeanV2.LikeBeanConvert.class, columnType = String.class)
+    public List<DynamicLikeBean> likes;
+    public boolean paid;
+
+    @Convert(converter = DynamicDetailBeanV2.VideoConverter.class, columnType = String.class)
+    public DynamicDetailBeanV2.Video video;
+
+    /**
+     * 话题里的动态专属属性，数据查询定位值
+     */
+    public int index;
+
+    /**
+     * 话题里的动态属性，动态所属话题
+     */
+    @Convert(converter = TopicListConvert.class, columnType = String.class)
+    public List<TopicListBean> topics;
+
+    /**
+     * 转发资源类型标识
+     */
+    public String repostable_type;
+
+    /**
+     * 转发资源 ID。
+     */
+    public Long repostable_id;
+
+    /**
+     * 轉發內容
+     */
+    @Convert(converter = LetterConvert.class, columnType = String.class)
+    public Letter mLetter;
+
+
+//    @SerializedName("like_count")
+//    public int feed_digg_count;
+
 
     @Override
     public Long getMaxId() {
@@ -331,9 +421,15 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         private int width;
         private int propPart;
         private int height;
-        @SerializedName("id")
+        @SerializedName(value = "id", alternate = {"file", "file_id"})
         private int file_id;
+        //        @SerializedName(value = "file", alternate = {"file_id"})
+//        private int file;
         private String imgUrl;
+        public int paid_node;
+        public long amount;
+
+        public Boolean paid;
         /**
          * 图片类型
          */
@@ -349,7 +445,14 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         private int imageViewHeight;
         private boolean isLongImage;
         private String netUrl;
+        public boolean canLook;
         private transient GlideUrl glideUrl;
+
+
+        public String getRealPicUrl() {
+            return ApiConfig.APP_DOMAIN_FORMAL + "api/v2/files/" + file_id;
+        }
+
 
         @Override
         public String toString() {
@@ -379,6 +482,9 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
             this.propPart = propPart;
         }
 
+        public Boolean isPaid() {
+            return paid;
+        }
         public String getSize() {
             return size;
         }
@@ -392,6 +498,7 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         }
 
         public String getImgUrl() {
+//            return getRealPicUrl();
             return imgUrl;
         }
 
@@ -610,14 +717,18 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         this.digs = digs;
     }
 
+
     public CirclePostListBean() {
     }
 
-    @Generated(hash = 525206183)
-    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count,
-            int comments_count, int views_count, boolean liked, boolean collected, String created_at, String updated_at, String excellent_at,
-            UserInfoBean user, List<ImagesBean> images, List<CirclePostCommentBean> comments, int state, int reward_amount, int reward_number,
-            String body, CircleInfo group, boolean pinned, List<PostDigListBean> digs) {
+    @Generated(hash = 1526860284)
+    public CirclePostListBean(Long id, Long post_mark, long group_id, Long user_id, String title, String summary, int likes_count, int comments_count,
+                              int views_count, boolean liked, boolean collected, String created_at, String updated_at, String excellent_at, UserInfoBean user,
+                              List<ImagesBean> images, List<CirclePostCommentBean> comments, int state, int reward_amount, int reward_number, String body, CircleInfo group,
+                              boolean pinned, List<PostDigListBean> digs, String deleted_at, int feed_from, Integer hot, Long hot_creat_time, boolean isFollowed,
+                              String feed_latitude, String feed_longtitude, String feed_geohash, String sendFailMessage, int audit_status, int top, List<Integer> diggs,
+                              PaidNote paid_node, List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward, long amount, List<DynamicLikeBean> likes, boolean paid,
+                              DynamicDetailBeanV2.Video video, int index, List<TopicListBean> topics, String repostable_type, Long repostable_id, Letter mLetter) {
         this.id = id;
         this.post_mark = post_mark;
         this.group_id = group_id;
@@ -642,6 +753,30 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         this.group = group;
         this.pinned = pinned;
         this.digs = digs;
+        this.deleted_at = deleted_at;
+        this.feed_from = feed_from;
+        this.hot = hot;
+        this.hot_creat_time = hot_creat_time;
+        this.isFollowed = isFollowed;
+        this.feed_latitude = feed_latitude;
+        this.feed_longtitude = feed_longtitude;
+        this.feed_geohash = feed_geohash;
+        this.sendFailMessage = sendFailMessage;
+        this.audit_status = audit_status;
+        this.top = top;
+        this.diggs = diggs;
+        this.paid_node = paid_node;
+        this.digUserInfoList = digUserInfoList;
+        this.reward = reward;
+        this.amount = amount;
+        this.likes = likes;
+        this.paid = paid;
+        this.video = video;
+        this.index = index;
+        this.topics = topics;
+        this.repostable_type = repostable_type;
+        this.repostable_id = repostable_id;
+        this.mLetter = mLetter;
     }
 
     @Override
@@ -697,14 +832,58 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
                 dealImageBean(images.get(i), i, imageCount);
             }
         }
-
+        dealVideoBean(video);
         if (created_at != null) {
             friendlyTime = TimeUtils.getTimeFriendlyNormal(created_at);
+            String timeString = TimeUtils.getTimeFriendlyForUserHome(created_at);
+            if (AppApplication.getContext().getString(R.string.today_with_split).equals(timeString) || AppApplication.getContext().getString(R.string
+                    .yestorday_with_split).equals
+                    (timeString)) {
+                userCenterFriendlyTimeUp = timeString.replace(",", "\n");
+            } else {
+                String[] dayAndMonth = timeString.split(",");
+                userCenterFriendlyTimeUp = dayAndMonth[0];
+                userCenterFriendlyTimeDonw = dayAndMonth[1];
+            }
         }
         if (summary != null) {
             friendlyContent = summary.replaceAll(MarkdownConfig.NETSITE_FORMAT, Link.DEFAULT_NET_SITE);
             friendlyContent = friendlyContent.replaceAll(MarkdownConfig.IMAGE_FORMAT, "");
+            startPosition = friendlyContent.length();
         }
+
+    }
+
+    /**
+     * 预处理 视频的数据
+     *
+     * @param video
+     */
+    private void dealVideoBean(Video video) {
+        if (video == null) {
+            return;
+        }
+        if (video.getWidth() == 0) {
+            video.setWidth(DEFALT_IMAGE_WITH);
+        }
+        if (video.getHeight() == 0) {
+            video.setHeight(DEFALT_IMAGE_HEIGHT);
+        }
+        int netWidth = video.getWidth();
+        int netHeight = video.getHeight();
+
+        int with = ImageUtils.getmImageContainerWith();
+        int height = (with * netHeight / netWidth);
+
+        // 视频特殊处理，最大宽高 ImageUtils.getmImageContainerWith()
+        int mImageMaxHeight = ImageUtils.getmImageContainerWith();
+        height = height > mImageMaxHeight ? mImageMaxHeight : height;
+        // 单张图最小高度
+        height = height < DEFALT_IMAGE_HEIGHT ? DEFALT_IMAGE_HEIGHT : height;
+        video.setWidth(with);
+        video.setHeight(height);
+        video.setGlideUrl(ImageUtils.imagePathConvertV2(true, video.getCover_id(), with, height,
+                ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN()));
     }
 
     private void dealImageBean(ImagesBean imageBean, int i, int imageCount) {
@@ -806,14 +985,6 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         imageBean.setLongImage(ImageUtils.isLongImage(netHeight, netWidth));
     }
 
-    public String getExcellent_at() {
-        return this.excellent_at;
-    }
-
-    public void setExcellent_at(String excellent_at) {
-        this.excellent_at = excellent_at;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -848,7 +1019,206 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         dest.writeTypedList(this.digs);
         dest.writeString(this.friendlyTime);
         dest.writeString(this.friendlyContent);
-        dest.writeString(this.group_name);
+    }
+
+    public String getExcellent_at() {
+        return this.excellent_at;
+    }
+
+    public void setExcellent_at(String excellent_at) {
+        this.excellent_at = excellent_at;
+    }
+
+    public String getDeleted_at() {
+        return this.deleted_at;
+    }
+
+    public void setDeleted_at(String deleted_at) {
+        this.deleted_at = deleted_at;
+    }
+
+    public int getFeed_from() {
+        return this.feed_from;
+    }
+
+    public void setFeed_from(int feed_from) {
+        this.feed_from = feed_from;
+    }
+
+    public Integer getHot() {
+        return this.hot;
+    }
+
+    public void setHot(Integer hot) {
+        this.hot = hot;
+    }
+
+    public Long getHot_creat_time() {
+        return this.hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    public String getFeed_latitude() {
+        return this.feed_latitude;
+    }
+
+    public void setFeed_latitude(String feed_latitude) {
+        this.feed_latitude = feed_latitude;
+    }
+
+    public String getFeed_longtitude() {
+        return this.feed_longtitude;
+    }
+
+    public void setFeed_longtitude(String feed_longtitude) {
+        this.feed_longtitude = feed_longtitude;
+    }
+
+    public String getFeed_geohash() {
+        return this.feed_geohash;
+    }
+
+    public void setFeed_geohash(String feed_geohash) {
+        this.feed_geohash = feed_geohash;
+    }
+
+    public String getSendFailMessage() {
+        return this.sendFailMessage;
+    }
+
+    public void setSendFailMessage(String sendFailMessage) {
+        this.sendFailMessage = sendFailMessage;
+    }
+
+    public int getAudit_status() {
+        return this.audit_status;
+    }
+
+    public void setAudit_status(int audit_status) {
+        this.audit_status = audit_status;
+    }
+
+    public int getTop() {
+        return this.top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    public List<Integer> getDiggs() {
+        return this.diggs;
+    }
+
+    public void setDiggs(List<Integer> diggs) {
+        this.diggs = diggs;
+    }
+
+    public PaidNote getPaid_node() {
+        return this.paid_node;
+    }
+
+    public void setPaid_node(PaidNote paid_node) {
+        this.paid_node = paid_node;
+    }
+
+    public List<DynamicDigListBean> getDigUserInfoList() {
+        return this.digUserInfoList;
+    }
+
+    public void setDigUserInfoList(List<DynamicDigListBean> digUserInfoList) {
+        this.digUserInfoList = digUserInfoList;
+    }
+
+    public RewardsCountBean getReward() {
+        return this.reward;
+    }
+
+    public void setReward(RewardsCountBean reward) {
+        this.reward = reward;
+    }
+
+    public long getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
+    }
+
+    public List<DynamicLikeBean> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<DynamicLikeBean> likes) {
+        this.likes = likes;
+    }
+
+    public boolean getPaid() {
+        return this.paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
+    public DynamicDetailBeanV2.Video getVideo() {
+        return this.video;
+    }
+
+    public void setVideo(DynamicDetailBeanV2.Video video) {
+        this.video = video;
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public List<TopicListBean> getTopics() {
+        return this.topics;
+    }
+
+    public void setTopics(List<TopicListBean> topics) {
+        this.topics = topics;
+    }
+
+    public String getRepostable_type() {
+        return this.repostable_type;
+    }
+
+    public void setRepostable_type(String repostable_type) {
+        this.repostable_type = repostable_type;
+    }
+
+    public Long getRepostable_id() {
+        return this.repostable_id;
+    }
+
+    public void setRepostable_id(Long repostable_id) {
+        this.repostable_id = repostable_id;
+    }
+
+    public Letter getMLetter() {
+        return this.mLetter;
+    }
+
+    public void setMLetter(Letter mLetter) {
+        this.mLetter = mLetter;
     }
 
     protected CirclePostListBean(Parcel in) {
@@ -879,7 +1249,6 @@ public class CirclePostListBean extends BaseListBean implements Serializable, Cl
         this.digs = in.createTypedArrayList(PostDigListBean.CREATOR);
         this.friendlyTime = in.readString();
         this.friendlyContent = in.readString();
-        this.group_name = in.readString();
     }
 
     public static final Creator<CirclePostListBean> CREATOR = new Creator<CirclePostListBean>() {

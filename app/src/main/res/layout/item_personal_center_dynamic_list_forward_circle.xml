@@ -126,7 +126,7 @@
 
             </LinearLayout>
 
-            <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
+            <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
                 android:id="@+id/dltv_topic"
                 android:visibility="gone"
                 android:layout_width="match_parent"

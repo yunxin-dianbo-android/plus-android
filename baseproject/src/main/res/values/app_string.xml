@@ -6,4 +6,5 @@
     <string name="click_add_to_my_channel">点击添加到我到频道</string>
     <string name="recmond_search">推荐搜索</string>
     <string name="channel_name">频道名</string>
+    <string name="comment_tip">聊点什么吧...</string>
 </resources>

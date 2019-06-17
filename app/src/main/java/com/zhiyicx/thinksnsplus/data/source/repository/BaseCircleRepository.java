@@ -385,27 +385,27 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      */
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type, Integer excellent) {
-        return dealWithPostList(mCircleClient.getPostListFromCircle(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, type, excellent)
+        return dealWithPostList(mCircleClient.getPostListFromCircleV2(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, "group")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
-                    List<CirclePostListBean> pinnedData = circlePostBean.getPinneds();
-                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getPosts());
+                    List<CirclePostListBean> pinnedData = circlePostBean.getPinned();
+                    List<CirclePostListBean> data = new ArrayList<>(circlePostBean.getFeeds());
                     // 仅最新发布显示置顶内容
                     if (excellent == null && pinnedData != null && type.equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value)) {
                         for (CirclePostListBean postListBean : pinnedData) {
                             for (CirclePostListBean post : data) {
                                 // 删除置顶重复的
                                 if (postListBean.getId().equals(post.getId())) {
-                                    circlePostBean.getPosts().remove(post);
+                                    circlePostBean.getFeeds().remove(post);
                                 }
                             }
                             postListBean.setPinned(true);
                         }
-                        pinnedData.addAll(circlePostBean.getPosts());
+                        pinnedData.addAll(circlePostBean.getFeeds());
                         return pinnedData;
                     } else {
-                        return circlePostBean.getPosts();
+                        return circlePostBean.getFeeds();
                     }
                 }));
     }

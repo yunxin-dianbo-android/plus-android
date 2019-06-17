@@ -46,7 +46,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     private String commentable_type;
     private long  commentable_id;
     @SerializedName(value="feed_user_id", alternate={"target_user"})
-    private long feed_user_id; // 发动态人的 id
+    private long feed_user_id; // 发动态人的 idcontent
     private long user_id;// 谁发的这条评论
     @SerializedName("user")
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
