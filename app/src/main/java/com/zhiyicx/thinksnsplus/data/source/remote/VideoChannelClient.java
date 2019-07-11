@@ -31,6 +31,15 @@ public interface VideoChannelClient {
     @GET(ApiConfig.APP_PATH_VIDEO_CHANNEL)
     Observable<VideoChannelListBean> getVideoChannel();
 
+
+    /**
+     * 获取频道的动态列表
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_MY_VIDEO_CHANNEL)
+    Observable<List<VideoChannelBean>> getMyVideoChannel();
+
     /**
      * 获取频道的动态列表
      * String channel_id, String act:add:deletes

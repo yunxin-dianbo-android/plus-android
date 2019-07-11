@@ -148,6 +148,11 @@ public class CircleListFragment extends TSListFragment<CircleListContract.Presen
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     public void onForgetPsdClick() {
         showInputPsdView(false);
         startActivity(new Intent(getActivity(), FindPasswordActivity.class));

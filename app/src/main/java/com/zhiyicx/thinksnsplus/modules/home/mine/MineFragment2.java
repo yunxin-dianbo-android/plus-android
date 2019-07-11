@@ -3,6 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +14,41 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.wcy.overscroll.OverScrollLayout;
+//import com.wcy.overscroll.OverScrollLayout;
+import com.zhiyi.emoji.ViewUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
+import com.zhiyicx.thinksnsplus.modules.home.MyPostListActivity;
+import com.zhiyicx.thinksnsplus.modules.home.mine.collection.CollectionActivity;
+import com.zhiyicx.thinksnsplus.modules.home.mine.generalize.GeneralizeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.mine.mycode.MyCodeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.video.VideoDetailActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.MyUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -86,34 +105,11 @@ public class MineFragment2 extends TSFragment<MineContract.Presenter> implements
     CombinationButton btFeedBack;
     @BindView(R.id.bt_about_us)
     CombinationButton btAboutUs;
-    @BindView(R.id.overscroll)
-    OverScrollLayout overscroll;
+//    @BindView(R.id.overscroll)
+//    OverScrollLayout overscroll;
+    @BindView(R.id.rv_video_history_record)
+    RecyclerView rvVideoHistoryRecord;
     Unbinder unbinder;
-
-//    @BindView(R.id.iv_head_icon)
-//    UserAvatarView mIvHeadIcon;
-//    @BindView(R.id.tv_user_name)
-//    TextView mTvUserName;
-//    @BindView(R.id.tv_user_signature)
-//    TextView mTvUserSignature;
-//    @BindView(R.id.tv_fans_count)
-//    TextView mTvFansCount;
-//    @BindView(R.id.tv_follow_count)
-//    TextView mTvFollowCount;
-//    @BindView(R.id.tv_friends_count)
-//    TextView mTvFriendsCount;
-//    @BindView(R.id.bt_wallet)
-//    CombinationButton mBtWallet;
-//    @BindView(R.id.bt_mine_integration)
-//    CombinationButton btMineIntegration;
-//    @BindView(R.id.bt_certification)
-//    CombinationButton mBtCertification;
-//    @BindView(R.id.bt_my_qa)
-//    CombinationButton mBtMineQA;
-//    @BindView(R.id.bv_fans_new_count)
-//    BadgeView mVvFansNewCount;
-//    @BindView(R.id.bv_friends_new_count)
-//    BadgeView mBvFriendsNewCount;
 
     /**
      * 选择认证人类型的弹窗
@@ -155,9 +151,10 @@ public class MineFragment2 extends TSFragment<MineContract.Presenter> implements
 //        mBvFriendsNewCount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
     }
 
+
     @Override
     protected void initData() {
-
+        rvVideoHistoryRecord.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
     }
 
 
@@ -182,6 +179,7 @@ public class MineFragment2 extends TSFragment<MineContract.Presenter> implements
     public void onResume() {
         super.onResume();
         reLoadUserInfo(getUserVisibleHint());
+        mPresenter.updateVideoRecord();
     }
 
     @Override
@@ -314,21 +312,44 @@ public class MineFragment2 extends TSFragment<MineContract.Presenter> implements
 
     @Override
     public void updateCertification(UserCertificationInfo data) {
-//        mBtCertification.setEnabled(true);
-//        if (data != null && data.getId() != 0) {
-//            mUserCertificationInfo = data;
-//            if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.PASS.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_success));
-//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REVIEWING.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_ing));
-//            } else if (data.getStatus() == UserCertificationInfo.CertifyStatusEnum.REJECTED.value) {
-//                mBtCertification.setRightText(getString(R.string.certification_state_failed));
-//            }
-//        } else {
-//            mBtCertification.setRightText("");
-//        }
         if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();
+        }
+    }
+
+    @Override
+    public void onHistoryRecordResponseSuccess(List<VideoListBean> listBeans) {
+        if (listBeans != null && listBeans.size() == 0) {
+            rvVideoHistoryRecord.setVisibility(View.GONE);
+        } else {
+            rvVideoHistoryRecord.setVisibility(View.VISIBLE);
+            CommonAdapter commonAdapter = new CommonAdapter<VideoListBean>(getContext(), R.layout.item_video_record_horizontal_layout, listBeans) {
+                @Override
+                protected void convert(ViewHolder holder, VideoListBean videoListBean, int position) {
+                    holder.getTextView(R.id.tv_video_name).setText(videoListBean.getVideo().getName() + "");
+                    String url = MyUtils.getImagePath(videoListBean.getVideo().getCover(), ViewUtils.dip2px(getContext(), 90));
+                    GlideManager.glide(mContext, holder.getImageViwe(R.id.iv_video_bg), url);
+                    if (videoListBean != null && videoListBean.getVideo() != null && videoListBean.getVideo().getDuration() != null) {
+                        String timeFormat = MyUtils.timeFormat(videoListBean.getVideo().getDuration().intValue() * 1000);
+                        holder.getTextView(R.id.tv_video_duration).setText(timeFormat);
+                        holder.getTextView(R.id.tv_video_duration).setVisibility(View.VISIBLE);
+                    } else {
+                        holder.getTextView(R.id.tv_video_duration).setText("00:00");
+                    }
+                }
+            };
+            commonAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    VideoDetailActivity.starVideoDetailActivity(getContext(), listBeans.get(position).getVideo());
+                }
+
+                @Override
+                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    return false;
+                }
+            });
+            rvVideoHistoryRecord.setAdapter(commonAdapter);
         }
     }
 
@@ -374,27 +395,40 @@ public class MineFragment2 extends TSFragment<MineContract.Presenter> implements
     }
 
 
-    @OnClick({R.id.bv_friends_new_count, R.id.bt_watch_history, R.id.bt_mine_invitation, R.id.bt_mine_download, R.id.bt_mine_collection, R.id.bt_feed_back, R.id.bt_about_us})
+    @OnClick({R.id.bv_friends_new_count, R.id.bt_watch_history, R.id.bt_mine_invitation, R.id.bt_mine_download, R.id.bt_mine_collection, R.id.bt_feed_back,
+            R.id.bt_about_us, R.id.iv_head_icon, R.id.tv_user_name, R.id.ll_generalize_parent})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bv_friends_new_count:
                 break;
             case R.id.bt_watch_history:
+                VideoRecordActivity.starVideoRecordActivity(getContext());
                 break;
             case R.id.bt_mine_invitation:
+                MyPostListActivity.starMyPostListActivityActivity(getContext());
                 break;
             case R.id.bt_mine_download:
+                ToastUtils.showToast("敬请期待");
                 break;
             case R.id.bt_mine_collection:
-
+                CollectionActivity.starCollectionActivity(getContext());
                 break;
             case R.id.bt_feed_back:
                 getContext().startActivity(new Intent(mActivity, FeedBackActivity.class));
                 break;
             case R.id.bt_about_us:
-                String aboutUsUrl = mPresenter.getSystemConfigBean().getSite().getAbout_url();
-                String defaultAboutUsUrl = ApiConfig.APP_DOMAIN + URL_ABOUT_US;
-                CustomWEBActivity.startToWEBActivity(getContext(), TextUtils.isEmpty(aboutUsUrl) ? defaultAboutUsUrl : aboutUsUrl, getString(R.string.about_us));
+                // TODO: 2019/7/2 先屏蔽掉
+//                String aboutUsUrl = mPresenter.getSystemConfigBean().getSite().getAbout_url();
+//                String defaultAboutUsUrl = ApiConfig.APP_DOMAIN + URL_ABOUT_US;
+//                CustomWEBActivity.startToWEBActivity(getContext(), TextUtils.isEmpty(aboutUsUrl) ? defaultAboutUsUrl : aboutUsUrl, getString(R.string.about_us));
+                break;
+
+            case R.id.iv_head_icon:
+            case R.id.tv_user_name:
+                startActivity(new Intent(mActivity, UserInfoActivity.class));
+                break;
+            case R.id.ll_generalize_parent:
+                GeneralizeActivity.startGeneralizeActivity(getContext());
                 break;
         }
     }

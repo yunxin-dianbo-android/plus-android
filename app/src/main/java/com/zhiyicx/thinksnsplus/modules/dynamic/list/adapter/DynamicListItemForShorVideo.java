@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView4VideoDetail;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.LinkedHashMap;
@@ -42,6 +43,11 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVE
 
 public class DynamicListItemForShorVideo extends DynamicListBaseItem {
 
+    private boolean isTourist = true;
+
+    public void setTourist(boolean tourist) {
+        isTourist = tourist;
+    }
     /**
      * 动态列表图片数量
      */
@@ -83,12 +89,13 @@ public class DynamicListItemForShorVideo extends DynamicListBaseItem {
      * @param dynamicBean item data
      * @param positon     image item position
      */
-    private void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view,
+    private void initVideoView(final ViewHolder holder, ZhiyiVideoView4VideoDetail view,
                                final DynamicDetailBeanV2 dynamicBean, final int positon) {
         int with;
         int height;
 
         String videoUrl;
+        view.setTourist(isTourist);
         DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
         if (TextUtils.isEmpty(video.getUrl())) {
 

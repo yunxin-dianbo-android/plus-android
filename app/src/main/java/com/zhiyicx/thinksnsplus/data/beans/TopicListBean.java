@@ -33,6 +33,7 @@ public class TopicListBean extends BaseListBean implements Serializable, Parcela
      * created_at : 2018-07-23T15:04:23Z Zulu 格式，话题创建时间
      */
 
+
     @Id
     private Long id;
     private String name;

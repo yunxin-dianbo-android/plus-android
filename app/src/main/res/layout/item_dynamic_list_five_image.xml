@@ -38,6 +38,7 @@
         android:id="@+id/tv_top_flag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/tv_name"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toLeftOf="@+id/tv_excelent_flag"
@@ -50,7 +51,18 @@
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag"/>
-
+    <ImageView
+        android:id="@+id/iv_more_edit"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_tiny"
+        android:src="@mipmap/ic_more" />
     <TextView
         android:layout_marginRight="@dimen/spacing_normal"
         android:id="@+id/tv_excelent_flag"
@@ -298,7 +310,7 @@
         android:id="@+id/ll_share_comment_like_parent"
         android:layout_below="@+id/v_line"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -329,7 +341,7 @@
 
         <View
             android:layout_width="0.5dp"
-            android:layout_height="24dp"
+            android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:background="@color/color_99999999" />
 
@@ -359,7 +371,7 @@
 
         <View
             android:layout_width="0.5dp"
-            android:layout_height="24dp"
+            android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:background="@color/color_99999999" />
 

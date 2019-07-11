@@ -162,6 +162,7 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态
+    public static final String DYNAMIC_TYPE_FIND = "find"; // 热门动态
     public static final String DYNAMIC_TYPE_USERS = "users"; // 用户动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
     public static final String DYNAMIC_TYPE_MY_COLLECTION = "collections";// 我收藏的动态列表
@@ -1196,6 +1197,37 @@ public class ApiConfig {
 
    // 影视频道
     public static final String APP_PATH_VIDEO_CHANNEL = "api/" + API_VERSION_2 + "/dianbo/channels";
+
+    public static final String APP_PATH_DIANBO_STARS = "api/" + API_VERSION_2 + "/dianbo/stars";
+
+    public static final String APP_PATH_MY_VIDEO_CHANNEL = "api/" + API_VERSION_2 + "/dianbo/userChannels";
+
+    public static final String APP_PATH_MY_VIDEOS_LIST = "api/" + API_VERSION_2 + "/dianbo/getVideos";
+
+    public static final String APP_PATH_MY_VIDEOS_DETAIL = "api/" + API_VERSION_2 + "/dianbo/getVideo/{id}";
+
+    public static final String APP_PATH_MY_VIDEOS_COMMENTS = "api/" + API_VERSION_2 + "/dianbo/{id}/comments";
+
+    public static final String APP_PATH_VIDEOS_RECOMMANDS = "api/" + API_VERSION_2 + "/dianbo/getRecommendVideos/{id}";
+
+    public static final String APP_PATH_VIDEOS_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";
+
+    public static final String APP_PATH_VIDEOS_SEARCH_HISTORY = "api/" + API_VERSION_2 + "/dianbo/keywords";
+
+    public static final String APP_PATH_VIDEOS_HOT_SEARCH = "api/" + API_VERSION_2 + "/dianbo/keywords";
+
+    public static final String APP_PATH_VIDEOS_RECORD = "api/" + API_VERSION_2 + "/dianbo/videoRecord";
+
+    public static final String APP_PATH_VIDEOS_COLLECTION = "api/" + API_VERSION_2 + "/dianbo/videos/collections";
+   //collections
+    public static final String APP_PATH_COLLECT_VIDEOS = "api/" + API_VERSION_2 + "/dianbo/videos/{video_id}/{collections}";
+
+    //    http://47.97.249.200/api/v2/dianbo/commentLike
+    public static final String APP_PATH_VIDEO_COMMENT_LIKE = "api/" + API_VERSION_2 + "/dianbo/commentLike";
+
+    public static final String APP_PATH_GAME = "api/" + API_VERSION_2 + "/dianbo/game";
+
+
 
 
 }

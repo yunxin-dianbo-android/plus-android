@@ -19,6 +19,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.TopicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.VideoChannelClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.VideoClient2;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 
 import javax.inject.Singleton;
@@ -201,4 +202,9 @@ public class ServiceModule {
         return retrofit.create(VideoChannelClient.class);
     }
 
+    @Singleton
+    @Provides
+    VideoClient2 provideVideoClient2(Retrofit retrofit) {
+        return retrofit.create(VideoClient2.class);
+    }
 }

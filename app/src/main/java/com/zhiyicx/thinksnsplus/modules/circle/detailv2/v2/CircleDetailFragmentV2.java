@@ -226,6 +226,10 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     RecyclerView mRvCircleChatMember;
     @BindView(R.id.tv_circle_chat_tag)
     TextView mTvCircleChatTag;
+    @BindView(R.id.tv_circle_feed_count)
+    TextView tvCircleFeedCount;
+    @BindView(R.id.tv_circle_follow_count)
+    TextView tvCircleFollowCount;
 
     @BindView(R.id.ll_intro_container)
     LinearLayout mLlIntroCountContainer;
@@ -316,6 +320,10 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
 
     @Override
     protected void setRightLeftClick() {
+        if (mPresenter.isTourist()) {
+            showLoginPop();
+            return;
+        }
         UmengSharePolicyImpl.ShareBean forward = new UmengSharePolicyImpl.ShareBean(R.mipmap.detail_share_forwarding, getString(R.string.share_forward), Share.FORWARD);
         UmengSharePolicyImpl.ShareBean letter = new UmengSharePolicyImpl.ShareBean(R.mipmap.detail_share_sent, getString(R.string.share_letter), Share.LETTER);
         List<UmengSharePolicyImpl.ShareBean> data = new ArrayList<>();
@@ -355,10 +363,6 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         return false;
     }
 
-//    @Override
-//    protected int setToolBarBackgroud() {
-//        return android.R.color.transparent;
-//    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -459,7 +463,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
             showComment = Observable.timer(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> showCommentView());
-        }else if((requestCode == PhotoSelectorImpl.CAMERA_PHOTO_CODE || requestCode == UCrop.REQUEST_CROP || requestCode == DEFAULT_REQUST_ALBUM)&& resultCode == Activity.RESULT_OK){
+        } else if ((requestCode == PhotoSelectorImpl.CAMERA_PHOTO_CODE || requestCode == UCrop.REQUEST_CROP || requestCode == DEFAULT_REQUST_ALBUM) && resultCode == Activity.RESULT_OK) {
             if (mPhotoSelector != null) {
                 mPhotoSelector.onActivityResult(requestCode, resultCode, data);
             }
@@ -477,6 +481,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
             mPhotoSelector.onActivityResult(DEFAULT_REQUST_ALBUM, RESULT_OK, data);
         }
     }
+
     @Override
     protected void initData() {
         mPresenter.getCircleInfo();
@@ -572,6 +577,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         mVShadow.setVisibility(View.VISIBLE);
         DeviceUtils.showSoftKeyboard(mActivity, mIlvComment.getEtContent());
     }
+
     /**
      * 是否需要使用权限验证
      *
@@ -631,7 +637,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                         if (mCircleInfo.getPermissions().contains(mCircleInfo.getJoined().getRole())) {
                             if (mCircleInfo.getJoined()
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
-                                ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 90);
+                                ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation",0f, 90f);
                                 valueAnimator.setDuration(500);
                                 valueAnimator.start();
                                 valueAnimator.addListener(new Animator.AnimatorListener() {
@@ -650,7 +656,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                                                     publishPostMenuDialog.showDialog(new PublishPostMenuDialog.OnPublishListener() {
                                                         @Override
                                                         public void ondetachFromWindow() {
-                                                            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", -90);
+                                                            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 90f,0);
                                                             valueAnimator.setDuration(500);
                                                             valueAnimator.start();
                                                         }
@@ -670,11 +676,15 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                                                                                 SendDynamicDataBean sendDynamicDataBean = SharePreferenceUtils.getObject(mActivity, SharePreferenceUtils
                                                                                         .VIDEO_DYNAMIC);
                                                                                 if (checkVideoDraft(sendDynamicDataBean)) {
-                                                                                    SendDynamicActivity.startToSendDynamicActivity(getContext(),sendDynamicDataBean);/*mTopicBean*/
+                                                                                    sendDynamicDataBean.setDynamicChannlId(mCircleInfo.getId());
+                                                                                    SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);/*mTopicBean*/
                                                                                 } else {
-                                                                                    VideoSelectActivity.startVideoSelectActivity(mActivity, false,null );/*mTopicBean*/
+                                                                                    TopicListBean topicListBean = new TopicListBean();
+                                                                                    topicListBean.setId(mCircleInfo.getId());
+                                                                                    topicListBean.setName(mCircleInfo.getName());
+                                                                                    VideoSelectActivity.startVideoSelectActivity(mActivity, false, topicListBean);/*mTopicBean*/
                                                                                 }
-                                                                                closeActivity();
+//                                                                                closeActivity();
                                                                             } else {
                                                                                 showSnackErrorMessage(getString(R.string.storage_no_free));
                                                                             }
@@ -849,6 +859,10 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     private void setCircleData(CircleInfo detail) {
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
+        String postCount = String.format("帖子:%d",detail.getPosts_count());
+        tvCircleFeedCount.setText(postCount);
+        String memberCount = String.format("成员:%d",detail.getUsers_count());
+        tvCircleFollowCount.setText(memberCount);
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count() - mCircleInfo.getBlacklist_count()));
         String location = detail.getLocation();
         if (TextUtils.isEmpty(location)) {
@@ -1134,12 +1148,14 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         mTsvToolbar.setDefaultTabLinehegiht(R.integer.no_line_height);
         mVpFragment = rootView.findViewById(com.zhiyicx.baseproject.R.id.vp_fragment);
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
-        tsViewPagerAdapter.bindData(initFragments());
+
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.setTabSpacing(tabSpacing());
         mTsvToolbar.setIndicatorMode(setIndicatorMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
+
+        tsViewPagerAdapter.bindData(initFragments());
         mTsvToolbar.setLeftClickListener(this, this::setLeftClick);
         mVpFragment.setOffscreenPageLimit(getOffsetPage());
     }
@@ -1221,6 +1237,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         }
         return false;
     }
+
     public void closeActivity() {
         getActivity().finish();
 //        getActivity().overridePendingTransition(R.anim.animate_noting, R.anim.send_type_colse_fade_out);

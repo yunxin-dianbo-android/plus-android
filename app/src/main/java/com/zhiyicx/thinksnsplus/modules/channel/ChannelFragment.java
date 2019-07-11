@@ -11,18 +11,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
 import com.zhiyicx.thinksnsplus.widget.dragview.DragAdapter;
 import com.zhiyicx.thinksnsplus.widget.dragview.DragAdapter2;
 import com.zhiyicx.thinksnsplus.widget.dragview.DragGridView;
 import com.zhiyicx.thinksnsplus.widget.dragview.listener.OnDragItemClickLisnter;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,9 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
     List<VideoChannelBean> testData1 = new ArrayList<>();
     List<VideoChannelBean> testData2 = new ArrayList<>();
 
+
+    private boolean isChanged = false;
+
     @Override
     public void showMessage(String message) {
         ToastUtils.showToast(message);
@@ -80,7 +87,7 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
         vStatusBarPlaceholder.setLayoutParams(layoutParams);
         // 适配非6.0以上、非魅族系统、非小米系统状态栏
         if (getActivity() != null && StatusBarUtils.intgetType(getActivity().getWindow()) == 0) {
-//            vStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
+//           vStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
             vStatusBarPlaceholder.setBackgroundResource(R.drawable.common_statubar_bg);
         }
         //不需要返回键
@@ -126,6 +133,15 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
         return R.mipmap.ic_back;
     }
 
+
+    @Override
+    protected void setLeftClick() {
+        if (isChanged) {
+            AppApplication.setVideoChannelListBeans(testData1);
+//            EventBus.getDefault().post(testData1, EventBusTagConfig.MAIN_FRAGMENT_ADD_DELETE__CHANNEL);
+        }
+        super.setLeftClick();
+    }
 
     protected void setToolBarTextColor() {
         // 如果toolbar背景是白色的，就将文字颜色设置成黑色
@@ -173,13 +189,21 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (dragAdapter1.isModifyMode()) {
+                    if (i < dragAdapter1.getFixNum()) {
+                        //固定的无法删除
+                        return;
+                    }
+                    isChanged = true;
                     VideoChannelBean item = testData1.get(i);
                     testData1.remove(i);
                     dragAdapter1.notifyDataSetChanged();
                     testData2.add(item);
                     dragAdapter2.notifyDataSetChanged();
                     channelFragmentPresenter.deleteVideoChannel(item.getId() + "");
-
+                } else {
+                    VideoChannelBean videoChannelBean = (VideoChannelBean) dragAdapter1.getItem(i);
+                    EventBus.getDefault().post(videoChannelBean, EventBusTagConfig.MAIN_FRAGMENT_CHANG_CHANNEL);
+                    getActivity().finish();
                 }
             }
         });
@@ -187,6 +211,7 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (dragAdapter2.isModifyMode()) {
+                    isChanged = true;
                     VideoChannelBean item = testData2.get(i);
                     testData2.remove(i);
                     testData1.add(item);
@@ -197,6 +222,7 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
                 }
             }
         });
+
 //        dragAdapter1.setOnDragItemClickLisnter(new OnDragItemClickLisnter() {
 //            @Override
 //            public void onItemClickListener(Object object, int position) {
@@ -246,11 +272,27 @@ public class ChannelFragment extends TSFragment implements ChannelFragmentContra
     @Override
     public void onNetResponseSuccess(VideoChannelListBean datas) {
         LogUtils.e("wulianshu", "onNetSuccess");
-        datas.user_channels.addAll(datas.other_channels);
-        testData1.addAll(datas.user_channels);
-        testData2.addAll(datas.other_channels);
+//        datas.user_channels.addAll(datas.other_channels);
+        testData1.clear();
+        testData2.clear();
+        if (datas.default_channels != null) {
+            testData1.addAll(datas.default_channels);
+            dragAdapter1.setFixNum(datas.default_channels.size());
+            dragGridView4MyVideoChannel.setmFixed_nums(datas.default_channels.size());
+        } else {
+            dragAdapter1.setFixNum(0);
+        }
+        if (datas.user_channels != null) {
+            testData1.addAll(datas.user_channels);
+        }
+        if (datas.other_channels != null) {
+            testData2.addAll(datas.other_channels);
+        }
+
+
         dragAdapter1.notifyDataSetChanged();
         dragAdapter2.notifyDataSetChanged();
+
     }
 
     @Override

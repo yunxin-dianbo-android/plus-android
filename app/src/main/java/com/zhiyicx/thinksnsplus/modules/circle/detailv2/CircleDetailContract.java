@@ -78,6 +78,8 @@ public interface CircleDetailContract {
         void handleExcellent(int dataPosition);
 
         void managerStickTop(Long id, int position);
+
+        void onPublishDynamicSuccess(CirclePostListBean circlePostListBean);
     }
 
     interface Presenter extends ITSListPresenter<CirclePostListBean> {

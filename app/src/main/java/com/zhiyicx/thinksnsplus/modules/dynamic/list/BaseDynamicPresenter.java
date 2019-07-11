@@ -39,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -102,6 +103,14 @@ public abstract class BaseDynamicPresenter<V extends DynamicContract.View<P>, P 
     protected BaseDynamicRepository mDynamicRepository;
     private Subscription dynamicLisSub;
 
+    public DynamicDetailBeanV2 getmShareDynamic() {
+        return mShareDynamic;
+    }
+
+    public void setmShareDynamic(DynamicDetailBeanV2 mShareDynamic) {
+        this.mShareDynamic = mShareDynamic;
+    }
+
     protected DynamicDetailBeanV2 mShareDynamic;
     private Subscription subscribe;
 
@@ -145,57 +154,134 @@ public abstract class BaseDynamicPresenter<V extends DynamicContract.View<P>, P 
         if (dynamicLisSub != null && !dynamicLisSub.isUnsubscribed()) {
             dynamicLisSub.unsubscribe();
         }
-
-        dynamicLisSub = mDynamicRepository.getDynamicListV2(mRootView.getDynamicType(), maxId,
-                mRootView.getKeyWord(), null, isLoadMore, null, null)
-                .observeOn(Schedulers.io())
-                .map(listBaseJson -> {
-                    List<DynamicDetailBeanV2> data;
-                    // 更新数据库
-                    insertOrUpdateDynamicDBV2(listBaseJson);
-                    // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                    if (!isLoadMore) {
-                        if (ApiConfig.DYNAMIC_TYPE_NEW.equals(mRootView.getDynamicType()) || ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(mRootView.getDynamicType())) {
-                            data = getDynamicBeenFromDBV2();
-                            data.addAll(listBaseJson);
-                        } else {
-                            data = new ArrayList<>(listBaseJson);
-                        }
-                    } else {
-                        data = new ArrayList<>(listBaseJson);
-                    }
-                    // 把自己发的评论加到评论列表的前面
-                    for (int i = 0; i < listBaseJson.size(); i++) {
-                        // 处理友好显示数据
-                        listBaseJson.get(i).handleData();
-                        List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
-                                .getFeed_mark());
-                        if (!dynamicCommentBeen.isEmpty()) {
-                            dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
-                            listBaseJson.get(i).getComments().clear();
-                            listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
-                        }
-                    }
-
-                    return data;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+        if (ApiConfig.DYNAMIC_TYPE_FIND.equals(mRootView.getDynamicType())) {
+            if (maxId == null || maxId.intValue() == 0) {
+//                mDynamicRepository.getPostHotSuperStar();
+                Observable observableSuperStar = mDynamicRepository.getPostHotSuperStar();
+                Subscription commentSubSuperStar = observableSuperStar.subscribe(new BaseSubscribeForV2() {
                     @Override
-                    protected void onSuccess(List<DynamicDetailBeanV2> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    protected void onSuccess(Object data) {
+                        List<TopSuperStarBean> result = (List<TopSuperStarBean>) data;
+                        mRootView.onNetSuccessHotSuperStar(result);
+//                  mRootView.onNetResponseSuccess(result, isLoadMore);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
+                        mRootView.onResponseError(null, isLoadMore);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        mRootView.showMessage(throwable.getMessage());
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+                addSubscrebe(commentSubSuperStar);
+            }
+            dynamicLisSub = mDynamicRepository.getHotDynamicV2(mRootView.getDynamicType(), maxId, mRootView.getKeyWord(), isLoadMore, null)
+                    .observeOn(Schedulers.io())
+                    .map(listBaseJson -> {
+                        List<DynamicDetailBeanV2> data;
+                        // 更新数据库
+                        insertOrUpdateDynamicDBV2(listBaseJson);
+                        // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (!isLoadMore) {
+                            if (ApiConfig.DYNAMIC_TYPE_NEW.equals(mRootView.getDynamicType()) || ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(mRootView.getDynamicType())) {
+                                data = getDynamicBeenFromDBV2();
+                                data.addAll(listBaseJson);
+                            } else {
+                                data = new ArrayList<>(listBaseJson);
+                            }
+                        } else {
+                            data = new ArrayList<>(listBaseJson);
+                        }
+                        // 把自己发的评论加到评论列表的前面
+                        for (int i = 0; i < listBaseJson.size(); i++) {
+                            // 处理友好显示数据
+                            listBaseJson.get(i).handleData();
+                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
+                                    .getFeed_mark());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                                listBaseJson.get(i).getComments().clear();
+                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                            }
+                        }
+
+                        return data;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+                        @Override
+                        protected void onSuccess(List<DynamicDetailBeanV2> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.showMessage(message);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+        }else {
+            //String type, Long after, String search, /*Long userId, */final boolean isLoadMore,String chooseType/*, String id*/
+            dynamicLisSub = mDynamicRepository.getDynamicListV2(mRootView.getDynamicType(), maxId,
+                    mRootView.getKeyWord(), null, isLoadMore, null, null)
+                    .observeOn(Schedulers.io())
+                    .map(listBaseJson -> {
+                        List<DynamicDetailBeanV2> data;
+                        // 更新数据库
+                        insertOrUpdateDynamicDBV2(listBaseJson);
+                        // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (!isLoadMore) {
+                            if (ApiConfig.DYNAMIC_TYPE_NEW.equals(mRootView.getDynamicType()) || ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(mRootView.getDynamicType())) {
+                                data = getDynamicBeenFromDBV2();
+                                data.addAll(listBaseJson);
+                            } else {
+                                data = new ArrayList<>(listBaseJson);
+                            }
+                        } else {
+                            data = new ArrayList<>(listBaseJson);
+                        }
+                        // 把自己发的评论加到评论列表的前面
+                        for (int i = 0; i < listBaseJson.size(); i++) {
+                            // 处理友好显示数据
+                            listBaseJson.get(i).handleData();
+                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i)
+                                    .getFeed_mark());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                                listBaseJson.get(i).getComments().clear();
+                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                            }
+                        }
+
+                        return data;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+                        @Override
+                        protected void onSuccess(List<DynamicDetailBeanV2> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.showMessage(message);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+        }
 
         addSubscrebe(dynamicLisSub);
     }
@@ -823,28 +909,28 @@ public abstract class BaseDynamicPresenter<V extends DynamicContract.View<P>, P 
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
     public void handleSendDynamic(DynamicDetailBeanV2 dynamicBean) {
-
-        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
-                || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
-            Subscription subscribe = Observable.just(dynamicBean)
-                    .observeOn(Schedulers.computation())
-                    .map(dynamicDetailBeanV2 -> hasDynamicContanied(dynamicBean))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(position -> {
-                        // 如果列表有当前数据
-                        if (position[1] != -1) {
-                            mRootView.showNewDynamic(position[1], dynamicBean.getMLetter() != null);
-                        } else {
-                            List<DynamicDetailBeanV2> temps = new ArrayList<>(mRootView.getListDatas());
-                            temps.add(position[0], dynamicBean);
-                            mRootView.getListDatas().clear();
-                            mRootView.getListDatas().addAll(temps);
-                            temps.clear();
-                            mRootView.showNewDynamic(position[0], dynamicBean.getMLetter() != null);
-                        }
-                    }, Throwable::printStackTrace);
-            addSubscrebe(subscribe);
-        }
+//
+//        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
+//                || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
+//            Subscription subscribe = Observable.just(dynamicBean)
+//                    .observeOn(Schedulers.computation())
+//                    .map(dynamicDetailBeanV2 -> hasDynamicContanied(dynamicBean))
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(position -> {
+//                        // 如果列表有当前数据
+//                        if (position[1] != -1) {
+////                            mRootView.showNewDynamic(position[1], dynamicBean.getMLetter() != null);
+//                        } else {
+//                            List<DynamicDetailBeanV2> temps = new ArrayList<>(mRootView.getListDatas());
+//                            temps.add(position[0], dynamicBean);
+//                            mRootView.getListDatas().clear();
+//                            mRootView.getListDatas().addAll(temps);
+//                            temps.clear();
+//                            mRootView.showNewDynamic(position[0], dynamicBean.getMLetter() != null);
+//                        }
+//                    }, Throwable::printStackTrace);
+//            addSubscrebe(subscribe);
+//        }
     }
 
     /**

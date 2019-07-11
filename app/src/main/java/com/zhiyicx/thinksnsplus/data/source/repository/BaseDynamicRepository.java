@@ -18,10 +18,13 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AddSearchKeyResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SimpleMusic;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.UploadPostCommentResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.notify.AtMeaasgeBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
@@ -132,6 +135,18 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         mMusicClient = serviceManager.getMusicClient();
     }
 
+    /**
+     * 获取热名明星
+     *
+     * @return
+     */
+    @Override
+    public Observable<List<TopSuperStarBean>> getPostHotSuperStar() {
+        return mCircleClient.getPostHotSuperStar()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     @Override
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
         Gson gson = new Gson();
@@ -158,6 +173,38 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         }
         return dealWithDynamicListV2(observable, type, search, chooseType, isLoadMore);
     }
+
+    @Override
+    public Observable<AddSearchKeyResInfo> handleLike4Comment(Long comment_id) {
+        return mDynamicClient.handleLike4Comment(comment_id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<AddSearchKeyResInfo> handleDeleteLike4Comment(Long comment_id) {
+        return mDynamicClient.handleDeleteLike4Comment(comment_id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Observable<List<DynamicDetailBeanV2>> getHotDynamicV2(String type, Long after, String search, /*Long userId, */final boolean isLoadMore,
+                                                                 String chooseType/*, String id*/) {
+        Observable<DynamicBeanV2> observable;
+        // 收藏的动态地址和返回大不一样，真滴难受
+//        if (DYNAMIC_TYPE_MY_COLLECTION.equals(type)) {
+//            observable = mDynamicClient.getHotDynamicV2(0l, TSListFragment.DEFAULT_PAGE_SIZE, after.intValue(), "hot")
+//                    .flatMap(detailBeanV2 -> {
+//                        DynamicBeanV2 data = new DynamicBeanV2();
+//                        data.setFeeds(detailBeanV2);
+//                        return Observable.just(data);
+//                    });
+//        } else {
+        observable = mDynamicClient.getHotDynamicV2(0l, TSListFragment.DEFAULT_PAGE_SIZE, after.intValue(), "hot");
+//        }
+        return dealWithDynamicListV2(observable, type, search, chooseType, isLoadMore);
+    }
+
 
     @Override
     public Observable<List<AtMeaasgeBean>> getAtMessages(int index, Integer limit, String direction) {
@@ -1277,6 +1324,12 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
+    public Observable<UploadPostCommentResInfo> sendCommentV3(Integer feedId, String body, Integer reply_user, Integer reply_comment_id) {
+      return  mDynamicClient.sendDynamicV3(feedId,body,reply_user,reply_comment_id).subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread());
+    }
+//    UploadPostCommentResInfo
+
     @Override
     public Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout) {
         return mDynamicClient.setDynamicCommentToll(feed_id, amout)
@@ -1683,7 +1736,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 }
                             }
                         }
-                        boolean needTopData = TextUtils.isEmpty(search) && !ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(type) && !(ApiConfig
+                        boolean needTopData = !TextUtils.isEmpty(search) || !ApiConfig.DYNAMIC_TYPE_FOLLOWS.equals(type) && !(ApiConfig
                                 .DYNAMIC_TYPE_USERS.equals(type) && !MyDynamicTypeEnum.PINNED.value.equals(chooseType));
                         if (needTopData) {
                             dynamicBeanV2.getFeeds().addAll(0, topData);

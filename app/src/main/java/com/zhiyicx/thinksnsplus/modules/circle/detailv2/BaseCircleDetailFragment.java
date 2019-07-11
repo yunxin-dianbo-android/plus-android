@@ -11,9 +11,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.gson.JsonObject;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyi.richtexteditorlib.view.dialogs.LinkDialog;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -24,6 +26,7 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -33,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CircleZipBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
@@ -52,14 +56,17 @@ import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListIt
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.CirclePostListItemForZeroImage;
+import com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.pre.PreCircleActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.report.ReportActivity;
 import com.zhiyicx.thinksnsplus.modules.report.ReportType;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
+import com.zhiyicx.thinksnsplus.utils.MyTransforUtil;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostNoPullRecyclerView;
 import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
@@ -74,6 +81,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.JZVideoPlayerManager;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -81,6 +90,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
+import static com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert.DEFAULT_ADVERT_FROM_TAG;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_VIDEO_STATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 
 /**
@@ -102,7 +117,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     public static final String CIRCLE_TYPE = "circle_type";
     private String mDynamicType = "topic_dynamic";
     @Inject
-    CircleDetailPresenter mCircleDetailPresenter;
+    protected CircleDetailPresenter mCircleDetailPresenter;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
@@ -119,7 +134,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     private Subscription showComment;
     private CirclePostCommentBean mCirclePostCommentBean;
 
-
+   protected   CirclePostListItemForShorVideo circlePostListItemForShorVideo;
     public static BaseCircleDetailFragment newInstance(BaseCircleRepository.CircleMinePostType circleMinePostType) {
         BaseCircleDetailFragment circleDetailFragment = new BaseCircleDetailFragment();
         Bundle bundle = new Bundle();
@@ -211,7 +226,19 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public String getType() {
-        return "";
+        if (mCircleMinePostType == BaseCircleRepository.CircleMinePostType.LATEST_POST) {
+            return "group";
+        } else if (mCircleMinePostType == BaseCircleRepository.CircleMinePostType.LATEST_REPLY) {
+            return "group_reply";
+        } else if (mCircleMinePostType == BaseCircleRepository.CircleMinePostType.EXCELLENT) {
+            return "group_fine";
+        }
+        return "group";
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
     }
 
     @Override
@@ -228,12 +255,13 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         setAdapter(adapter, new CirclePostListItemForEightImage(getContext()));
         setAdapter(adapter, new CirclePostListItemForNineImage(getContext()));
 
-        setAdapter(adapter, new CirclePostListItemForShorVideo(getContext(), this) {
+        circlePostListItemForShorVideo = new CirclePostListItemForShorVideo(getContext(), this) {
             @Override
             protected String videoFrom() {
                 return mDynamicType;
             }
-        });
+        };
+        setAdapter(adapter, circlePostListItemForShorVideo);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -310,9 +338,80 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        CirclePostDetailActivity.startCirclePostDetailActivity(getActivity(), mListDatas.get(position)
-                .getGroup_id(), mListDatas.get(position).getId(), false, canGotoCircle());
+//        CirclePostDetailActivity.startCirclePostDetailActivity(getActivity(), mListDatas.get(position)
+//                .getGroup_id(), mListDatas.get(position).getId(), false, canGotoCircle());
+
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
+        if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
+            return;
+        }
+        CirclePostListBean circlePostListBean = mListDatas.get(position);
+//        DynamicDetailBeanV2 detailBeanV2 =
+        // 是广告
+//        if (circlePostListBean.getFeed_from() == DEFAULT_ADVERT_FROM_TAG) {
+//            toAdvert(detailBeanV2.getDeleted_at(), detailBeanV2.getFeed_content());
+//            return;
+//        }
+//        boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
+//                !detailBeanV2.getPaid_node().isPaid()
+//                && detailBeanV2.getUser_id().intValue() != AppApplication.getMyUserIdWithdefault();
+//        if (canNotLookWords) {
+//            initImageCenterPopWindow(position, position,
+//                    detailBeanV2.getPaid_node().getAmount(),
+//                    detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
+//            return;
+//        }
+
+        goDynamicDetail(position, false, (ViewHolder) holder);
     }
+
+    private void goDynamicDetail(int position, boolean isLookMoreComment, ViewHolder holder) {
+        // 还未发送成功的动态列表不查看详情
+        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() <= 0) {
+            return;
+        }
+
+        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+        Bundle bundle = new Bundle();
+        CirclePostListBean circlePostListBean = mListDatas.get(position);
+//        String json = JsonUtil.objectToString(circlePostListBean);
+//        DynamicDetailBeanV2 dynamicDetailBeanV2 = (DynamicDetailBeanV2) JsonUtil.parsData(json, DynamicDetailBeanV2.class);
+        DynamicDetailBeanV2 dynamicDetailBeanV2 = MyTransforUtil.transforCirclePost2DynamicBeanV2(circlePostListBean);
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
+        bundle.putString(DYNAMIC_DETAIL_DATA_TYPE, ApiConfig.DYNAMIC_TYPE_HOTS);
+        bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);
+
+        bundle.putBoolean(LOOK_COMMENT_MORE, isLookMoreComment);
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
+
+        if (isLookMoreComment) {
+            ZhiyiVideoView.releaseAllVideos();
+            intent.putExtras(bundle);
+            startActivity(intent);
+            return;
+        }
+        ZhiyiVideoView playView = null;
+        try {
+            playView = holder.getView(R.id.videoplayer);
+        } catch (Exception ignore) {
+
+        }
+
+        if (playView != null && JZVideoPlayerManager.getFirstFloor() != null) {
+            playView.mVideoFrom = mDynamicType;
+            if (playView.currentState == ZhiyiVideoView.CURRENT_STATE_PLAYING) {
+                playView.startButton.callOnClick();
+            }
+            bundle.putInt(DYNAMIC_VIDEO_STATE, playView.currentState);
+            playView.textureViewContainer.removeView(JZMediaManager.textureView);
+            playView.onStateNormal();
+        }
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
+
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -897,7 +996,7 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
                 .buildItem2Str(item2StrRes)
                 .buildMoneyStr(moneyStr)
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mPresenter.dealCircleJoinOrExit(circleInfo,null);
+                    mPresenter.dealCircleJoinOrExit(circleInfo, null);
                     mPayPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
@@ -952,6 +1051,14 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
         dialog.show(getFragmentManager(), LinkDialog.Tag);
     }
 
+    @Override
+    public void onPublishDynamicSuccess(CirclePostListBean circlePostListBean) {
+        if (getType().equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value)) {
+            mListDatas.add(0, circlePostListBean);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     protected void showDeleteTipPopupWindow(String tipStr,
                                             boolean createEveryTime, final CirclePostListBean circlePostListBean,
                                             int position) {
@@ -997,9 +1104,10 @@ public class BaseCircleDetailFragment extends TSListFragment<CircleDetailContrac
     public void shareWihtType(int position, SHARE_MEDIA type) {
         position -= mHeaderAndFooterWrapper.getHeadersCount();
         if (mListDatas.get(position).getId() > 0) {
-            mPresenter.sharePost(mListDatas.get(position), getShareBitmap(position, R.id.thumb),type);
+            mPresenter.sharePost(mListDatas.get(position), getShareBitmap(position, R.id.thumb), type);
         }
     }
+
     /**
      * 获取分享动态需要的图片
      *

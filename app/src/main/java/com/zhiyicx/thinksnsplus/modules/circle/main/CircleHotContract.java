@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.fordownload.ITSListPresenterForDownload;
 import com.zhiyicx.thinksnsplus.base.fordownload.ITSListViewForDownload;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopPostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
@@ -20,7 +21,7 @@ import java.util.List;
  * @Description
  */
 public interface CircleHotContract {
-    interface View extends ITSListViewForDownload<CirclePostListBean, Presenter> {
+    interface View extends ITSListViewForDownload<DynamicDetailBeanV2, Presenter> {
 //        void updateCircleCount(int count);
 //
 //        List<CircleInfo> getJoinedCircles();
@@ -34,7 +35,7 @@ public interface CircleHotContract {
         void onNetSuccessHotSuperStar(List<TopSuperStarBean> topSuperStarBeans);
     }
 
-    interface Presenter extends ITSListPresenterForDownload<CirclePostListBean> {
+    interface Presenter extends ITSListPresenterForDownload<DynamicDetailBeanV2> {
 
     }
 

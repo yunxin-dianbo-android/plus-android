@@ -24,6 +24,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VertifyCodeRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import org.simple.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME;
 import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_MAX_COUNT;
 import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_LOG_IN;
 
 /**
  * @author LiuChao
@@ -170,6 +173,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.View> impleme
                     @Override
                     protected void onSuccess(Boolean data) {
                         closeTimer();
+                        EventBus.getDefault().post(true,EVENT_LOG_IN);
                         mRootView.setLoginState(data);
                     }
 

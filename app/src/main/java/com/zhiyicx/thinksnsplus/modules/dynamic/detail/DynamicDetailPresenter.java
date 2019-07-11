@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.base.fordownload.AppListPresenterForDownload;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AddSearchKeyResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -45,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.Letter;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.UploadPostCommentResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -114,6 +116,8 @@ public class DynamicDetailPresenter extends AppListPresenterForDownload<
 
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;
+
+
     private boolean mIsNeedDynamicListRefresh = false;
     private boolean mIsAllDataReady = false;
     private Subscription subscribe;
@@ -433,6 +437,25 @@ public class DynamicDetailPresenter extends AppListPresenterForDownload<
     }
 
     @Override
+    public void handleLike4Comment(Long comment_id, boolean isLike, int position) {
+        if (isLike) {
+            mBaseDynamicRepository.handleLike4Comment(comment_id).subscribe(new BaseSubscribeForV2<AddSearchKeyResInfo>() {
+                @Override
+                protected void onSuccess(AddSearchKeyResInfo data) {
+                    mRootView.onCommentLikeStatuChanged(isLike, position);
+                }
+            });
+        } else {
+            mBaseDynamicRepository.handleLike4Comment(comment_id).subscribe(new BaseSubscribeForV2<AddSearchKeyResInfo>() {
+                @Override
+                protected void onSuccess(AddSearchKeyResInfo data) {
+                    mRootView.onCommentLikeStatuChanged(isLike, position);
+                }
+            });
+        }
+    }
+
+    @Override
     public void handleCollect(DynamicDetailBeanV2 dynamicBean) {
         // 收藏
         // 修改数据
@@ -504,7 +527,7 @@ public class DynamicDetailPresenter extends AppListPresenterForDownload<
                 ChooseFriendActivity.startChooseFriendActivity(((BaseFragment) mRootView).getActivity(), letter);
                 break;
             case DOWNLOAD:
-                if (hasVideo){
+                if (hasVideo) {
                     String videoUrl = String.format(ApiConfig.APP_DOMAIN + ApiConfig.FILE_PATH,
                             mRootView.getCurrentDynamic().getVideo().getVideo_id());
                     downloadFile(videoUrl);
@@ -667,6 +690,17 @@ public class DynamicDetailPresenter extends AppListPresenterForDownload<
         mBaseDynamicRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
                 commentBean.getComment_mark());
         mRootView.refreshData();
+    }
+
+
+    @Override
+    public void sendCommentV3(Integer feedId, String body, Integer reply_user, Integer reply_comment_id) {
+        mBaseDynamicRepository.sendCommentV3(feedId, body, reply_user, reply_comment_id).subscribe(new BaseSubscribeForV2<UploadPostCommentResInfo>() {
+            @Override
+            protected void onSuccess(UploadPostCommentResInfo data) {
+                mRootView.onPublishCommentsSuccess(data.comment);
+            }
+        });
     }
 
     /**

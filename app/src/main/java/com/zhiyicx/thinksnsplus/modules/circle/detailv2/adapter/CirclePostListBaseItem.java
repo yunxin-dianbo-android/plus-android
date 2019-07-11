@@ -155,7 +155,7 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_zero_image;
+        return R.layout.item_circle_post_list_zero_image;
     }
 
     @Override
@@ -177,8 +177,14 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
             holder.setText(R.id.tv_name, circlePostListBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, circlePostListBean.getFriendlyTime());
             holder.setText(R.id.tv_title, circlePostListBean.getTitle());
+            holder.setText(R.id.tv_come_from, circlePostListBean.getGroup().getName() + "");
+
+
+            holder.getTextView(R.id.tv_share_count).setText(circlePostListBean.getViews_count() + "");
+            holder.getTextView(R.id.tv_comment_count).setText(circlePostListBean.getComments_count() + "");
+            holder.getTextView(R.id.tv_like_count).setText(circlePostListBean.getLikes_count() + "");
+
             ((TextView) holder.getView(R.id.tv_title)).setTypeface(Typeface.DEFAULT_BOLD);
-//            holder.setTextColor(R.id.tv_title, mContext.getResources().getColor(R.color.color_EA3378));
             TextView tvTitle = holder.getView(R.id.tv_title);
             tvTitle.setVisibility(View.GONE);
             String content = circlePostListBean.getFriendlyContent();
@@ -208,9 +214,11 @@ public class CirclePostListBaseItem implements ItemViewDelegate<CirclePostListBe
                 excelentFlagView.setVisibility(showPostExcelentTag && !TextUtils.isEmpty(circlePostListBean.getExcellent_at()) ?
                         View.VISIBLE : View.GONE);
                 excelentFlagView.setText(R.string.circle_post_excelent_tag);
+                excelentFlagView.setVisibility(View.GONE);
                 topFlagView.setText(R.string.circle_post_top_tag);
+                topFlagView.setVisibility(View.GONE);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
             if (TextUtils.isEmpty(content)) {

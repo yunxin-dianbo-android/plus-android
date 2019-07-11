@@ -23,7 +23,7 @@ import skin.support.app.SkinCompatActivity;
 /**
  * @Describe Activity 基类
  * @Author Jungle68
- * @Date 2016/12/14
+ * @Date 2016/12/14D
  * @Contact 335891510@qq.com
  */
 

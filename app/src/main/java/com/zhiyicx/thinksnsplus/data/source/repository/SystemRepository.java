@@ -15,6 +15,7 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.GameInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -262,6 +263,18 @@ public class SystemRepository implements ISystemRepository {
     public Observable<List<AppVersionBean>> getAppNewVersion() {
 
         return mCommonClient.getAppNewVersion(DeviceUtils.getVersionCode(mContext), "android")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取新版本
+     *
+     * @return
+     */
+    @Override
+    public Observable<GameInfoBean> getGameInfo() {
+        return mCommonClient.getGameInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

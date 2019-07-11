@@ -572,9 +572,19 @@ public class ImageUtils {
      * @param part    压缩比例 0-100
      */
     public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
-
+        if(h>4000){
+            h = 4000;
+        }
         String url = imagePathConvertV2(storage, w, h, part, canLook);
         return imagePathConvertV2(url, token);
+    }
+
+    public static String imagePath(boolean canLook, int storage, int w, int h, int part) {
+        if(h>4000){
+            h = 4000;
+        }
+        String url = imagePathConvertV2(storage, w, h, part, canLook);
+        return url;
     }
 
 
@@ -641,8 +651,8 @@ public class ImageUtils {
                 return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_NQ, storage,w,h);
             }
         } else {
-            if (part < 40) {
-                part = 40;
+            if (part < 30) {
+                part = 30;
             }
             return String.format(Locale.getDefault(), ApiConfig.APP_DOMAIN + ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
         }

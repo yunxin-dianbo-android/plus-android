@@ -1,15 +1,17 @@
-<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
-
-    <!--    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">-->
+    tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_2D2E30">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/spacing_normal_large"
+                android:layout_marginTop="15dp"
                 android:src="@mipmap/pic_default_secret"
                 app:ts_avatare_size="@dimen/headpic_for_user_center" />
 
@@ -78,10 +80,12 @@
 
         <!--粉丝，关注-->
         <LinearLayout
+            android:id="@+id/ll_generalize_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/common_statubar_bg"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/spacing_large">
             <!--粉丝-->
@@ -132,7 +136,7 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="match_parent"
+                android:layout_height="24dp"
                 android:background="@color/color_cecece" />
             <!--关注-->
             <LinearLayout
@@ -171,7 +175,7 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="match_parent"
+                android:layout_height="24dp"
                 android:background="@color/color_cecece" />
             <!--好友-->
             <RelativeLayout
@@ -243,7 +247,20 @@
                 app:leftImage="@mipmap/ic_video_history"
                 app:leftText="@string/watch_history"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="true" />
+                app:showLine="false" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_video_history_record"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/color_99999999" />
             <!--认证-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_mine_invitation"
@@ -304,7 +321,7 @@
                 app:leftImage="@mipmap/ic_mine_about_us_left"
                 app:leftText="@string/about_us"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="true" />
+                app:showLine="false" />
 
             <View
                 android:layout_width="match_parent"
@@ -401,5 +418,4 @@
                      app:showLine="false" />-->
         </LinearLayout>
     </LinearLayout>
-    <!-- </ScrollView>-->
-</com.wcy.overscroll.OverScrollLayout>
+</ScrollView><!--</com.wcy.overscroll.OverScrollLayout>-->

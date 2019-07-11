@@ -34,10 +34,12 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA
 import com.zhiyicx.thinksnsplus.R
 import com.zhiyicx.thinksnsplus.base.AppApplication
 import com.zhiyicx.thinksnsplus.base.fordownload.IPresenterForDownload
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_LOG_OUT
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity
@@ -47,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindFragment.DEAL_T
 import com.zhiyicx.thinksnsplus.modules.settings.blacklist.BlackListActivity
 import com.zhiyicx.thinksnsplus.modules.settings.init_password.InitPasswordActivity
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil
+import org.simple.eventbus.EventBus
 import java.util.concurrent.TimeUnit
 
 /**
@@ -189,7 +192,7 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
             mTvChooseTip!!.visibility = View.GONE
         }
         mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder)
-        initStatusBar();
+        initStatusBar()
     }
 
     fun initStatusBar() {
@@ -364,7 +367,13 @@ class SettingsFragment : TSFragment<SettingsContract.Presenter>(), SettingsContr
                     if (mPresenter.loginOut()) {
                         SharePreferenceUtils.saveBoolean(mActivity, IPresenterForDownload.ALLOW_GPRS, false)
                         NotificationUtil.cancelAllNotification(context)
-                        startActivity(Intent(activity, LoginActivity::class.java))
+//                      startActivity(Intent(activity, LoginActivity::class.java))
+                        var intent = Intent(activity, HomeActivity::class.java)
+//                        var bundle = Bundle()
+//                        bundle.putBoolean("isFromLogOut",true)
+//                        intent.putExtras(bundle)
+                        EventBus.getDefault().post(true,EVENT_LOG_OUT)
+                        startActivity(intent)
                     }
                     mLoginoutPopupWindow!!.hide()
                 }

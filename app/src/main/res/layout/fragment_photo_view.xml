@@ -3,16 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_photo_view"
     android:layout_width="match_parent"
+    android:background="@drawable/common_statubar_bg"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+   <!-- <include layout="@layout/toolbar_custom_contain_status_bar"/>-->
 
     <com.zhiyicx.baseproject.widget.photoview.HackyViewPager
         android:id="@+id/vp_photos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white"
-        />
+        android:background="@color/white" />
 
     <include layout="@layout/include_horizontal_divider"/>
 

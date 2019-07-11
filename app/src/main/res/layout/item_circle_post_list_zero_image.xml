@@ -33,6 +33,7 @@
 
     <TextView
         android:id="@+id/tv_top_flag"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/tv_name"
@@ -288,8 +289,8 @@
         android:layout_below="@id/dlmv_menu"
         android:layout_toRightOf="@+id/iv_headpic"
         android:visibility="gone" />
-
-    <include layout="@layout/include_dynamic_list_comment_view" />
+<!--include_dynamic_list_comment_view-->
+    <include layout="@layout/include_circle_post_list_comment_view" />
 
 
 </RelativeLayout>

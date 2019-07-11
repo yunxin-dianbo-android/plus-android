@@ -237,7 +237,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     @Override
     public void onNetResponseSuccess(@NotNull List<CircleInfo> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
-        checkEmptyView();
+//        checkEmptyView();
     }
 
     @Override
@@ -247,7 +247,7 @@ public class SearchCircleFragment extends BaseCircleListFragment implements ISea
     @Override
     public void onResponseError(Throwable throwable, boolean isLoadMore) {
         super.onResponseError(throwable, isLoadMore);
-        checkEmptyView();
+//        checkEmptyView();
     }
 
     private void checkEmptyView() {

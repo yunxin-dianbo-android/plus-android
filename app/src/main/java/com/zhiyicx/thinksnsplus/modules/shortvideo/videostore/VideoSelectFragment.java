@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.TopicListBean;
@@ -57,6 +58,9 @@ public class VideoSelectFragment extends TSListFragment {
     // 分批次加载预留
     private List<VideoInfo> copyData;
 
+
+    View mStatusBarPlaceholder;
+
     public static VideoSelectFragment newInstance(Bundle bundle) {
         VideoSelectFragment videoSelectFragment = new VideoSelectFragment();
         videoSelectFragment.setArguments(bundle);
@@ -76,6 +80,22 @@ public class VideoSelectFragment extends TSListFragment {
     @Override
     protected void onEmptyViewClick() {
 
+    }
+
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override
@@ -115,6 +135,22 @@ public class VideoSelectFragment extends TSListFragment {
     boolean tag = false;
 
     @Override
+    protected View getContentView() {
+        View contentView = super.getContentView();
+        mStatusBarPlaceholder = contentView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+        return contentView;
+
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         VideoGridViewAdapter adapter = new VideoGridViewAdapter(mActivity, R.layout.item_select_video, mListDatas);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -128,7 +164,7 @@ public class VideoSelectFragment extends TSListFragment {
                     if (getArguments() != null) {
                         topic = getArguments().getParcelable(SearchTopicFragment.TOPIC);
                     }
-                    RecordActivity.startRecordActivity(mActivity,topic);
+                    RecordActivity.startRecordActivity(mActivity, topic);
                     mActivity.finish();
                 } else {
                     // 选择列表
@@ -165,7 +201,7 @@ public class VideoSelectFragment extends TSListFragment {
     private void initReSendDynamicPopupWindow(VideoInfo videoInfo, Bitmap cover) {
 //        boolean canDirectupload = videoInfo.getDuration() < 300000 && FileUtils.getFileMSize(videoInfo.getPath()) < 200;
         boolean canDirectupload = videoInfo.getDuration() < 300000;
-        final TopicListBean topic =getArguments() != null? getArguments().getParcelable(SearchTopicFragment.TOPIC):null;
+        final TopicListBean topic = getArguments() != null ? getArguments().getParcelable(SearchTopicFragment.TOPIC) : null;
         mPopWindow = ActionPopupWindow.builder()
                 .item1Str(!canDirectupload ? "" : getString(R.string.direct_upload))
                 .item2Str(getString(R.string.edite_upload))
@@ -190,7 +226,8 @@ public class VideoSelectFragment extends TSListFragment {
                     sendDynamicDataBean.setDynamicPrePhotos(pic);
                     sendDynamicDataBean.setDynamicType(SendDynamicDataBean.VIDEO_TEXT_DYNAMIC);
                     sendDynamicDataBean.setVideoInfo(videoInfo);
-
+                    long channelId = topic == null ? 0 : topic.getId();
+                    sendDynamicDataBean.setDynamicChannlId(channelId);
                     if (getArguments() != null) {
                         boolean isReload = getArguments().getBoolean(IS_RELOAD);
                         if (isReload) {
@@ -203,7 +240,7 @@ public class VideoSelectFragment extends TSListFragment {
                             return;
                         }
                     }
-                    SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean,topic);
+                    SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean, topic);
                     mActivity.finish();
                 })
                 .item2ClickListener(() -> {
@@ -212,9 +249,9 @@ public class VideoSelectFragment extends TSListFragment {
                         ArrayList<String> arrayList = new ArrayList<>();
                         arrayList.add(videoInfo.getPath());
                         CoverActivity.startCoverActivity(mActivity, arrayList, false, false,
-                                false,topic);
+                                false, topic);
                     } else {
-                        TrimmerActivity.startTrimmerActivity(mActivity, videoInfo.getPath(),topic);
+                        TrimmerActivity.startTrimmerActivity(mActivity, videoInfo.getPath(), topic);
                     }
                 })
                 .bottomClickListener(() -> mPopWindow.hide())

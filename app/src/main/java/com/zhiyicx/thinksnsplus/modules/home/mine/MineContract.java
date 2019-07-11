@@ -6,6 +6,7 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 
 import java.util.List;
 
@@ -51,6 +52,12 @@ public interface MineContract {
          */
         void updateCertification(UserCertificationInfo info);
 
+        /**
+         *
+         * @param listBeans
+         */
+        void onHistoryRecordResponseSuccess(List<VideoListBean> listBeans);
+
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -73,6 +80,8 @@ public interface MineContract {
          * 更新最新消息
          */
         void updateUserNewMessage();
+
+        void updateVideoRecord();
     }
 
 }

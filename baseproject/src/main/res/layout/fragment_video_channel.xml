@@ -38,27 +38,32 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_filtering_condition_1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_filtering_condition_2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_filtering_condition_3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_filtering_condition_4"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_filtering_condition_5"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
             </LinearLayout>
 
             <LinearLayout

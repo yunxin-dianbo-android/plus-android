@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView4VideoDetail;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.LinkedHashMap;
@@ -46,9 +47,19 @@ public class CirclePostListItemForShorVideo extends CirclePostListBaseItem {
      * 动态列表图片数量
      */
     private static final int IMAGE_COUNTS = 1;
+
+
+    public void setTourist(boolean tourist) {
+        isTourist = tourist;
+    }
+
     /**
      * 当前列数
      */
+    private boolean isTourist = true;
+
+
+
     private static final int CURREN_CLOUMS = 1;
 
     private ZhiyiVideoView.ShareInterface mShareInterface;
@@ -84,11 +95,12 @@ public class CirclePostListItemForShorVideo extends CirclePostListBaseItem {
      * @param dynamicBean item data
      * @param positon     image item position
      */
-    private void initVideoView(final ViewHolder holder, JZVideoPlayerStandard view,
+    private void initVideoView(final ViewHolder holder, ZhiyiVideoView4VideoDetail view,
                                final CirclePostListBean dynamicBean, final int positon) {
         int with;
         int height;
 
+        view.setTourist(isTourist);
         String videoUrl;
         DynamicDetailBeanV2.Video video = dynamicBean.getVideo();
         if (TextUtils.isEmpty(video.getUrl())) {

@@ -151,6 +151,16 @@ public interface CircleClient {
      */
     @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
     Observable<List<CircleInfo>> getRecommendCircle(@Query("limit") Integer limit, @Query("offset") int offset, @Query("type") String type);
+    /**
+     * 获取推荐的圈子
+     *
+     * @param limit  默认 20 ，数据返回条数 默认为20
+     * @param offset 默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param type   random 随机
+     * @return
+     */
+    @GET(APP_PATH_GET_RECOMMEND_CIRCLE)
+    Observable<List<CircleInfo>> getAllCircle(@Query("limit") Integer limit, @Query("offset") int offset, @Query("type") String type);
 
     /**
      * 获取已经加入的圈子

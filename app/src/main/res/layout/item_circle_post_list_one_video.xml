@@ -143,10 +143,10 @@
         android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
 
-        <com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView
+        <com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView4VideoDetail
             android:id="@+id/videoplayer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>
@@ -205,7 +205,7 @@
         android:layout_toRightOf="@+id/iv_headpic" />
 
     <include
-        layout="@layout/include_dynamic_list_comment_view"
+        layout="@layout/include_circle_post_list_comment_view"
         />
 
     <LinearLayout

@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,12 +16,18 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.SuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoTagListBean;
 import com.zhiyicx.thinksnsplus.modules.channel.adapter.FilterChannelTagAdapter;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem4Video;
+import com.zhiyicx.thinksnsplus.modules.video.VideoDetailActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,36 +36,34 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
-public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentContract.Presenter, DynamicDetailBeanV2> implements VideoChannelFragmentContract.View, MultiItemTypeAdapter.OnItemClickListener {
-    RecyclerView rvFilteringCondition1;
-    RecyclerView rvFilteringCondition2;
-    //    @BindView(R.id.rv_filtering_condition_3)
-    RecyclerView rvFilteringCondition3;
-    //    @BindView(R.id.rv_filtering_condition_4)
-    RecyclerView rvFilteringCondition4;
-    //    @BindView(R.id.rv_filtering_condition_5)
-    RecyclerView rvFilteringCondition5;
-    //    @BindView(R.id.ll_filtering_channel_content)
+public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentContract.Presenter, VideoListBean> implements VideoChannelFragmentContract.View, MultiItemTypeAdapter.OnItemClickListener {
+    //    RecyclerView rvFilteringCondition1;
+//    RecyclerView rvFilteringCondition2;
+//    RecyclerView rvFilteringCondition3;
+//    RecyclerView rvFilteringCondition4;
+//    RecyclerView rvFilteringCondition5;
     LinearLayout llFilteringChannelContent;
-    //    @BindView(R.id.ll_filter_rv_parent)
     LinearLayout llFilterRVParent;
-    //    @BindView(R.id.rl_content)
     RelativeLayout rlContent;
-    List<String> testData1 = new ArrayList<>();
-//    @BindView(R.id.iv_filter_content_arrow)
+    //    List<String> testData1 = new ArrayList<>();
     ImageView ivFilterContentArrow;
-    //    @BindView(R.id.tv_filter_content)
     TextView tvFilterContent;
     LinearLayout llChoosedChannel;
 
-    FilterChannelTagAdapter filterChannelTagAdapter1;
-    FilterChannelTagAdapter filterChannelTagAdapter2;
-    FilterChannelTagAdapter filterChannelTagAdapter3;
-    FilterChannelTagAdapter filterChannelTagAdapter4;
-    FilterChannelTagAdapter filterChannelTagAdapter5;
+    List<VideoListBean.TagsBean> choosedTags = new ArrayList<>();
+//    FilterChannelTagAdapter filterChannelTagAdapter1;
+//    FilterChannelTagAdapter filterChannelTagAdapter2;
+//    FilterChannelTagAdapter filterChannelTagAdapter3;
+//    FilterChannelTagAdapter filterChannelTagAdapter4;
+//    FilterChannelTagAdapter filterChannelTagAdapter5;
 
-//    @Inject
+    public SuperStarBean getSuperStarBean() {
+        return superStarBean;
+    }
+
+    //    @Inject
 //    VideoChannelFragmentPresenter mPresenter;
+    private SuperStarBean superStarBean;
 
     @Override
     protected void initView(View rootView) {
@@ -69,16 +72,19 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
 //        View channalView = LayoutInflater.from(getContext()).inflate(, llRoot, false);
 //        llRoot.addView(channalView, 0);
 
-        rvFilteringCondition1 = rootView.findViewById(R.id.rv_filtering_condition_1);
-        rvFilteringCondition2 = rootView.findViewById(R.id.rv_filtering_condition_2);
-        rvFilteringCondition3 = rootView.findViewById(R.id.rv_filtering_condition_3);
-        rvFilteringCondition4 = rootView.findViewById(R.id.rv_filtering_condition_4);
-        rvFilteringCondition5 = rootView.findViewById(R.id.rv_filtering_condition_5);
+//        rvFilteringCondition1 = rootView.findViewById(R.id.rv_filtering_condition_1);
+//        rvFilteringCondition2 = rootView.findViewById(R.id.rv_filtering_condition_2);
+//        rvFilteringCondition3 = rootView.findViewById(R.id.rv_filtering_condition_3);
+//        rvFilteringCondition4 = rootView.findViewById(R.id.rv_filtering_condition_4);
+//        rvFilteringCondition5 = rootView.findViewById(R.id.rv_filtering_condition_5);
         llFilteringChannelContent = rootView.findViewById(R.id.ll_filtering_channel_content);
         llFilterRVParent = rootView.findViewById(R.id.ll_filter_rv_parent);
         ivFilterContentArrow = rootView.findViewById(R.id.iv_filter_content_arrow);
         tvFilterContent = rootView.findViewById(R.id.tv_filter_content);
         llChoosedChannel = rootView.findViewById(R.id.ll_choosed_channel);
+
+        llFilterRVParent.setVisibility(View.GONE);
+        ivFilterContentArrow.setImageResource(R.mipmap.ic_arrow_down);
         initToolBar();
     }
 
@@ -94,7 +100,6 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
 //        }
 //        //不需要返回键
     }
-
 
 
     @Override
@@ -153,48 +158,18 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-//        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     @Override
     protected void initData() {
         super.initData();
-        testData1.add("1111");
-        testData1.add("2222");
-        testData1.add("3333");
-        testData1.add("5555");
-        testData1.add("6666");
-        testData1.add("7777");
-        testData1.add("8888");
-        testData1.add("9999");
-        testData1.add("1010");
-        testData1.add("1212");
-        testData1.add("1313");
-        testData1.add("33333");
-        testData1.add("44444");
-        rvFilteringCondition1.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
-        rvFilteringCondition2.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
-        rvFilteringCondition3.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
-        rvFilteringCondition4.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
-        rvFilteringCondition5.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
-        filterChannelTagAdapter1 = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, testData1);
-        filterChannelTagAdapter2 = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, testData1);
-        filterChannelTagAdapter3 = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, testData1);
-        filterChannelTagAdapter4 = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, testData1);
-        filterChannelTagAdapter5 = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, testData1);
-
-        rvFilteringCondition1.setAdapter(filterChannelTagAdapter1);
-        rvFilteringCondition2.setAdapter(filterChannelTagAdapter2);
-        rvFilteringCondition3.setAdapter(filterChannelTagAdapter3);
-        rvFilteringCondition4.setAdapter(filterChannelTagAdapter4);
-        rvFilteringCondition5.setAdapter(filterChannelTagAdapter5);
-//        rvFilteringCondition1.setVisibility(View.GONE);
-//        rvFilteringCondition2.setVisibility(View.GONE);
-//        rvFilteringCondition3.setVisibility(View.GONE);
-//        rvFilteringCondition4.setVisibility(View.GONE);
-//        rvFilteringCondition5.setVisibility(View.GONE);
-//      llFilterRVParent.addView();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            superStarBean = bundle.getParcelable(SuperStarBean.class.getSimpleName());
+        }
+        mPresenter.requestAllVideoTags();
+        mPresenter.requestNetData(0l, false);
         RxView.clicks(llChoosedChannel)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
@@ -216,13 +191,29 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
 //            mPresenter.requestNetData(1l,true);
 //        }
     }
+
     MultiItemTypeAdapter myAdapter;
+
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         myAdapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         setAdapter(myAdapter, new DynamicListBaseItem4Video(getContext()));
         myAdapter.setOnItemClickListener(this);
         return myAdapter;
+    }
+
+    /**
+     * 设置 item 间距数值
+     *
+     * @return 上下间距
+     */
+    protected float getItemDecorationSpacing() {
+        return 0f;
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return super.getLayoutManager();
     }
 
     protected void setAdapter(MultiItemTypeAdapter adapter, ItemViewDelegate
@@ -248,7 +239,7 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-
+        VideoDetailActivity.starVideoDetailActivity(getContext(), mListDatas.get(position));
     }
 
     @Override
@@ -257,15 +248,15 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
     }
 
 
-    @Override
-    public void onNetResponseSuccess(List<DynamicDetailBeanV2> first) {
-
-    }
+//    @Override
+//    public void onNetResponseSuccess(List<VideoListBean> first) {
+//
+//    }
 
     @Override
     public void onNetResponseSuccess(List data, boolean isLoadMore) {
         hideLoading();
-        super.onNetResponseSuccess(data,isLoadMore);
+        super.onNetResponseSuccess(data, isLoadMore);
 //        myAdapter.setmDatas(data);
 //         mRvList.setAdapter(mHeaderAndFooterWrapper);
 //        mRvList.setBackgroundColor(getResources().getColor(R.color.color_EA3378));
@@ -273,7 +264,7 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
 
     @Override
     public void onCacheResponseSuccess(List data, boolean isLoadMore) {
-        super.onCacheResponseSuccess(data,isLoadMore);
+        super.onCacheResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -304,5 +295,80 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
      */
     protected boolean isNeedRequestNetDataWhenCacheDataNull() {
         return true;
+    }
+
+    @Override
+    public void onAllVideoTagResponseSuccess(List<VideoTagListBean> videoTagListBeans) {
+        if (videoTagListBeans != null && videoTagListBeans.size() > 0) {
+//          LayoutInflater layoutInflater =
+            for (VideoTagListBean videoTagListBean : videoTagListBeans) {
+                RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(mActivity).inflate(R.layout.item_video_tag_rv_layout, llFilterRVParent, false);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.HORIZONTAL, false));
+                final List<VideoListBean.TagsBean> videoTags = videoTagListBean.getTags();
+                VideoListBean.TagsBean tagsBean = new VideoListBean.TagsBean();
+                tagsBean.setId(videoTagListBean.getId());
+                tagsBean.setName(videoTagListBean.getName());
+                tagsBean.setWeight(videoTagListBean.getWeight());
+                tagsBean.isFirst = true;
+                tagsBean.isChoosed = true;
+                videoTags.add(0, tagsBean);
+                //默认先选中第一个
+                choosedTags.add(videoTags.get(0));
+                final FilterChannelTagAdapter filterChannelTagAdapter = new FilterChannelTagAdapter(getContext(), R.layout.item_filter_video_channel, videoTags);
+                filterChannelTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                        int replaceIndex = 0;
+                        for (int i = 0; i < filterChannelTagAdapter.getDatas().size(); i++) {
+                            VideoListBean.TagsBean tag = filterChannelTagAdapter.getDatas().get(i);
+                            tag.isChoosed = false;
+
+                            for (int j = 0; j < choosedTags.size(); j++) {
+                                if (choosedTags.get(j).equals(tag)) {
+                                    replaceIndex = j;
+                                    break;
+                                }
+                            }
+
+                        }
+                        choosedTags.remove(replaceIndex);
+                        if (replaceIndex >= choosedTags.size()) {
+                            choosedTags.add(filterChannelTagAdapter.getDatas().get(position));
+                        } else {
+                            choosedTags.add(replaceIndex, filterChannelTagAdapter.getDatas().get(position));
+                        }
+                        filterChannelTagAdapter.getDatas().get(position).isChoosed = true;
+                        filterChannelTagAdapter.notifyDataSetChanged();
+                        mPresenter.requestNetData(0l, false);
+                        setCurrentChoosedTagText();
+                    }
+
+                    @Override
+                    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                        return false;
+                    }
+                });
+                recyclerView.setAdapter(filterChannelTagAdapter);
+                llFilterRVParent.addView(recyclerView);
+            }
+            setCurrentChoosedTagText();
+        }
+
+    }
+
+    /**
+     *
+     */
+    private void setCurrentChoosedTagText() {
+        StringBuilder filterContent = new StringBuilder();
+        for (int i = 0; i < choosedTags.size(); i++) {
+            filterContent.append(choosedTags.get(i).getName() + " • ");
+        }
+        tvFilterContent.setText(filterContent.substring(0, filterContent.length() - 3));
+    }
+
+    @Override
+    public List<VideoListBean.TagsBean> getChoosedVideoTags() {
+        return choosedTags;
     }
 }

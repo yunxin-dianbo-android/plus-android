@@ -5,22 +5,35 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.ScreenUtil;
+import com.zhiyi.emoji.ViewUtils;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.channel.VideoChannelActivity;
+import com.zhiyicx.thinksnsplus.modules.superstar.AllStarActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.MyUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -43,7 +56,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetailBeanV2> {
+public class DynamicListBaseItem4Video implements ItemViewDelegate<VideoListBean> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
     public static final int DEFALT_IMAGE_HEIGHT = 280;
@@ -55,12 +68,21 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
     protected Context mContext;
 
     protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
-    protected boolean showTopicTags = true;// 是否显示话题标签:默认显示
+    //    protected boolean showTopicTags = true;// 是否显示话题标签:默认显示
     protected boolean showCommentList = true;// 是否显示评论内容:默认显示
     protected boolean showReSendBtn = true;// 是否显示重发按钮
     protected long start;
     protected int mDrawableList;
     protected FilterImageView mFilterImageView;
+
+
+    //主要是用于明星
+    private VideoChannelBean videoChannelBean;
+
+    public void setVideoChannelBean(VideoChannelBean videoChannelBean) {
+        this.videoChannelBean = videoChannelBean;
+    }
+
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -146,7 +168,7 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
     }
 
     @Override
-    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
+    public boolean isForViewType(VideoListBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
         return true;
     }
@@ -167,167 +189,99 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
      * @param position
      */
     @Override
-    public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
+    public void convert(ViewHolder holder, VideoListBean dynamicBean, VideoListBean
             lastT, final int position, int itemCounts) {
+        if (dynamicBean.getVideo() != null && dynamicBean.getStar() != null) {
+            dynamicBean.getVideo().setTags(dynamicBean.getTags());
+            bindView(holder, dynamicBean.getVideo());
+            //绑定明星
+            holder.getTextView(R.id.tv_star_name).setText(dynamicBean.getStar().getName() + "");
+            GlideManager.glideCircle(mContext, holder.getImageViwe(R.id.iv_star_head), dynamicBean.getStar().getAvatar(), R.mipmap.ic_default_user_head_circle);
+
+            RxView.clicks(holder.getView(R.id.rl_star_name_head))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        VideoChannelActivity.starVideoChannelActivity(mContext, dynamicBean.getStar());
+//                        AllStarActivity.startAllStarActivity(mContext);
+//                        ToastUtils.showToast("去明星塞选页面");
+                    });
+        } else {
+            bindView(holder, dynamicBean);
+        }
+    }
+
+
+    private void bindView(ViewHolder holder, VideoListBean dynamicBean) {
         start = System.currentTimeMillis();
         mDrawableList = 0;
         try {
             // 防止个人中心没后头像错误
-            try {
-                ImageUtils.loadCircleUserHeadPic(dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_star_head));
-//                setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-            } catch (Exception ignored) {
-            }
-            holder.setText(R.id.tv_star_name, dynamicBean.getUserInfoBean().getName());
-//            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
-
-            holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
-//            holder.setVisible(R.id.tv_title, View.GONE);
-//            SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
-//            // 置顶标识 ,防止没有置顶布局错误
-//            try {
-//                // 待审核 也隐藏
-//                TextView topFlagView = holder.getView(R.id.tv_top_flag);
-//                topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS ?
-//                        View.VISIBLE : View.GONE);
-//                topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
-//                        DynamicDetailBeanV2.TOP_REVIEW ?
-//                        R.string.review_ing : R.string.dynamic_top_flag));
-//            } catch (Exception ignored) {
-//            }
-//
-//            String content = dynamicBean.getFriendlyContent();
-//            boolean hasContent = !TextUtils.isEmpty(content);
-//            contentView.setVisibility(hasContent ? View.VISIBLE : View.GONE);
-//            try {
-//                View iamgeContainer = holder.getView(R.id.nrv_image);
-//                RelativeLayout.LayoutParams iamgeParam = (RelativeLayout.LayoutParams) iamgeContainer.getLayoutParams();
-//                int marginTop = hasContent ? 0 : mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_mid_small);
-//                int margingLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
-//                int margingRight = mContext.getResources().getDimensionPixelOffset(R.dimen.dynamic_list_image_marginright);
-//                iamgeParam.setMargins(margingLeft, marginTop, margingRight, 0);
-//            } catch (Exception ignore) {
-//            }
-//            if (hasContent) {
-//                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
-//                        .getPaid_node().isPaid();
-//
-//                int startPosition = dynamicBean.getStartPosition();
-//                contentView.setCanLookWords(canLookWords);
-//                if (canLookWords) {
-//                    TextViewUtils.newInstance(contentView, content)
-//                            .spanTextColor(SkinUtils.getColor(R
-//                                    .color.normal_for_assist_text))
-//                            .position(startPosition, content.length())
-//                            .dataPosition(holder.getAdapterPosition())
-//                            .maxLines(contentView.getResources().getInteger(R.integer
-//                                    .dynamic_list_content_show_lines))
-//                            .onSpanTextClickListener(mOnSpanTextClickListener)
-//                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-//                                    .toString()), false))
-//                            .disPlayText(true)
-//                            .build();
-//                } else {
-//                    TextViewUtils.newInstance(contentView, content)
-//                            .spanTextColor(SkinUtils.getColor(R
-//                                    .color.normal_for_assist_text))
-//                            .position(startPosition, content.length())
-//                            .dataPosition(holder.getAdapterPosition())
-//                            .maxLines(contentView.getResources().getInteger(R.integer
-//                                    .dynamic_list_content_show_lines))
-//                            .onSpanTextClickListener(mOnSpanTextClickListener)
-//                            .note(dynamicBean.getPaid_node().getNode())
-//                            .amount(dynamicBean.getPaid_node().getAmount())
-//                            .onTextSpanComplete(() -> ConvertUtils.stringLinkConvert(contentView, setLiknks(dynamicBean, contentView.getText()
-//                                    .toString()), false))
-//                            .disPlayText(false)
-//                            .build();
-//                }
-//                contentView.setVisibility(View.VISIBLE);
-//            } else {
-////                contentView.setVisibility(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? View.GONE : View.VISIBLE);
-////                contentView.setText(dynamicBean.getFeed_content());
-//            }
-//
-//            contentView.setOnClickListener(v -> holder.getConvertView().performClick());
-//            holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
-//            // 分割线跟随工具栏显示隐藏
-//            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
-//            // user_id = -1 广告
-//            if (showToolMenu && dynamicBean.getUser_id() > 0) {
-//                // 显示工具栏
-//                DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-//                dynamicListMenuView.setMoreButtonRightPadding(ConvertUtils.dp2px(mContext,15));
-//                dynamicListMenuView.setImageNormalResourceIds(getToolImages());
-//                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-//                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
-//                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-//                        .getFeed_comment_count()), false, 1);
-//                // 浏览量没有 0
-//                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-//                                .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
-//                        false, 2);
-//                // 控制更多按钮的显示隐藏
-//                dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
-//                dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
-//                dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
-//                dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
-//                // 设置工具栏的点击事件
-//                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
-//                    if (mOnMenuItemClickLisitener != null) {
-//                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
-//                    }
-//                });
-//            }
-//
-//            holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
-//            if (showReSendBtn) {
-//                // 设置动态发送状态
-//                if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
-//                    holder.setVisible(R.id.fl_tip, View.VISIBLE);
-//                    holder.setText(R.id.tv_hint_text, TextUtils.isEmpty(dynamicBean.getSendFailMessage()) ?
-//                            holder.getConvertView().getResources
-//                                    ().getString(R.string.send_fail) : dynamicBean.getSendFailMessage());
-//                } else {
-//                    holder.setVisible(R.id.fl_tip, View.GONE);
-//                }
-//                RxView.clicks(holder.getView(R.id.fl_tip))
-//                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                        .subscribe(aVoid -> {
-//                            if (mOnReSendClickListener != null) {
-//                                mOnReSendClickListener.onReSendClick(position);
-//                            }
-//                        });
-//            }
-//
-//            // 设置评论内容
-//            DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-//            DynamicListTopicView topics = holder.getView(R.id.dltv_topic);
-//            boolean showTopic = showTopicTags && (dynamicBean.getTopics() != null && !dynamicBean.getTopics().isEmpty());
-//            if (!showTopic) {
-//                topics.setVisibility(View.GONE);
-//            } else {
-//                topics.setVisibility(View.VISIBLE);
-//                topics.setOnTopicClickListener(mOnTopicClickListener);
-//                if (mOnTopicClickListener != null) {
-//                    topics.setData(dynamicBean, mOnTopicClickListener.doNotShowThisTopic());
-//                } else {
-//                    topics.setData(dynamicBean, null);
-//                }
-//
-//            }
-//            if (!showCommentList || dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
-//                comment.setVisibility(View.GONE);
-//            } else {
-//                comment.setVisibility(View.VISIBLE);
-//                comment.setData(dynamicBean);
-//                comment.setOnCommentClickListener(mOnCommentClickListener);
-//                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-//                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
-//            }
+            GlideManager.glide(mContext, holder.getImageViwe(R.id.iv_video_bg), MyUtils.getImagePath(dynamicBean.getCover(), DeviceUtils.getScreenWidth(mContext) - ViewUtils.dip2px(mContext, 20)));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        LinearLayout llVideoInfoContanner = holder.getView(R.id.ll_video_info_contanner);
+        holder.getTextView(R.id.tv_video_title).setText(dynamicBean.getName() + "");
+        holder.getTextView(R.id.tv_video_des).setText(dynamicBean.getSummary() + "");
+        TextView tvTag1 = holder.getTextView(R.id.tv_tag_1);
+        TextView tvTag2 = holder.getTextView(R.id.tv_tag_2);
+        TextView tvTag3 = holder.getTextView(R.id.tv_tag_3);
+        TextView tvTag4 = holder.getTextView(R.id.tv_tag_4);
+        TextView tvTag5 = holder.getTextView(R.id.tv_tag_5);
+        ImageView ivTagMore = holder.getImageViwe(R.id.iv_tag_more);
+        tvTag1.setVisibility(View.GONE);
+        tvTag2.setVisibility(View.GONE);
+        tvTag3.setVisibility(View.GONE);
+        tvTag4.setVisibility(View.GONE);
+        tvTag5.setVisibility(View.GONE);
+        ivTagMore.setVisibility(View.GONE);
+        if (dynamicBean.getDuration() != null) {
+            String timeFormat = MyUtils.timeFormat(dynamicBean.getDuration().intValue() * 1000);
+            holder.getTextView(R.id.tv_time).setText(timeFormat);
+            holder.getTextView(R.id.tv_time).setVisibility(View.VISIBLE);
+        } else {
+            holder.getTextView(R.id.tv_time).setText("00:00");
+        }
+        if (dynamicBean.getTags() != null) {
+            for (int i = 0; i < dynamicBean.getTags().size(); i++) {
+                VideoListBean.TagsBean item = dynamicBean.getTags().get(i);
+                if (i == 0) {
+                    tvTag1.setText(item.getName());
+                    tvTag1.setVisibility(View.VISIBLE);
+                } else if (i == 1) {
+                    tvTag2.setText(item.getName());
+                    tvTag2.setVisibility(View.VISIBLE);
+                } else if (i == 2) {
+                    tvTag3.setText(item.getName());
+                    tvTag3.setVisibility(View.VISIBLE);
+                } else if (i == 3) {
+                    tvTag4.setText(item.getName());
+                    tvTag4.setVisibility(View.VISIBLE);
+                } else if (i == 4) {
+                    tvTag5.setText(item.getName());
+                    tvTag5.setVisibility(View.VISIBLE);
+                }
+            }
+            if (dynamicBean.getTags().size() > 5) {
+                ivTagMore.setVisibility(View.VISIBLE);
+            }
+        }
+        //表示是明星的视频
+        View starHeadContentView = holder.getView(R.id.rl_star_name_head);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.getTextView(R.id.tv_video_title).getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams) llVideoInfoContanner.getLayoutParams();
+        if (videoChannelBean != null && videoChannelBean.getId() == 3) {
+            starHeadContentView.setVisibility(View.VISIBLE);
+            layoutParams.topMargin = ViewUtils.dip2px(mContext, 36);
+            layoutParams2.topMargin = ViewUtils.dip2px(mContext, 24);
+
+        } else {
+            starHeadContentView.setVisibility(View.GONE);
+            layoutParams.topMargin = ViewUtils.dip2px(mContext, 12);
+            layoutParams2.topMargin = ViewUtils.dip2px(mContext, 10);
+        }
+        holder.getTextView(R.id.tv_video_title).setLayoutParams(layoutParams);
+        llVideoInfoContanner.setLayoutParams(layoutParams2);
     }
 
     /**
@@ -336,12 +290,12 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
      * @param view
      * @param dynamicBean
      */
-    private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
+    private void setUserInfoClick(View view, final VideoListBean dynamicBean) {
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mOnUserInfoClickListener != null) {
-                        mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
+//                        mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
                     }
                 });
     }
@@ -356,61 +310,60 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
      * @param part        this part percent of imageContainer
      */
     protected void initImageView(final ViewHolder holder, FilterImageView view,
-                                 final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
-        if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
-
-            if (mFilterImageView == null) {
-                mFilterImageView = view;
-            }
-            DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
-            view.setLoaded(false);
-            if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                // 是否是 gif
-                boolean isGif = ImageUtils.imageIsGif(imageBean.getImgMimeType());
-                view.setIshowGifTag(isGif);
-                if (isGif) {
-                    holder.addGifView(view);
-                }
-                // 是否是长图
-                view.showLongImageTag(imageBean.hasLongImage());
-                Glide.with(view.getContext())
-                        .load(imageBean.getGlideUrl())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .dontAnimate()
-                        .transform(new GlideStokeTransform(mContext, 1, Color.LTGRAY))
-                        .placeholder(R.drawable.shape_default_image)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.drawable.shape_default_image)
-                        .into(new GlideDrawableImageViewTarget(view, 0));
-            } else {
-                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
-                boolean isGif = ImageUtils.imageIsGif(option.outMimeType);
-                view.setIshowGifTag(isGif);
-                if (isGif) {
-                    holder.addGifView(view);
-                }
-                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
-
-                Glide.with(view.getContext())
-                        .load(imageBean.getImgUrl())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .dontAnimate()
-                        .transform(new GlideStokeTransform(mContext, 1, Color.LTGRAY))
-                        .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
-                        .placeholder(R.drawable.shape_default_image)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.drawable.shape_default_image)
-                        .into(new GlideDrawableImageViewTarget(view, 0));
-            }
-        }
-
-        RxView.clicks(view)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> {
-                    if (mOnImageClickListener != null) {
-                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                    }
-                });
+                                 final VideoListBean dynamicBean, final int positon, int part) {
+//        if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
+//            if (mFilterImageView == null) {
+//                mFilterImageView = view;
+//            }
+//            VideoListBean.ImagesBean imageBean = dynamicBean.getImages().get(positon);
+//            view.setLoaded(false);
+//            if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+//                // 是否是 gif
+//                boolean isGif = ImageUtils.imageIsGif(imageBean.getImgMimeType());
+//                view.setIshowGifTag(isGif);
+//                if (isGif) {
+//                    holder.addGifView(view);
+//                }
+//                // 是否是长图
+//                view.showLongImageTag(imageBean.hasLongImage());
+//                Glide.with(view.getContext())
+//                        .load(imageBean.getGlideUrl())
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .dontAnimate()
+//                        .transform(new GlideStokeTransform(mContext, 1, Color.LTGRAY))
+//                        .placeholder(R.drawable.shape_default_image)
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                        .error(R.drawable.shape_default_image)
+//                        .into(new GlideDrawableImageViewTarget(view, 0));
+//            } else {
+//                BitmapFactory.Options option = DrawableProvider.getPicsWHByFile(imageBean.getImgUrl());
+//                boolean isGif = ImageUtils.imageIsGif(option.outMimeType);
+//                view.setIshowGifTag(isGif);
+//                if (isGif) {
+//                    holder.addGifView(view);
+//                }
+//                view.showLongImageTag(isLongImage(option.outHeight, option.outWidth));
+//
+//                Glide.with(view.getContext())
+//                        .load(imageBean.getImgUrl())
+//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                        .dontAnimate()
+//                        .transform(new GlideStokeTransform(mContext, 1, Color.LTGRAY))
+//                        .override(imageBean.getCurrentWith(), imageBean.getCurrentWith())
+//                        .placeholder(R.drawable.shape_default_image)
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                        .error(R.drawable.shape_default_image)
+//                        .into(new GlideDrawableImageViewTarget(view, 0));
+//            }
+//        }
+//
+//        RxView.clicks(view)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .subscribe(aVoid -> {
+//                    if (mOnImageClickListener != null) {
+//                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
+//                    }
+//                });
     }
 
     /**
@@ -450,7 +403,7 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
      * image interface
      */
     public interface OnImageClickListener {
-        void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position);
+        void onImageClick(ViewHolder holder, VideoListBean dynamicBean, int position);
     }
 
     /**
@@ -515,18 +468,18 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<DynamicDetail
 //    /**
 //     * 网页链接
 //     *
-//     * @param dynamicDetailBeanV2
+//     * @param VideoListBean
 //     * @param content
 //     * @return
 //     */
-//    protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {
+//    protected List<Link> setLiknks(final VideoListBean VideoListBean, String content) {
 //        List<Link> links = new ArrayList<>();
 //        if (content.contains(Link.DEFAULT_NET_SITE)) {
 //            Link commentNameLink = new Link(Link.DEFAULT_NET_SITE)
 //                    .setTextColor(ContextCompat.getColor(mContext, R.color
 //                            .themeColor))
 //                    .setLinkMetadata(LinkMetadata.builder()
-//                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(dynamicDetailBeanV2.getFeed_content()))
+//                            .putSerializableObj(LinkMetadata.METADATA_KEY_COTENT, new NetUrlHandleBean(VideoListBean.getFeed_content()))
 //                            .putSerializableObj(LinkMetadata.METADATA_KEY_TYPE, LinkMetadata.SpanType.NET_SITE)
 //                            .build())
 //                    .setTextColorOfHighlightedLink(ContextCompat.getColor(mContext, R.color

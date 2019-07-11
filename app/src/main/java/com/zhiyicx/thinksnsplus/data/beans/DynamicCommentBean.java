@@ -12,9 +12,11 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author LiuChao
@@ -31,10 +33,12 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
 
 
     @Id(autoincrement = true)
+
     private Long _id;
     @Unique
     @SerializedName(value="comment_id", alternate={"id"})
     private Long comment_id;// 评论的id
+
     private Long feed_mark;// 属于哪条动态
     @Unique
     private Long comment_mark;// 发评论的唯一标识
@@ -50,21 +54,63 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     private long user_id;// 谁发的这条评论
     @SerializedName("user")
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
-    private UserInfoBean commentUser;
+    public UserInfoBean commentUser;
     @SerializedName(value="reply_to_user_id", alternate={"reply_user"})
     private long reply_to_user_id;// 评论要发给谁
     @SerializedName("reply")
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
-    private UserInfoBean replyUser;// 被评论的用户信息
+    public UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
     private boolean pinned ;// 是否是被固定（置顶）的评论 1 置顶 0 不置顶
 
+    //是否点赞
+    private boolean has_like;
+
+    public int getComment_children_count() {
+        return comment_children_count;
+    }
+
+    public void setComment_children_count(int comment_children_count) {
+        this.comment_children_count = comment_children_count;
+    }
+
+    public boolean isHas_like() {
+        return has_like;
+    }
+
+    public void setHas_like(boolean has_like) {
+        this.has_like = has_like;
+    }
+
+    //子评论的数量
+    private int comment_children_count;
+
+
+
+    private int comment_like_count;
+
+    public List<DynamicCommentBean> getComment_children() {
+        return comment_children;
+    }
+
+    public void setComment_children(List<DynamicCommentBean> comment_children) {
+        this.comment_children = comment_children;
+    }
+    @Transient
+    private List<DynamicCommentBean> comment_children;
 
     public DynamicCommentBean() {
     }
 
     public Long get_id() {
         return this._id;
+    }
+    public int getComment_like_count() {
+        return comment_like_count;
+    }
+
+    public void setComment_like_count(int comment_like_count) {
+        this.comment_like_count = comment_like_count;
     }
 
     public void set_id(Long _id) {
@@ -336,6 +382,10 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         myDao.update(this);
     }
 
+    public boolean getHas_like() {
+        return this.has_like;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 938647494)
     public void __setDaoSession(DaoSession daoSession) {
@@ -363,11 +413,11 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.pinned = in.readByte() != 0;
     }
 
-    @Generated(hash = 706783494)
-    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-            String created_at, String updated_at, String comment_content, String commentable_type,
-            long commentable_id, long feed_user_id, long user_id, long reply_to_user_id, int state,
-            boolean pinned) {
+    @Generated(hash = 462088777)
+    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark, String created_at,
+            String updated_at, String comment_content, String commentable_type, long commentable_id,
+            long feed_user_id, long user_id, long reply_to_user_id, int state, boolean pinned, boolean has_like,
+            int comment_children_count, int comment_like_count) {
         this._id = _id;
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
@@ -382,6 +432,9 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.reply_to_user_id = reply_to_user_id;
         this.state = state;
         this.pinned = pinned;
+        this.has_like = has_like;
+        this.comment_children_count = comment_children_count;
+        this.comment_like_count = comment_like_count;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {

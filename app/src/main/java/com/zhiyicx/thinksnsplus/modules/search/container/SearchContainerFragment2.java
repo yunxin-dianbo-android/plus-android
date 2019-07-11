@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
@@ -56,7 +57,7 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
 
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
-
+    SearchIndexFragment historyFragment;
 //    private boolean hasViewpager;
 
 //    private SearchHistoryViewPagerContainerFragment mSearchHistoryViewPagerContainerFragment;
@@ -80,7 +81,14 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        SearchIndexFragment historyFragment = new SearchIndexFragment();
+        historyFragment = new SearchIndexFragment();
+        historyFragment.setiSetSearchEdittextContent(new IDoSearchCallBack() {
+            @Override
+            public void doSearch(String content) {
+                mFragmentInfoSearchEdittext.setText(content);
+                SearchContainerFragment2.this.doSearch(content);
+            }
+        });
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager()
                 , historyFragment
                 , R.id.fragment_container);
@@ -133,10 +141,10 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
         switch (view.getId()) {
             case R.id.fragment_info_search_cancle:
 //                mActivity.finish();
-                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
-                    doSearch(mFragmentInfoSearchEdittext.getText().toString());
-                    DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
-                }
+//                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString().trim())) {
+                doSearch(mFragmentInfoSearchEdittext.getText().toString().trim());
+                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+//                }
                 break;
             default:
         }
@@ -150,10 +158,10 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
     private void initListener() {
         RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
-                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
-                    doSearch(mFragmentInfoSearchEdittext.getText().toString());
-                    DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
-                }
+//                if (!TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())) {
+                doSearch(mFragmentInfoSearchEdittext.getText().toString());
+                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+//                }
             }
         });
 
@@ -163,15 +171,28 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
     }
 
     private void doSearch(String str) {
-//        if (!hasViewpager) {
-//            hasViewpager = true;
+        if (TextUtils.isEmpty(str)) {
+            ToastUtils.showToast(R.string.have_no_input_search_key_tip);
+            return;
+        }
+//        if (historyFragment != null && historyFragment.isAdded()) {
+//            historyFragment.doSearch(str);
+//        }else{
+        if (historyFragment != null) {
+            historyFragment.addSearchHistory(str);
+        }
         Bundle bundle = new Bundle();
         bundle.putString(SearchHistoryViewPagerContainerFragment.KEY_WORD, str);
         SearchHistoryViewPagerContainerFragment mSearchHistoryViewPagerContainerFragment = SearchHistoryViewPagerContainerFragment.newInstance(bundle);
         ActivityUtils.replaceFragmentToActivity(getActivity().getSupportFragmentManager()
                 , mSearchHistoryViewPagerContainerFragment
                 , R.id.fragment_container);
-//        }
         mSearchHistoryViewPagerContainerFragment.onSearhChanged(str);
+//        }
+    }
+
+
+    public interface IDoSearchCallBack {
+        void doSearch(String content);
     }
 }

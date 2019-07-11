@@ -24,7 +24,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="36dp"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/icon" />
 
             <TextView
                 android:layout_marginTop="20dp"
@@ -237,7 +237,8 @@
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/phone_verify_login"
                 android:textColor="@color/themeColor"
-                android:textSize="@dimen/size_content_assist" />
+                android:textSize="@dimen/size_content_assist"
+                android:visibility="gone"/>
 
             <!--第三方登陆-->
             <LinearLayout

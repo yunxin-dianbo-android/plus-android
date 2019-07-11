@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.mine.container.MyCircleContainerActivity;
@@ -39,6 +40,8 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.integration.mine.MineIntegrationActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -413,6 +416,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();
         }
+    }
+
+    @Override
+    public void onHistoryRecordResponseSuccess(List<VideoListBean> listBeans) {
+
     }
 
     private void initCertificationTypePop() {

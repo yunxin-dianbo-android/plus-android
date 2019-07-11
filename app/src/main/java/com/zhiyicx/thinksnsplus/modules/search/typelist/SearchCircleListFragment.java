@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.search.typelist;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.CircleListItem;
 import com.zhiyicx.thinksnsplus.modules.circle.search.SearchCircleFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchSuceesListener;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +40,7 @@ public class SearchCircleListFragment extends SearchCircleFragment {
         return fragment;
     }
 
+
     @Override
     protected boolean setUseStatusView() {
         return false;
@@ -50,6 +54,13 @@ public class SearchCircleListFragment extends SearchCircleFragment {
     @Override
     protected int setEmptView() {
         return R.mipmap.img_default_search;
+    }
+
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
+        adapter.addItemViewDelegate(new CircleListItem(false, mActivity, this, mPresenter));
+        return adapter;
     }
 
     @Override

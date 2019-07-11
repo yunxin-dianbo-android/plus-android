@@ -28,10 +28,19 @@ public interface IVideoChannelRepository {
      */
     Observable<VideoChannelListBean> getVideoChannel();
 
+
+    /**
+     * 获取对话列表信息
+     *
+     * @return
+     */
+    Observable<List<VideoChannelBean>> getMyVideoChannel();
+
     /**
      * 获取对话列表信息
      *
      * @return
      */
     Observable<DeleteOrAddVideoChannelResInfo> addOrDeleteVideoChannel(String channel_id, String act);
+
 }

@@ -35,6 +35,10 @@ public class ServiceManager {
     private TopicClient mTopicClient;
     private VideoChannelClient videoChannelClient;
 
+
+
+    private VideoClient2 videoClient2;
+
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
      * Dagger2 会自行注入
@@ -59,7 +63,8 @@ public class ServiceManager {
             , RankClient rankClient
             , CircleClient circleClient
             , EasemobClient easemobClient
-            , TopicClient topicClient,VideoChannelClient videoChannelClient) {
+            , TopicClient topicClient, VideoChannelClient videoChannelClient
+            , VideoClient2 videoClient2) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mQAClient = qAClient;
@@ -79,6 +84,7 @@ public class ServiceManager {
         this.mEasemobClient = easemobClient;
         this.mTopicClient = topicClient;
         this.videoChannelClient = videoChannelClient;
+        this.videoClient2 = videoClient2;
     }
 
     public CommonClient getCommonClient() {
@@ -159,5 +165,13 @@ public class ServiceManager {
 
     public void setVideoChannelClient(VideoChannelClient videoChannelClient) {
         this.videoChannelClient = videoChannelClient;
+    }
+
+    public VideoClient2 getVideoClient2() {
+        return videoClient2;
+    }
+
+    public void setVideoClient2(VideoClient2 videoClient2) {
+        this.videoClient2 = videoClient2;
     }
 }

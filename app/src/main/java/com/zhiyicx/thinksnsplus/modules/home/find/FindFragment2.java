@@ -11,13 +11,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.CommonUtil;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleHotFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.CircleMainFragment;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.DiscoveryFragmentPagerAdapter;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment4Find;
+import com.zhiyicx.thinksnsplus.modules.video.VideoHomeFragment;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +45,7 @@ import rx.schedulers.Schedulers;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class FindFragment2 extends TSFragment {
+public class FindFragment2 extends TSFragment implements DynamicFragment.OnCommentClickListener {
 
     @Inject
     AuthRepository mAuthRepository;
@@ -53,6 +62,7 @@ public class FindFragment2 extends TSFragment {
 
     public FindFragment2() {
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,12 +129,15 @@ public class FindFragment2 extends TSFragment {
 //            e.printStackTrace();
 //        }
 //        mQAButton.setVisibility(systemConfigBean != null && !systemConfigBean.getQuestionConfig().isStatus() ? View.GONE : View.VISIBLE);
+        datas.clear();
+        fragments.clear();
         datas.add("热门");
         datas.add("圈子");
+        tablayout.removeAllTabs();
         for (int i = 0; i < datas.size(); i++) {
             tablayout.addTab(tablayout.newTab().setText(datas.get(i)));
         }
-        fragments.add(CircleHotFragment.newInstance());
+        fragments.add(DynamicFragment4Find.newMyInstance(ApiConfig.DYNAMIC_TYPE_FIND, this));
         fragments.add(CircleMainFragment.newInstance());
         DiscoveryFragmentPagerAdapter discoveryFragmentPagerAdapter = new DiscoveryFragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments, datas);
         vpDiscovery.setAdapter(discoveryFragmentPagerAdapter);
@@ -178,8 +191,18 @@ public class FindFragment2 extends TSFragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void setPresenter(Object presenter) {
 
-//    @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
+    }
+
+    @Override
+    public void onButtonMenuShow(boolean isShow) {
+
+    }
+
+
+    //    @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
 //            R.id.find_person, R.id.find_nearby, R.id.find_qa, R.id.find_rank, R.id.find_topic})
 //    public void onClick(View view) {
 //        switch (view.getId()) {
@@ -271,6 +294,21 @@ public class FindFragment2 extends TSFragment {
 //                break;
 //        }
 //    }
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    /**
+     * 添加或者删除频道
+     *
+     * @param
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_IN, mode = ThreadMode.MAIN)
+    public void login(boolean isLogin) {
+        //刷新数据  重新登录
+        initData();
+    }
 
 
 }

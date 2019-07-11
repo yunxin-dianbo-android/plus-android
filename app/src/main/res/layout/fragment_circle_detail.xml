@@ -30,10 +30,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#38383A"
-                    android:clipChildren="false"
+                    android:clipChildren="true"
                     android:clipToPadding="false"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+                    <!--|snap-->
                     <include layout="@layout/circle_head_bg"/>
 
                     <include layout="@layout/circle_head" />

@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -71,6 +72,15 @@ public class PhotoViewFragment extends TSFragment {
     LinearLayout mActivityPhotoView;
     @BindView(R.id.rl_bottom_container)
     RelativeLayout mRlBottomContainer;
+    @BindView(R.id.tv_toolbar_left)
+    TextView tvToolbarLeft;
+    @BindView(R.id.tv_toolbar_center)
+    TextView tvToolbarCenter;
+    @BindView(R.id.tv_toolbar_right_left)
+    TextView tvToolbarRightLeft;
+    @BindView(R.id.tv_toolbar_right)
+    TextView tvToolbarRight;
+
 
     private SectionsPagerAdapter mPagerAdapter;
 
@@ -113,6 +123,8 @@ public class PhotoViewFragment extends TSFragment {
 
     private ArrayList<String> allPaths;
 
+    View vStatusBarPlaceholder;
+
 
     @Override
     protected String setRightTitle() {
@@ -147,6 +159,10 @@ public class PhotoViewFragment extends TSFragment {
         return R.layout.fragment_photo_view;
     }
 
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
 
     @Override
     protected boolean showToolbar() {
@@ -155,8 +171,20 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected boolean showToolBarDivider() {
+        return false;
+    }
+
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
         return true;
     }
+
 
     @Override
     protected void setLeftClick() {
@@ -286,7 +314,23 @@ public class PhotoViewFragment extends TSFragment {
             // EventBus.getDefault().post(seletedPaths, EventBusTagConfig
             // .EVENT_SELECTED_PHOTO_UPDATE);
         });
+
+        vStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar(vStatusBarPlaceholder);
+
+//        tvToolbarLeft.setText("");
+//        tvToolbarLeft.setBackgroundResource(R.mipmap.ic_back);
+//        tvToolbarCenter.setText("");
+//        tvToolbarRightLeft.setText("");
+//        tvToolbarRight.setText("");
+//        tvToolbarLeft.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().onBackPressed();
+//            }
+//        });
     }
+
 
     @Override
     protected void initData() {
@@ -391,9 +435,6 @@ public class PhotoViewFragment extends TSFragment {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public ObjectAnimator showBackgroundAnimate() {
         backgroundColor = new ColorDrawable(Color.WHITE);
-        // mViewPager.setBackground(backgroundColor);
-        // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground
-        // (backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
         bgAnim.addUpdateListener(animation -> mViewPager.setBackground(backgroundColor));

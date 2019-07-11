@@ -4,6 +4,10 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
+
+import java.util.List;
 
 import retrofit2.Call;
 import rx.Observable;
@@ -24,6 +28,13 @@ public interface IAuthRepository {
      */
     boolean saveAuthBean(AuthBean authBean);
 
+
+    /**
+     * 获取对话列表信息
+     *
+     * @return
+     */
+    Observable<VideoChannelListBean> getMyVideoChannel();
     /**
      * 获取保存登录后获取到的认证信息
      *

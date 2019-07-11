@@ -42,6 +42,9 @@ public class DragGridView extends GridView {
     private int mColumns ;
     private double mDragScale ;
     private int mDragColor;
+
+
+
     private int mFixed_nums;
 
     private ExplosionField mExplosionField;
@@ -521,5 +524,8 @@ public class DragGridView extends GridView {
         mTranslateAnimation.setFillAfter(true);// 设置一个动画效果执行完毕后，View对象保留在终止的位置。
         mTranslateAnimation.setDuration(300L);
         return mTranslateAnimation;
+    }
+    public void setmFixed_nums(int mFixed_nums) {
+        this.mFixed_nums = mFixed_nums;
     }
 }

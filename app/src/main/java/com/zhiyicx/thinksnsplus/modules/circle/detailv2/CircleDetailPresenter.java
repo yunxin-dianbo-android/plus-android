@@ -26,6 +26,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -37,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.Letter;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -61,6 +63,7 @@ import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -298,9 +301,13 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
                 case LATEST_POST:
                 case LATEST_REPLY:
                 case EXCELLENT:
-                    String type = PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value;
-                    if (BaseCircleRepository.CircleMinePostType.LATEST_REPLY.equals(mRootView.getCircleMinePostType())) {
-                        type = PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value;
+//                    String type = PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value;
+//                    if (BaseCircleRepository.CircleMinePostType.LATEST_REPLY.equals(mRootView.getCircleMinePostType())) {
+//                        type = PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_COMMENT.value;
+//                    }
+                    String type = mRootView.getType();
+                    if (TextUtils.isEmpty(type)) {
+                        type = PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value;
                     }
                     subscribe = mBaseCircleRepository
                             .getPostListFromCircle(mRootView.getCircleId(), maxId, type, excellent)
@@ -508,11 +515,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
 
-
-
-
     /**
      * 分享
+     *
      * @param dynamicBean
      * @param bitmap
      */
@@ -599,8 +604,6 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
 //            download(url);
 //        }
     }
-
-
 
 
     /**
@@ -821,7 +824,7 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
     }
 
     @Override
-    public void dealCircleJoinOrExit(CircleInfo circleInfo,String psd) {
+    public void dealCircleJoinOrExit(CircleInfo circleInfo, String psd) {
 
         if (handleTouristControl()) {
             return;
@@ -847,9 +850,9 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
-                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo,psd));
+                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo, psd));
         } else {
-            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo,null)
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo, null)
                     .doOnSubscribe(() -> {
                                 mRootView.dismissSnackBar();
                                 mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
@@ -1131,4 +1134,62 @@ public class CircleDetailPresenter extends AppBasePresenter<CircleDetailContract
             mSharePolicy = null;
         }
     }
+
+
+    /**
+     * 处理发送动态数据
+     *
+     * @param dynamicBean
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST, mode = ThreadMode.MAIN)
+    public void handleSendDynamic(DynamicDetailBeanV2 dynamicBean) {
+        String jsonString = JsonUtil.objectToString(dynamicBean);
+        CirclePostListBean circlePostListBean = (CirclePostListBean) JsonUtil.parsData(jsonString, CirclePostListBean.class);
+        if (circlePostListBean != null) {
+            mRootView.onPublishDynamicSuccess(circlePostListBean);
+        }
+//        Subscription subscribe = Observable.just(dynamicBean)
+//                .observeOn(Schedulers.computation())
+//                .map(dynamicDetailBeanV2 -> hasDynamicContanied(dynamicBean))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(position -> {
+//                    // 如果列表有当前数据
+//                    if (position[1] != -1) {
+////                            mRootView.showNewDynamic(position[1], dynamicBean.getMLetter() != null);
+//                    } else {
+//                        List<DynamicDetailBeanV2> temps = new ArrayList<>(mRootView.getListDatas());
+//                        temps.add(position[0], dynamicBean);
+//                        mRootView.getListDatas().clear();
+//                        mRootView.getListDatas().addAll(temps);
+//                        temps.clear();
+//                        mRootView.showNewDynamic(position[0], dynamicBean.getMLetter() != null);
+//                    }
+//                }, Throwable::printStackTrace);
+//        addSubscrebe(subscribe);
+    }
+    /**
+     * 列表中是否有了
+     *
+     * @param dynamicBean
+     * @return
+     */
+//    protected int[] hasDynamicContanied(DynamicDetailBeanV2 dynamicBean) {
+//        int size = mRootView.getCircleInfo().size();
+//        // 0 , 置顶数量；1，位置
+//        int count[] = new int[2];
+//        for (int i = 0; i < size; i++) {
+//            if (mRootView.getListDatas().get(i).getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
+//                count[0]++;
+//            }
+//            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicBean.getFeed_mark())) {
+//                mRootView.getListDatas().get(i).setState(dynamicBean.getState());
+//                mRootView.getListDatas().get(i).setSendFailMessage(dynamicBean.getSendFailMessage());
+//                mRootView.getListDatas().get(i).setId(dynamicBean.getId());
+//                count[1] = i;
+//                return count;
+//            }
+//        }
+//        count[1] = -1;
+//        return count;
+//    }
 }

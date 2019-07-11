@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AddSearchKeyResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
@@ -13,6 +14,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.StickTopAverageBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UploadPostCommentResInfo;
+import com.zhiyicx.thinksnsplus.data.beans.circle.CirclePostBean;
 
 import java.util.List;
 
@@ -34,6 +37,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REPORT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_TOP_AVERAGE_NUM;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEND_DYNAMIC_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_VIDEO_COMMENT_LIKE;
 
 /**
  * @Describe 动态相关的接口
@@ -88,6 +93,22 @@ public interface DynamicClient {
             , @Query("user") Long userId
             , @Query("limit") Integer limit);
 
+
+    /**
+     * 获取发现里面的热门帖子
+     *
+     * @param circleId
+     * @param offset
+     * @return
+     *
+     * CirclePostBean
+     */
+    @GET(APP_PATH_SEND_DYNAMIC_V2)
+    Observable<DynamicBeanV2> getHotDynamicV2(@Query("group_id") Long circleId,
+                                            @Query("limit") Integer limit,
+                                            @Query("offset") int offset,
+                                            @Query("type") String type);
+
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)
     Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("after") Long
             max_id, @Query("limit") Integer limitCount);
@@ -103,6 +124,13 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_V2)
     Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long
             after, @Query("limit") Integer limit);
+    /**
+     * 一条动态的评论列表
+     *
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_V2)
+    Observable<UploadPostCommentResInfo> sendDynamicV3(@Path("feed_id") Integer feedId, @Query("body") String body, @Query("reply_user") Integer reply_user, @Query("reply_comment_id") Integer reply_comment_id);
 
     /**
      * 获取动态详情 V2
@@ -223,5 +251,18 @@ public interface DynamicClient {
      */
     @GET(APP_PATH_DYNAMIC_TOP_AVERAGE_NUM)
     Observable<StickTopAverageBean> getDynamicAndCommentTopAverageNum();
+
+    /**
+     * @return 点赞
+     */
+    @POST(APP_PATH_VIDEO_COMMENT_LIKE)
+    Observable<AddSearchKeyResInfo> handleLike4Comment(@Query("comment_id") Long comment_id);
+
+
+    /**
+     * @return 取消点赞
+     */
+    @DELETE(APP_PATH_VIDEO_COMMENT_LIKE)
+    Observable<AddSearchKeyResInfo> handleDeleteLike4Comment(@Query("comment_id") Long comment_id);
 
 }

@@ -48,6 +48,7 @@ import com.zhiyicx.thinksnsplus.config.UserPermissions;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -1189,6 +1190,11 @@ public class TopicDetailFragment extends TSListFragmentForDownload<TopicDetailCo
             mPresenter.deleteDynamic(detailBeanV2, 0);
             showBottomView(true);
         }, true);
+    }
+
+    @Override
+    public void onNetSuccessHotSuperStar(List<TopSuperStarBean> result) {
+
     }
 
     @Override

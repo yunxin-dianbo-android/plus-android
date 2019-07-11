@@ -23,7 +23,7 @@ public class CirclePostListItemForSevenImage extends CirclePostListBaseItem {
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_seven_image;
+        return R.layout.item_circle_post_list_seven_image;
     }
 
     @Override

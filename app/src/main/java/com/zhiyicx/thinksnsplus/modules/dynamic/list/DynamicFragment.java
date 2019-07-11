@@ -41,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -67,9 +68,11 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForw
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardInfo;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardMediaFeed;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardPost;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardQuestion;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForwardWordFeed;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.gif.GifControl;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.modules.home.EditDeletePopUpWindow;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
@@ -127,7 +130,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener,
-        ZhiyiVideoView.ShareInterface, DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
+        ZhiyiVideoView.ShareInterface, DynamicBannerHeader.DynamicBannerHeadlerClickEvent, EditDeletePopUpWindow.EditDeleteClickCallBack {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
 
@@ -141,7 +144,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
      */
     @Inject
     DynamicPresenter mDynamicPresenter;
-    private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
+    protected String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
@@ -270,6 +273,8 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
 
         }
     }
+
+
 
     @Override
     protected void initData() {
@@ -415,7 +420,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
     }
 
     private void findGifViews(int start, int end, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
-        boolean hasGifInCurrentScreen=false;
+        boolean hasGifInCurrentScreen = false;
         for (int i = start; i <= end; i++) {
             View itemView = linearLayoutManager.findViewByPosition(i);
             if (null == itemView) {
@@ -432,7 +437,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
                 break;
             }
         }
-        if (!hasGifInCurrentScreen){
+        if (!hasGifInCurrentScreen) {
             GifControl.getInstance(null).stop();
         }
     }
@@ -556,31 +561,31 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem4Video(getContext()));
-//        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
-//        setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
-//        setAdapter(adapter, new DynamicListItemForwardWordFeed(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardMediaFeed(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardInfo(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardCircle(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardPost(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardQuestion(mActivity));
-//        setAdapter(adapter, new DynamicListItemForwardAnswer(mActivity));
-//        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
-//            @Override
-//            protected String videoFrom() {
-//                return mDynamicType;
-//            }
-//        });
+//      setAdapter(adapter, new DynamicListBaseItem4Video(getContext()));
+        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForAdvert(getContext()));
+        setAdapter(adapter, new DynamicListItemForwardWordFeed(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardMediaFeed(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardInfo(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardCircle(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardPost(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardQuestion(mActivity));
+        setAdapter(adapter, new DynamicListItemForwardAnswer(mActivity));
+        setAdapter(adapter, new DynamicListItemForShorVideo(getContext(), this) {
+            @Override
+            protected String videoFrom() {
+                return mDynamicType;
+            }
+        });
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -597,6 +602,7 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
 //        dynamicListBaseItem.setOnCommentStateClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
+
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem
             dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
@@ -607,6 +613,12 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
         dynamicListBaseItem.setOnMoreCommentClickListener(this);
         dynamicListBaseItem.setOnCommentClickListener(this);
         dynamicListBaseItem.setOnCommentStateClickListener(this);
+        dynamicListBaseItem.setEditDeleteClickCallBack(this);
+        if ("users".equals(mDynamicType)) {
+            dynamicListBaseItem.isMyPost(true);
+        } else {
+            dynamicListBaseItem.isMyPost(false);
+        }
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 
@@ -1404,6 +1416,11 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
         }, true);
     }
 
+    @Override
+    public void onNetSuccessHotSuperStar(List<TopSuperStarBean> result) {
+
+    }
+
     private Bitmap getShareBitmap(int position, int id) {
         Bitmap shareBitMap = null;
         try {
@@ -1461,6 +1478,17 @@ public class DynamicFragment extends TSListFragmentForDownload<DynamicContract.P
 
     protected void deal5497Bug() {
         AndroidBug5497Workaround.assistActivity(mActivity);
+    }
+
+    @Override
+    public void onEditeClick(DynamicDetailBeanV2 dynamicBean) {
+
+    }
+
+    @Override
+    public void onDeleteClick(DynamicDetailBeanV2 dynamicBean) {
+        mDynamicPresenter.setmShareDynamic(dynamicBean);
+        mDynamicPresenter.onStart(Share.DELETE);
     }
 
     public interface OnCommentClickListener {

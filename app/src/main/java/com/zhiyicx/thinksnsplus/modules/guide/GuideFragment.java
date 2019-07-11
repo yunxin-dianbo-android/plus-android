@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,11 +18,13 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.BannerImageLoaderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -60,12 +63,13 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
      * 是否第一次进入该页面
      */
     boolean isFirst = true;
-
+    CountDownTimer countDownTimer;
     public static final String ADVERT = "advert";
 
     private List<RealAdvertListBean> mBootAdverts;
 
 
+    private int totalTime =5000;
     /**
      * Activity 手动调用处理
      *
@@ -133,7 +137,6 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
                 int time = mBootAdverts.get(0).getAdvertFormat().getImage().getDuration() * 1000;
                 time = time > 0 ? time : 3000;
                 mGuideText.setVisibility(View.VISIBLE);
-
                 mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
                 mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
                 mGuideBanner.isBase64Image(true);
@@ -145,6 +148,23 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
                 mGuideBanner.setTimeListener(this);
                 mGuideBanner.setOnBannerListener(this);
                 mGuideBanner.setOnPageChangeListener(this);
+
+                countDownTimer = new CountDownTimer(totalTime, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        onTimeTick2(l / 1000 + "s");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        try {
+                            mPresenter.checkLogin();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                countDownTimer.start();
             }
         }
     }
@@ -164,6 +184,8 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
                 mPresenter.checkLogin();
             }
             isFirst = false;
+        }else{
+            startActivity(HomeActivity.class);
         }
     }
 
@@ -213,6 +235,13 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
 
     @Override
     public void onTimeTick(String time) {
+//        if (mGuideText == null) {
+//            return;
+//        }
+//        mGuideText.setText(time);
+    }
+
+    public void onTimeTick2(String time) {
         if (mGuideText == null) {
             return;
         }
@@ -252,11 +281,24 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (mGuideBanner != null) {
             mGuideBanner.releaseBanner();
         }
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
     }
 
     @Override

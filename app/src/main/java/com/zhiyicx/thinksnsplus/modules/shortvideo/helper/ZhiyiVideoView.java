@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zycx.shortvideo.view.ZhiyiResizeTextureView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -372,6 +373,11 @@ public class ZhiyiVideoView extends JZVideoPlayerStandard {
             JZMediaManager.seekTo(seekToInAdvance);
             seekToInAdvance = 0;
         }
+    }
+
+    @Override
+    public void onStatePause() {
+        super.onStatePause();
     }
 
     @Override

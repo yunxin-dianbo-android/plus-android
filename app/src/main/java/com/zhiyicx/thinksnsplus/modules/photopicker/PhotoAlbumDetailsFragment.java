@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ParcelableDataUtil;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -88,7 +89,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
     private int selected_directory;// 获取被选中的目录位置
     private boolean canPreview = true;// 是否能够预览
     private int maxCount = DEFAULT_MAX_COUNT;
-
+    View mStatusBarPlaceholder;
     @Override
     protected boolean usePermisson() {
         return true;
@@ -152,6 +153,11 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
 //        getActivity().finish();// finish后出栈
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
     }
 
     @Override
@@ -257,8 +263,18 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
             PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
                     , selectedPhotos, animationRectBeanArrayList, maxCount, index, false, new ArrayList<ImageBean>());
         });
+
+
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
     }
 
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
     @Override
     protected void initData() {
         // 页面没有从上级页面获取相册数据，那么自己重新获取一次
@@ -382,6 +398,32 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         if (mPhotoSelector != null) {
             mPhotoSelector.onActivityResult(DEFAULT_REQUST_ALBUM, RESULT_OK, data);
         }
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+
+//    @Override
+//    protected boolean showToolBarDivider() {
+//        return false;
+//    }
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
     }
 
 }

@@ -385,7 +385,7 @@ public class BaseCircleRepository implements IBaseCircleRepository {
      */
     @Override
     public Observable<List<CirclePostListBean>> getPostListFromCircle(long circleId, long maxId, String type, Integer excellent) {
-        return dealWithPostList(mCircleClient.getPostListFromCircleV2(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, "group")
+        return dealWithPostList(mCircleClient.getPostListFromCircleV2(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {
@@ -720,6 +720,13 @@ public class BaseCircleRepository implements IBaseCircleRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+//    @Override
+//    public Observable<List<CircleInfo>> getAllCircle(Integer limit, int offet, String type) {
+//        return mCircleClient.getRecommendCircle(limit, offet, type)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
 
     @Override

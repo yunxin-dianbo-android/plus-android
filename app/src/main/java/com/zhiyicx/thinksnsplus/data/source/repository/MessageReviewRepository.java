@@ -81,8 +81,9 @@ public class MessageReviewRepository implements IMessageReviewRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    //type "hot"
     @Override
-    public Observable<List<CirclePostListBean>> getHotPost(Long circleId, int after) {
+    public Observable<List<CirclePostListBean>> getHotPost(Long circleId, int after,String type) {
 
 
 //        return dealWithPostList(mCircleClient.getPostListFromCircleV2(circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, "group")
@@ -109,7 +110,7 @@ public class MessageReviewRepository implements IMessageReviewRepository {
 //                    }
 //                }));
         //circleId, TSListFragment.DEFAULT_PAGE_SIZE, (int) maxId, "group"
-        return dealWithPostList(mCircleClient.getHotPostV2(0l, TSListFragment.DEFAULT_PAGE_SIZE, after, "hot")
+        return dealWithPostList(mCircleClient.getHotPostV2(0l, TSListFragment.DEFAULT_PAGE_SIZE, after, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(circlePostBean -> {

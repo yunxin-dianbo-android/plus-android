@@ -35,6 +35,7 @@
         tools:text="张三" />
 
     <TextView
+        android:layout_alignParentRight="true"
         android:id="@+id/tv_top_flag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +51,19 @@
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag"/>
+
+    <ImageView
+        android:id="@+id/iv_more_edit"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_tiny"
+        android:src="@mipmap/ic_more" />
 
     <TextView
         android:layout_marginRight="@dimen/spacing_normal"

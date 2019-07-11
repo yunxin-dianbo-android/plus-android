@@ -1475,4 +1475,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             popupWindow.dismiss();
         }
     }
+    protected void initStatusBar(View vStatusBarPlaceholder) {
+        // toolBar设置状态栏高度的marginTop
+        int height = DeviceUtils.getStatuBarHeight(getContext());
+        vStatusBarPlaceholder.setBackgroundResource(R.drawable.common_statubar_bg);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,height);
+        vStatusBarPlaceholder.setLayoutParams(layoutParams);
+    }
 }

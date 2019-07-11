@@ -1,7 +1,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
+<!--CirclePostListCommentView-->
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
         android:id="@+id/dcv_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,8 @@
         android:paddingBottom="@dimen/spacing_mid"
         android:visibility="gone"/>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView
+  <!--  <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListCommentView-->
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView
         android:id="@+id/post_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

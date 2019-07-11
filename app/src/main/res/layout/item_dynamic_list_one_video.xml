@@ -20,19 +20,19 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:includeFontPadding="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_normal_8dp"
         android:layout_toRightOf="@id/iv_headpic"
+        android:includeFontPadding="false"
         android:maxLength="@integer/username_max_byte_length"
         android:maxLines="1"
-        android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small_3dp"
-        android:textColor="@color/important_for_content"
+        android:textColor="@color/color_EA3378"
         android:textSize="@dimen/size_content_comment"
-        tools:text="张三"/>
+        tools:text="张三" />
 
     <TextView
         android:id="@+id/tv_top_flag"
@@ -48,7 +48,18 @@
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_advert_launche"
         tools:text="@string/dynamic_top_flag"/>
-
+    <ImageView
+        android:id="@+id/iv_more_edit"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_tiny"
+        android:src="@mipmap/ic_more" />
 <!--    <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
@@ -143,7 +154,7 @@
         android:paddingBottom="@dimen/dynamic_image_padding_bottom">
 
 
-        <com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView
+        <com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView4VideoDetail
             android:id="@+id/videoplayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -178,7 +189,7 @@
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
+        android:layout_height="0dp"
         android:layout_below="@+id/tv_from"
         android:background="@color/general_for_line_light"/>
 

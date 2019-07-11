@@ -34,6 +34,16 @@ public class DragAdapter extends BaseDragAdapter {
     private boolean isModifyMode = false;
     private boolean isModify4Delete = true;
 
+    public void setFixNum(int fixNum) {
+        this.fixNum = fixNum;
+    }
+
+    public int getFixNum() {
+        return fixNum;
+    }
+
+    private int fixNum;
+
     public void setOnDragItemClickLisnter(OnDragItemClickLisnter onDragItemClickLisnter) {
         this.onDragItemClickLisnter = onDragItemClickLisnter;
     }
@@ -92,7 +102,7 @@ public class DragAdapter extends BaseDragAdapter {
         final VideoChannelBean item = provinceList.get(position);
         textView.setText(item.getName() + "");
         if (isModifyMode) {
-            if (position < 3) {
+            if (position < fixNum) {
                 ivAddOrDeleteVideoChannel.setVisibility(View.GONE);
             } else {
                 ivAddOrDeleteVideoChannel.setVisibility(View.VISIBLE);
@@ -110,7 +120,7 @@ public class DragAdapter extends BaseDragAdapter {
             convertView.setVisibility(View.GONE);
         }
 //        if (selectItem.toString().equals(provinceList.get(position).toString())) {
-        if (position < 3) {
+        if (position < fixNum) {
             textView.setBackgroundResource(R.drawable.video_channel_fixed_bg);
 //            textView.setTextColor(Color.parseColor("#fffff"));
         } else {
@@ -175,7 +185,7 @@ public class DragAdapter extends BaseDragAdapter {
         // TODO: 16-3-26 拖动完成的回调
         int position = 0;
         for (int i = 0; i < provinceList.size(); i++) {
-            if (selectItem!=null && selectItem.getId()== provinceList.get(i).getId()) {
+            if (selectItem != null && selectItem.getId() == provinceList.get(i).getId()) {
                 position = i;
                 break;
             }

@@ -10,6 +10,8 @@ import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SearchHistoryBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchSuceesListener;
@@ -21,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.search.typelist.SearchPostListFragment;
 import com.zhiyicx.thinksnsplus.modules.search.typelist.SearchQAListFragment;
 import com.zhiyicx.thinksnsplus.modules.search.typelist.SearchQATopicListFragment;
 import com.zhiyicx.thinksnsplus.modules.search.typelist.SearchUserListFragment;
+import com.zhiyicx.thinksnsplus.modules.search.typelist.SearchVideoFragment;
 
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
@@ -52,10 +55,6 @@ public class SearchHistoryViewPagerContainerFragment extends TSViewPagerFragment
         return fragment;
     }
 
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
 
     @Override
     protected void initView(View rootView) {
@@ -70,8 +69,35 @@ public class SearchHistoryViewPagerContainerFragment extends TSViewPagerFragment
     }
 
     @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getResources().getStringArray(R.array.global_search_type));
+        return Arrays.asList(getResources().getStringArray(R.array.global_search_type_v2));
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -81,36 +107,49 @@ public class SearchHistoryViewPagerContainerFragment extends TSViewPagerFragment
             SearchDynamicListFragment dynamicListFragment = SearchDynamicListFragment.newInstance(mCurrentSearchContent);
             dynamicListFragment.setISearchSuceesListener(this);
 
-            SearchInfoListFragment searchInfoListFragment = SearchInfoListFragment.newInstance();
-            searchInfoListFragment.setISearchSuceesListener(this);
+            VideoChannelBean videoChannelBean4Video = new VideoChannelBean();
+            videoChannelBean4Video.setName("视频");
+            videoChannelBean4Video.setId(0);
+            SearchVideoFragment videoFragment = SearchVideoFragment.newInstance(videoChannelBean4Video, mCurrentSearchContent);
+//            searchInfoListFragment.setISearchSuceesListener(this);
 
-            SearchUserListFragment searchUserListFragment = SearchUserListFragment.newInstance();
-            searchUserListFragment.setISearchSuceesListener(this);
+            VideoChannelBean videoChannelBean4ShotVideo = new VideoChannelBean();
+            videoChannelBean4ShotVideo.setName("短视频");
+            videoChannelBean4ShotVideo.setId(2);
+
+            SearchVideoFragment shortVideoFragment = SearchVideoFragment.newInstance(videoChannelBean4ShotVideo, mCurrentSearchContent);
+//            searchUserListFragment.setISearchSuceesListener(this);
+
+
+            VideoChannelBean videoChannelBean4SuperStar = new VideoChannelBean();
+            videoChannelBean4SuperStar.setName("明星");
+            videoChannelBean4SuperStar.setId(3);
+
+            SearchVideoFragment superStarVideoFragment = SearchVideoFragment.newInstance(videoChannelBean4SuperStar, mCurrentSearchContent);
+//            searchPostListFragment.setISearchSuceesListener(this);
+
 
             SearchCircleListFragment searchCircleListFragment = SearchCircleListFragment.newInstance();
             searchCircleListFragment.setISearchSuceesListener(this);
 
-            SearchPostListFragment searchPostListFragment = SearchPostListFragment.newInstance();
-            searchPostListFragment.setISearchSuceesListener(this);
 
-            SearchQAListFragment searchQAListFragment = SearchQAListFragment.newInstance();
-            searchQAListFragment.setISearchSuceesListener(this);
-
-            SearchQATopicListFragment searchQATopicListFragment = SearchQATopicListFragment.newInstance();
-            searchQATopicListFragment.setISearchSuceesListener(this);
-
-            SearchFeedTopicListFragment searchFeedTopicListFragment = SearchFeedTopicListFragment.newInstance();
-            searchFeedTopicListFragment.setISearchSuceesListener(this);
-
-
-            mFragmentList.add(dynamicListFragment);
-            mFragmentList.add(searchInfoListFragment);
-            mFragmentList.add(searchUserListFragment);
+//            SearchQAListFragment searchQAListFragment = SearchQAListFragment.newInstance();
+//            searchQAListFragment.setISearchSuceesListener(this);
+//
+//            SearchQATopicListFragment searchQATopicListFragment = SearchQATopicListFragment.newInstance();
+//            searchQATopicListFragment.setISearchSuceesListener(this);
+//
+//            SearchFeedTopicListFragment searchFeedTopicListFragment = SearchFeedTopicListFragment.newInstance();
+//            searchFeedTopicListFragment.setISearchSuceesListener(this);
+            mFragmentList.add(videoFragment);
+            mFragmentList.add(shortVideoFragment);
+            mFragmentList.add(superStarVideoFragment);
             mFragmentList.add(searchCircleListFragment);
-            mFragmentList.add(searchPostListFragment);
-            mFragmentList.add(searchQAListFragment);
-            mFragmentList.add(searchQATopicListFragment);
-            mFragmentList.add(searchFeedTopicListFragment);
+            mFragmentList.add(dynamicListFragment);
+//            mFragmentList.add(searchQAListFragment);
+//            mFragmentList.add(searchQATopicListFragment);
+//            mFragmentList.add(searchFeedTopicListFragment);
+
         }
         return mFragmentList;
     }

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tv_top_tip_text"
-            app:srlAccentColor="@android:color/white"
+            app:srlAccentColor="@color/color_38383A"
             app:srlEnablePreviewInEditMode="true">
 
             <com.zhiyicx.baseproject.widget.refresh.TSRefreshHeader
@@ -25,6 +25,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/swipe_target"
+                app:srlAccentColor="@color/color_38383A"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:overScrollMode="never" />

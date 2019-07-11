@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.Letter;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
@@ -34,6 +35,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.utils.TSShareUtils;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -42,6 +44,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.circle.detailv2.adapter.PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST;
 
@@ -68,6 +71,12 @@ public class CircleDetailPresenterV2 extends AppBasePresenter<CircleDetailContra
 
     private CircleInfo mShareCircleInfo;
     private Subscription subscribe;
+
+
+//    @Override
+//    protected boolean useEventBus() {
+//        return true;
+//    }
 
     @Inject
     public CircleDetailPresenterV2(CircleDetailContract.ViewV2 rootView) {
@@ -275,4 +284,7 @@ public class CircleDetailPresenterV2 extends AppBasePresenter<CircleDetailContra
     public void onCancel(Share share) {
 
     }
+
+
+
 }

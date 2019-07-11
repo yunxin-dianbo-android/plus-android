@@ -30,13 +30,18 @@ import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ParcelableDataUtil;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.appprocess.AndroidProcess;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.GameInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
@@ -44,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.develop.maintenance.TSSystemMantenanceAc
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
@@ -113,6 +119,11 @@ public class AppApplication extends TSApplication {
     @Inject
     SystemRepository mSystemRepository;
 
+//    @Inject
+//    VideoChannelRepository videoChannelRepository;
+
+
+    public GameInfoBean gameInfoBean;
     /**
      * 当前登录用户的信息
      */
@@ -121,6 +132,16 @@ public class AppApplication extends TSApplication {
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
     public static List<Integer> sOverRead = new ArrayList<>();
+
+    public static List<VideoChannelBean> videoChannelListBeans;
+
+    public static void setVideoChannelListBeans(List<VideoChannelBean> list) {
+        String json = JsonUtil.objectToString(list);
+//        SharePreferenceUtils.saveString(getContext(),VideoChannelListBean.class.getSimpleName(), json);
+        SharePreferenceUtils.saveString(getContext(), VideoChannelBean.class.getSimpleName(), json);
+        videoChannelListBeans = list;
+        EventBus.getDefault().post(videoChannelListBeans, EventBusTagConfig.MAIN_FRAGMENT_ADD_DELETE__CHANNEL);
+    }
 
     public int mActivityCount = 0;
 
@@ -346,10 +367,11 @@ public class AppApplication extends TSApplication {
      * @param tipStr
      */
     private void handleAuthFail(final String tipStr) {
-        boolean showDialog = !(ActivityHandler
-                .getInstance().currentActivity() instanceof LoginActivity || ActivityHandler
-                .getInstance().currentActivity() instanceof GuideActivity) && ActivityHandler
-                .getInstance().currentActivity() instanceof TSActivity;
+        boolean showDialog = !(
+                ActivityHandler.getInstance().currentActivity() instanceof HomeActivity ||
+                        ActivityHandler.getInstance().currentActivity() instanceof LoginActivity ||
+                        ActivityHandler.getInstance().currentActivity() instanceof GuideActivity) &&
+                ActivityHandler.getInstance().currentActivity() instanceof TSActivity;
         if (showDialog) {
             ((TSActivity) ActivityHandler
                     .getInstance().currentActivity()).showWarnningDialog(tipStr, (dialog, which) -> {
@@ -465,6 +487,8 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
+
+
     }
 
     public static String getTOKEN() {
@@ -576,5 +600,4 @@ public class AppApplication extends TSApplication {
         LogUtils.e("---------------------------------------------onLowMemory---------------------------------------------------");
         // TODO: 2018/1/9 内存不够处理
     }
-
 }

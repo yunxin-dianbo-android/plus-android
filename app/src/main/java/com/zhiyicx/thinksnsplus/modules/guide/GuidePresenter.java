@@ -7,8 +7,11 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.GameInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserPermissions;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.RealAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -16,10 +19,13 @@ import com.zhiyicx.thinksnsplus.data.source.repository.BillRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommonRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.VideoChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.preset.PresetManager;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,6 +54,12 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
     @Inject
     UserInfoRepository mUserInfoRepository;
 
+
+    @Inject
+    VideoChannelRepository videoChannelRepository;
+
+//    GameInfoBean
+
     @Inject
     public GuidePresenter(GuideContract.View rootView) {
         super(rootView);
@@ -69,12 +81,35 @@ public class GuidePresenter extends BasePresenter<GuideContract.View>
                             mIAuthRepository.getAuthBean().setUserPermissions(data);
                         }
                     });
+        } else {
+            videoChannelRepository.getMyVideoChannel().subscribe(new BaseSubscribeForV2<List<VideoChannelBean>>() {
+                @Override
+                protected void onSuccess(List<VideoChannelBean> data) {
+//                    List<VideoChannelBean> videoChannelBeanList = new ArrayList<>();
+                    if (data != null) {
+//                        videoChannelBeanList.addAll(data.default_channels);
+//                        videoChannelBeanList.addAll(data.user_channels);
+//                        videoChannelBeanList.addAll(data.other_channels);
+                        AppApplication.setVideoChannelListBeans(data);
+                    }
+                }
+            });
+
         }
+        mSystemRepository.getGameInfo().subscribe(new BaseSubscribeForV2<GameInfoBean>() {
+            @Override
+            protected void onSuccess(GameInfoBean data) {
+                PresetManager.getInstance().gameInfoBean = data;
+            }
+        });
+
+
     }
 
     @Override
     public void checkLogin() {
-        mRootView.startActivity(mIAuthRepository.isLogin() ? HomeActivity.class : LoginActivity.class);
+//        mRootView.startActivity(mIAuthRepository.isLogin() ? HomeActivity.class : LoginActivity.class);
+        mRootView.startActivity(HomeActivity.class);
     }
 
 

@@ -276,4 +276,20 @@ public class EventBusTagConfig {
 
     public static final String EVENT_USER_HEADPIC_UPDATE = "event_user_update_headpic";
 
+
+    /**
+     * 首页切换频道
+     */
+    public static final String MAIN_FRAGMENT_CHANG_CHANNEL = "main_fragment_chang_channel";
+    /**
+     * 首页频道发生变化
+     */
+    public static final String MAIN_FRAGMENT_ADD_DELETE__CHANNEL = "main_fragment_add_or_delete_channel";
+
+    /**
+     * 帖子詳情頁評論
+     */
+    public static final String EVENT_LOG_OUT = "event_log_out";
+
+    public static final String EVENT_LOG_IN = "event_log_in";
 }

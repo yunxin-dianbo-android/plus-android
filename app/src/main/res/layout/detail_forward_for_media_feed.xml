@@ -5,7 +5,7 @@
     android:id="@+id/ll_forward_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/general_for_bg_light_f7"
+    android:background="@color/color_38383A"
     android:orientation="horizontal"
     android:padding="@dimen/spacing_normal_8dp">
 

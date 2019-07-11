@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.fordownload.AppListPresenterForDownload;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
@@ -83,7 +84,7 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<CirclePostListBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
         return false;
     }
 
@@ -152,7 +153,7 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
                 protected void onSuccess(Object data) {
                     List<TopSuperStarBean> result = (List<TopSuperStarBean>) data;
                     mRootView.onNetSuccessHotSuperStar(result);
-//                mRootView.onNetResponseSuccess(result, isLoadMore);
+//                  mRootView.onNetResponseSuccess(result, isLoadMore);
                 }
 
                 @Override
@@ -170,12 +171,12 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
             addSubscrebe(commentSubSuperStar);
         }
 
-        Observable observable = mMessageReviewRepository.getHotPost(null, maxId == null ? 0 : maxId.intValue());
+        Observable observable = mMessageReviewRepository.getHotPost(null, maxId == null ? 0 : maxId.intValue(),"hot");
         Subscription commentSub = observable.subscribe(new BaseSubscribeForV2() {
             @Override
             protected void onSuccess(Object data) {
 
-                List<CirclePostListBean> result = (List<CirclePostListBean>) data;
+                List<DynamicDetailBeanV2> result = (List<DynamicDetailBeanV2>) data;
 //                CirclePostBean circlePostBean = (CirclePostBean) data;
 //                List<CirclePostListBean> result = new ArrayList<>();
 //                if (circlePostBean.getPinned() != null) {
@@ -209,7 +210,7 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
      * @param dynamicBean
      * @param bitmap
      */
-    public void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap) {
+    public void sharePost(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap) {
         if (mSharePolicy == null) {
             if (mRootView instanceof Fragment) {
                 mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
@@ -220,8 +221,8 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
-        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
-                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getFeed_content());
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {
@@ -238,7 +239,7 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
 
-    public void sharePost(CirclePostListBean dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
+    public void sharePost(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, SHARE_MEDIA type) {
         if (mSharePolicy == null) {
             if (mRootView instanceof Fragment) {
                 mSharePolicy = new UmengSharePolicyImpl(((Fragment) mRootView).getActivity());
@@ -248,8 +249,8 @@ public class CircleHotPresenter extends AppListPresenterForDownload<CircleHotCon
         }
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share_dynamic, mContext.getString(R.string.app_name)));
-        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getSummary()) ? mContext.getString(R.string
-                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getSummary());
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext.getString(R.string
+                .share_default, mContext.getString(R.string.app_name)) : dynamicBean.getFeed_content());
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {

@@ -34,6 +34,7 @@
 
     <TextView
         android:id="@+id/tv_top_flag"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/tv_name"
@@ -65,6 +66,18 @@
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag" />
 
+    <ImageView
+        android:id="@+id/iv_more_edit"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_tiny"
+        android:src="@mipmap/ic_more" />
     <!--  <TextView
           android:id="@+id/tv_time"
           android:layout_width="wrap_content"

@@ -269,6 +269,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private int mContentChar;
 
+    private View mStatusBarPlaceholder;
+
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
         sendDynamicFragment.setArguments(bundle);
@@ -289,6 +291,18 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     protected String setLeftTitle() {
 //        return getString(R.string.cancel);
         return super.setLeftTitle();
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -380,7 +394,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mEmojiKeyboard.postDelayed(() -> {
                     mEmojiKeyboard.init();
                     mEmojiKeyboard.setVisibility(View.VISIBLE);
-                },200);
+                }, 200);
             } else {
                 mEmojiKeyboard.setVisibility(View.GONE);
                 DeviceUtils.showSoftKeyboard(getContext(), mEtDynamicContent.getEtContent());
@@ -398,6 +412,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         mViewEmoji.setVisibility((isKeyboardShown || mEmojiKeyboard.getVisibility() == View.VISIBLE) ? View.VISIBLE : View.GONE);
                     }
                 });
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
     }
 
     private void initTollState() {
@@ -1221,8 +1237,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         };
         if (mTopicBean != null) {
-            mRvTopicList.setVisibility(View.VISIBLE);
-            mLineTopicBottom.setVisibility(View.VISIBLE);
+//            mRvTopicList.setVisibility(View.VISIBLE);
+//            mLineTopicBottom.setVisibility(View.VISIBLE);
+            mRvTopicList.setVisibility(View.GONE);
+            mLineTopicBottom.setVisibility(View.GONE);
 //            mTvAddTopic.setVisibility(View.GONE);
         } else {
 //            mTvAddTopic.setVisibility(View.VISIBLE);
@@ -1477,6 +1495,27 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 clipboardManager.setPrimaryClip(mClipData);
             }
         }
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
     }
 
 

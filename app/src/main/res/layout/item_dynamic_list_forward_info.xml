@@ -27,12 +27,13 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_small_3dp"
-        android:textColor="@color/important_for_content"
+        android:textColor="@color/color_EA3378"
         android:textSize="@dimen/size_content_comment"
         tools:text="张三"/>
 
     <TextView
         android:id="@+id/tv_top_flag"
+        android:layout_alignParentRight="true"
         android:layout_width="@dimen/dynamic_top_flag_width"
         android:layout_height="@dimen/dynamic_top_flag_height"
         android:layout_alignBaseline="@id/tv_name"

@@ -131,7 +131,11 @@
                         android:layout_width="@dimen/chat_message_bottom_tip_size"
                         android:layout_height="@dimen/chat_message_bottom_tip_size"
                         android:layout_alignRight="@id/iv_message"
-                        android:layout_margin="@dimen/spacing_tiny"
+                        android:layout_alignBottom="@+id/iv_message"
+                        android:layout_marginStart="@dimen/spacing_tiny"
+                        android:layout_marginTop="@dimen/spacing_tiny"
+                        android:layout_marginEnd="@dimen/spacing_tiny"
+                        android:layout_marginBottom="16dp"
                         android:background="@drawable/shape_dot_red"
                         android:visibility="invisible" />
 
@@ -142,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/icon_for_home_bottom_text_margin"
-                    android:text="@string/message"
+                    android:text="@string/game"
                     android:textColor="@color/home_bottom_navigate_text_normal"
                     android:textSize="@dimen/size_note_assist" />
 

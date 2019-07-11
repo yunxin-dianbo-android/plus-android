@@ -44,7 +44,9 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailPayNote;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.report.ReportResourceBean;
+import com.zhiyicx.thinksnsplus.i.OnCommentLikeClickListener;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.aaaat.AtUserActivity;
@@ -127,6 +129,15 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
 
+    @BindView(R.id.tv_share)
+    TextView tvShare;
+    @BindView(R.id.tv_like)
+    TextView tvLike;
+    @BindView(R.id.tv_collection)
+    TextView tvCollection;
+    @BindView(R.id.tv_comment)
+    TextView tvComment;
+
     private List<RewardsListBean> mRewardsListBeens = new ArrayList<>();
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
     private boolean mIsLookMore = false;
@@ -146,6 +157,15 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
      * 标识置顶的那条评论
      */
     private DynamicCommentBean mDynamicCommentBean;
+
+    //    //是回复谁呢
+//    Integer reply_user = 0;
+    //被回复的评论
+    Integer reply_comment_id = 0;
+
+    int replyCommentPosition = 0;
+
+    DynamicCommentBean dianzanDynamicCommentBean;
 
     @Override
     protected boolean setUseInputCommentView() {
@@ -230,7 +250,8 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
         mIlvComment.setVisibility(View.GONE);
         mIlvComment.clearFocus();
         DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+//        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+        mLLBottomMenuContainer.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
     }
 
@@ -267,6 +288,45 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
                 }
             }
         });
+
+
+        RxView.clicks(tvCollection)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleCollect());
+        RxView.clicks(tvShare)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleShare());
+
+        RxView.clicks(tvLike)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> hanldeLike());
+        RxView.clicks(tvComment)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> handleComment());
+    }
+
+    public void handleCollect() {
+//        mDynamicBean.setHas_collect(!mDynamicBean.getHas_collect());
+        mPresenter.handleCollect(mDynamicBean);
+    }
+
+    public void handleShare() {
+        // 分享
+        List<UmengSharePolicyImpl.ShareBean> data = getShareBeans();
+        mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap(), data);
+    }
+
+    public void hanldeLike() {
+        // 处理喜欢逻辑，包括服务器，数据库，ui
+        mPresenter.handleLike(!mDynamicBean.isHas_digg(),
+                mDynamicBean.getId(), mDynamicBean);
+    }
+
+    public void handleComment() {
+        // 评论
+        showCommentView();
+        mReplyUserId = 0;
+        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
     }
 
     private void initHeaderView() {
@@ -323,8 +383,35 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
         MultiItemTypeAdapter<DynamicCommentBean> adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
-        dynamicDetailCommentItem.setOnCommentTextClickListener(this);
+//        dynamicDetailCommentItem.setOnCommentTextClickListener(this);
         dynamicDetailCommentItem.setOnCommentResendListener(this);
+        //点赞
+        dynamicDetailCommentItem.setOnCommentLikeClickListener(new OnCommentLikeClickListener() {
+            @Override
+            public void onCommentLikeClick(int position) {
+                int realPostion = position - mHeaderAndFooterWrapper.getHeadersCount();
+                dianzanDynamicCommentBean = mListDatas.get(realPostion);
+                mPresenter.handleLike4Comment(dianzanDynamicCommentBean.get_id(), !dianzanDynamicCommentBean.isHas_like(), realPostion);
+            }
+        });
+        dynamicDetailCommentItem.setOnCommentTextClickListener(new OnCommentTextClickListener() {
+            @Override
+            public void onCommentTextClick(int position) {
+                replyCommentPosition = position - mHeaderAndFooterWrapper.getHeadersCount();
+                DynamicCommentBean dynamicCommentBean = mListDatas.get(replyCommentPosition);
+                reply_comment_id = dynamicCommentBean.getComment_id().intValue();
+                mReplyUserId = (int) dynamicCommentBean.getUser_id();
+                showCommentView();
+                mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+//                DynamicCommentBean dynamicCommentBean = mListDatas.get(position - mHeaderAndFooterWrapper.getHeadersCount());
+//                mPresenter.sendCommentV3(mDynamicBean.getId(),dynamicCommentBean.get);
+            }
+
+            @Override
+            public void onCommentTextLongClick(int position) {
+
+            }
+        });
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
         DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
@@ -362,11 +449,25 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
     @Override
     public void setLike(boolean isLike) {
         mDdDynamicTool.setItemIsChecked(isLike, ITEM_POSITION_0);
+        if (isLike) {
+            tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_like_red, 0, 0);
+            tvLike.setTextColor(getColor(R.color.color_EA3378));
+        } else {
+            tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_like_white, 0, 0);
+            tvLike.setTextColor(getColor(R.color.white));
+        }
     }
 
     @Override
     public void setCollect(boolean isCollect) {
         mDdDynamicTool.setItemIsChecked(isCollect, ITEM_POSITION_3);
+        if (isCollect) {
+            tvCollection.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_mine_collection, 0, 0);
+            tvCollection.setTextColor(getColor(R.color.color_EA3378));
+        } else {
+            tvCollection.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_collection_white, 0, 0);
+            tvCollection.setTextColor(getColor(R.color.white));
+        }
     }
 
     @Override
@@ -480,7 +581,21 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
         setAllData();
         mPresenter.allDataReady();
         ExcutorUtil.startRunInNewThread(() -> mRvList.postDelayed(() -> findGifViews(mDynamicDetailHeader.getGifViews()), 2000));
+        if (mDynamicBean.isHas_digg()) {
+            tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_like, 0, 0);
+            tvLike.setTextColor(getColor(R.color.color_EA3378));
+        } else {
+            tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_like_white, 0, 0);
+            tvLike.setTextColor(getColor(R.color.white));
+        }
 
+        if (mDynamicBean.getHas_collect()) {
+            tvCollection.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_mine_collection, 0, 0);
+            tvCollection.setTextColor(getColor(R.color.color_EA3378));
+        } else {
+            tvCollection.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_collection_white, 0, 0);
+            tvCollection.setTextColor(getColor(R.color.white));
+        }
     }
 
     @Override
@@ -501,6 +616,42 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
     public void finish() {
         mActivity.finish();
     }
+
+    @Override
+    public void onPublishCommentsSuccess(DynamicCommentBean comment) {
+        if (reply_comment_id != null) {
+            if (mListDatas.get(replyCommentPosition).getComment_children() == null) {
+                List<DynamicCommentBean> list = new ArrayList<>();
+                mListDatas.get(replyCommentPosition).setComment_children(list);
+            }
+            mListDatas.get(replyCommentPosition).getComment_children().add(0, comment);
+            mListDatas.get(replyCommentPosition).setComment_children_count(mListDatas.get(replyCommentPosition).getComment_children_count() + 1);
+        } else {
+            mListDatas.add(0, comment);
+        }
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCommentLikeStatuChanged(boolean isLike, int position) {
+        mListDatas.get(position).setHas_like(isLike);
+        if (isLike) {
+            mListDatas.get(position).setComment_like_count(mListDatas.get(position).getComment_like_count() + 1);
+        } else {
+            mListDatas.get(position).setComment_like_count(mListDatas.get(position).getComment_like_count() - 1);
+        }
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+//    @Override
+//    public void onPublishCommentsSuccess(VideoCommentBean comment) {
+//        if (reply_comment_id != null && reply_comment_id != null) {
+//            mListDatas.get(replyCommentPosition).getComment_children().add(0, comment);
+//            mListDatas.get(replyCommentPosition).setComment_children_count(mListDatas.get(replyCommentPosition).getComment_children_count() + 1);
+//        } else {
+//            mListDatas.add(0, comment);
+//        }
+//        mHeaderAndFooterWrapper.notifyDataSetChanged();
+//    }
 
     @Override
     public void dynamicHasBeDeleted() {
@@ -538,6 +689,7 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
             mTvToolbarRight.setVisibility(View.VISIBLE);
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
+        mTvToolbarRight.setVisibility(View.GONE);
 
     }
 
@@ -641,7 +793,8 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
     }
 
     public void showCommentView() {
-        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+//        mLLBottomMenuContainer.setVisibility(View.INVISIBLE);
+        mLLBottomMenuContainer.setVisibility(View.GONE);
         // 评论
         mIlvComment.setVisibility(View.VISIBLE);
         mIlvComment.setSendButtonVisiable(true);
@@ -670,9 +823,14 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-        mPresenter.sendCommentV2(mReplyUserId, text);
-        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+//      mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+        mLLBottomMenuContainer.setVisibility(View.GONE);
         scrollToCommentTop();
+        if (mReplyUserId == 0) {
+            mPresenter.sendCommentV2(mReplyUserId, text);
+        } else {
+            mPresenter.sendCommentV3(mDynamicBean.getId().intValue(), text, (int) mReplyUserId, reply_comment_id);
+        }
     }
 
     @Override
@@ -687,7 +845,7 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        handleItemClick(position);
+//        handleItemClick(position);
     }
 
     private void handleItemClick(int position) {
@@ -1032,4 +1190,19 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
             GifControl.getInstance(gifViewHolder).play();
         }
     }
+
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+//    public void onUserInfoClick(UserInfoBean userInfoBean) {
+//        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+//    }
 }

@@ -34,6 +34,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.em.manager.util.TSEMConstants;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.utils.glide.GlideManager;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.textview.SpanTextViewWithEllipsize;
 import com.zhiyicx.common.config.MarkdownConfig;
@@ -85,6 +86,7 @@ import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
 import static android.support.v4.view.ViewCompat.LAYER_TYPE_NONE;
+import static android.view.View.LAYER_TYPE_HARDWARE;
 import static cn.jzvd.JZVideoPlayer.URL_KEY_DEFAULT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -105,7 +107,7 @@ public class DynamicDetailHeader {
     private FrameLayout mFlcommentcountcontainer;
     private FrameLayout mFlForwardContainer;
     private ReWardView mReWardView;
-//    private CirclePostListTopicView mDynamicListTopicView;
+    //    private CirclePostListTopicView mDynamicListTopicView;
     private DynamicListTopicView mDynamicListTopicView;
     private Context mContext;
     private int screenWidth;
@@ -188,6 +190,7 @@ public class DynamicDetailHeader {
 
 
         mDynamicListTopicView.setData(dynamicBean);
+        mDynamicListTopicView.setVisibility(View.GONE);
         String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
@@ -195,6 +198,7 @@ public class DynamicDetailHeader {
             mTitle.setVisibility(View.VISIBLE);
             mTitle.setText(titleText);
         }
+        mTitle.setVisibility(View.GONE);
         String contentText = dynamicBean.getFeed_content();
         if (TextUtils.isEmpty(contentText)) {
             mContent.setVisibility(View.GONE);
@@ -303,6 +307,7 @@ public class DynamicDetailHeader {
                     showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
                 }
                 setImageClickListener(photoList, dynamicBean);
+
             }
 
         }
@@ -582,7 +587,12 @@ public class DynamicDetailHeader {
             mDynamicDetailHeader.getContext().startActivity(intent);
         });
         if (dynamicBean.getFeed_comment_count() <= 0) {
-            mFlcommentcountcontainer.setVisibility(View.GONE);
+//            mFlcommentcountcontainer.setVisibility(View.GONE);
+            mFlcommentcountcontainer.setVisibility(View.VISIBLE);
+            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
+                    (mDynamicDetailHeader.getResources().getString(R.string
+                            .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_comment_count())));
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
@@ -621,7 +631,7 @@ public class DynamicDetailHeader {
         DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = view.findViewById(R.id.dynamic_content_img);
-        imageView.setLayerType(LAYER_TYPE_NONE, null);
+        imageView.setLayerType(LAYER_TYPE_HARDWARE, null);
         // 隐藏最后一张图的下间距
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
@@ -647,6 +657,7 @@ public class DynamicDetailHeader {
 
             imageView.setIshowGifTag(isGif);
             if (isGif) {
+                imageView.setLayerType(View.LAYER_TYPE_NONE, null);
                 mGifViews.add(imageView);
             }
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -678,6 +689,15 @@ public class DynamicDetailHeader {
                     requestBuilder.placeholder(R.drawable.shape_default_image);
                 }
                 requestBuilder.into(new GlideDrawableImageViewTarget(imageView, 0));
+
+//                String url = ImageUtils.imagePath(canLook, imageBean.getFile(), canLook ? imageBean.getCurrentWith() : 0, canLook ? imageBean.getHeight() : 0, /*isNeedOrigin ? ImageZipConfig.IMAGE_100_ZIP :*/ part);
+//
+//                if (imageBean.getHeight() > 4000) {
+//                    url = url + "&q=60";
+//                }else{
+//                    url = url + "&q=80";
+//                }
+//                GlideManager.glide(mContext, imageView, url, R.drawable.shape_default_image);
             }
         } else {
             Glide.with(mContext)
@@ -754,7 +774,8 @@ public class DynamicDetailHeader {
     }
 
     void setReWardViewVisible(int visible) {
-        mReWardView.setVisibility(visible);
+//        mReWardView.setVisibility(visible);
+        mReWardView.setVisibility(View.GONE);
     }
 
     protected List<Link> setLiknks(final DynamicDetailBeanV2 dynamicDetailBeanV2, String content) {

@@ -28,15 +28,21 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.screenbage.BadgeNumberManager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
+import com.zhiyicx.thinksnsplus.data.beans.CirclePostCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
@@ -46,8 +52,13 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment2;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment2;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+import com.zhiyicx.thinksnsplus.preset.PresetManager;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +72,9 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.jzvd.JZVideoPlayerManager;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -181,8 +194,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
 
-
-
     @Override
     protected boolean showToolBarDivider() {
         return false;
@@ -202,6 +213,22 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         initListener();
     }
 
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_OUT, mode = ThreadMode.MAIN)
+    public void logOut(boolean isLogOut) {
+        if (mCurrenPage == PAGE_HOME) {
+//                    暂时不需要点击 home 刷新
+//                    ((MainFragment) mFragmentList.get(mCurrenPage)).refreshCurrentPage();
+        } else {
+            mVpHome.setCurrentItem(PAGE_HOME, false);
+            mCurrenPage = PAGE_HOME;
+        }
+    }
 
     @Override
     protected void initData() {
@@ -267,10 +294,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 点击消息
             case R.id.ll_message:
-                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+//                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+//                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+//                }
+//                mCurrenPage = PAGE_MESSAGE;
+                if (PresetManager.getInstance().gameInfoBean != null) {
+                    CustomWEBActivity.startToWEBActivity(getContext(), PresetManager.getInstance().gameInfoBean.url + "");
+                } else {
+                    ToastUtils.showToast("游戏信息获取失败");
                 }
-                mCurrenPage = PAGE_MESSAGE;
+//                ToastUtils.showToast("敬请期待");
                 break;
             // 点击我的
             case R.id.ll_mine:
@@ -284,13 +317,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     }
 
+
     @Override
     public void setMessageTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMessageTip.setVisibility(View.VISIBLE);
-        } else {
-            mVMessageTip.setVisibility(View.INVISIBLE);
-        }
+//        if (tipVisable) {
+//            mVMessageTip.setVisibility(View.VISIBLE);
+//        } else {
+        mVMessageTip.setVisibility(View.INVISIBLE);
+//        }
         BadgeNumberManager.from(mActivity).setBadgeNumber(null, TSEMHyphenate.getInstance().getMsgUnreadCount());
     }
 
@@ -371,6 +405,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         TSViewPagerAdapter homePager = new TSViewPagerAdapter(getChildFragmentManager());
 
         mFragmentList.clear();
+        String json = SharePreferenceUtils.getString(getContext(), VideoChannelBean.class.getSimpleName());
+//        List<VideoChannelBean> listVideoChannel = (List<VideoChannelBean>) JsonUtil.parsListData(json, VideoChannelBean.class);
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment2.newInstance());
 //        mFragmentList.add(FindFragment.newInstance());
@@ -460,7 +496,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvHome.setTextColor(position == PAGE_HOME ? checkedColor : unckeckedColor);
         mIvFind.setImageResource(position == PAGE_FIND ? R.mipmap.ic_discover_selected : R.mipmap.ic_discover_normal);
         mTvFind.setTextColor(position == PAGE_FIND ? checkedColor : unckeckedColor);
-        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.common_ico_bottom_message_high : R.mipmap.common_ico_bottom_message_normal);
+        mIvMessage.setImageResource(position == PAGE_MESSAGE ? R.mipmap.ic_game_normal : R.mipmap.ic_game_normal);
         mTvMessage.setTextColor(position == PAGE_MESSAGE ? checkedColor : unckeckedColor);
         mIvMine.setImageResource(position == PAGE_MINE ? R.mipmap.ic_user_center_selected : R.mipmap.ic_user_center_normal);
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);

@@ -51,7 +51,7 @@ public class ChannelFragmentPresenter extends AppBasePresenter<ChannelFragmentCo
 
     @Override
     public void deleteVideoChannel(String channel_id) {
-        videoChannelRepository.addOrDeleteVideoChannel(channel_id,"delete").observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        videoChannelRepository.addOrDeleteVideoChannel(channel_id,"del").observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<DeleteOrAddVideoChannelResInfo>() {
                     @Override
                     protected void onSuccess(DeleteOrAddVideoChannelResInfo data) {

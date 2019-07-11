@@ -3,9 +3,10 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.cache.CacheBean;
 
-public class VideoChannelBean extends CacheBean implements Parcelable {
+public class VideoChannelBean extends BaseListBean implements Parcelable {
 
     /**
      * id : 2
@@ -21,6 +22,15 @@ public class VideoChannelBean extends CacheBean implements Parcelable {
     private int sort;
     private String created_at;
 
+
+//         "id": 1,
+//                 "name": "精选",
+//                 "sort": 0,
+//                 "created_at": "2019-05-27 06:24:03",
+//                 "updated_at": "2019-05-27 06:24:03",
+//                 "deleted_at": null,
+    private int weight;//": 1,
+    private int type;//": 1
     public int getWeight() {
         return weight;
     }
@@ -39,8 +49,8 @@ public class VideoChannelBean extends CacheBean implements Parcelable {
 
     private String updated_at;
     private String deleted_at;
-    private int weight;//": 1,
-    private int type;//": 1
+//    private int weight;//": 1,
+//    private int type;//": 1
 
     public int getId() {
         return id;

@@ -60,6 +60,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     // 推荐专用
     public static final String RECOMMEND_INFO = "-1";
 
+    public static final String ALL_INFO = "-2";
+
 
     private UserCertificationInfo mUserCertificationInfo;
 
@@ -80,7 +82,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     @Override
     protected int setRightImg() {
 //        return R.mipmap.ico_createcircle;
-        return R.mipmap.ic_search;
+//        return R.mipmap.ic_search;
+        return super.setRightImg();
     }
 
     @Override
@@ -128,10 +131,13 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     protected List<String> initTitles() {
-        if (mTitle == null) {
-            mTitle = new ArrayList<>();
-            mTitle.add(getString(R.string.info_recommend));
-        }
+//        if (mTitle == null) {
+//            mTitle = new ArrayList<>();
+//            mTitle.add(getString(R.string.info_recommend));
+//        }
+//        return mTitle;
+        mTitle = new ArrayList<>();
+        mTitle.add(getString(R.string.info_recommend));
         return mTitle;
     }
 
@@ -140,9 +146,10 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
         super.initView(rootView);
 //        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
 //        mTsvToolbar.setBackgroundResource(R.drawable.common_statubar_bg_2);
-        mTsvToolbar.showDivider(true);
+        mTsvToolbar.showDivider(false);
         mTsvToolbar.setMyBackground(R.drawable.common_statubar_bg_2);
         mTsvToolbar.setDividerBackground(R.drawable.common_statubar_bg_2);
+        mTsvToolbar.setVisibility(View.GONE);
     }
 
     private void initStatusBar() {
@@ -154,17 +161,17 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
 
     @Override
     public void setCategroiesList(List<CircleTypeBean> circleTypeList) {
-        for (CircleTypeBean circleTypeBean : circleTypeList) {
-            if (RECOMMEND_INFO.equals(circleTypeBean.getId().intValue() + "")) {
-                continue;
-            }
-            mTitle.add(circleTypeBean.getName());
-            mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId() + ""));
-        }
-        mTsvToolbar.notifyDataSetChanged(mTitle);
-//        mTsvToolbar.setBackgroundColor(Color.parseColor("#38383A"));
-        tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
-        mVpFragment.setOffscreenPageLimit(mTitle.size());
+//        for (CircleTypeBean circleTypeBean : circleTypeList) {
+//            if (RECOMMEND_INFO.equals(circleTypeBean.getId().intValue() + "")) {
+//                continue;
+//            }
+//            mTitle.add(circleTypeBean.getName());
+//            mFragmentList.add(CircleListFragment.newInstance(circleTypeBean.getId() + ""));
+//        }
+
+//        mTsvToolbar.notifyDataSetChanged(mTitle);
+//        tsViewPagerAdapter.bindData(mFragmentList, mTitle.toArray(new String[]{}));
+//        mVpFragment.setOffscreenPageLimit(mTitle.size());
     }
 
     @Override
@@ -190,7 +197,8 @@ public class AllCircleContainerFragment extends TSViewPagerFragment<AllCircleCon
     protected List<Fragment> initFragments() {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>();
-            mFragmentList.add(CircleListFragment.newInstance(RECOMMEND_INFO));
+//          mFragmentList.add(CircleListFragment.newInstance(RECOMMEND_INFO));
+            mFragmentList.add(CircleListFragment.newInstance(ALL_INFO));
         }
         return mFragmentList;
     }

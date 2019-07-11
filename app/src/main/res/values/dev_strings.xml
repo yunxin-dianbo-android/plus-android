@@ -4,4 +4,7 @@
     <string name="short_video">短视频</string>
     <string name="shuper_star">明星</string>
     <string name="tv_series">电视剧</string>
+
+    <string name="have_no_input_search_key_tip">请输入搜索关键字</string>
+
 </resources>

@@ -73,6 +73,14 @@ public class VideoChannelRepository implements IVideoChannelRepository {
     }
 
     @Override
+    public Observable<List<VideoChannelBean>> getMyVideoChannel() {
+
+
+        return videoChannelClient.getMyVideoChannel()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<DeleteOrAddVideoChannelResInfo> addOrDeleteVideoChannel(String channel_id, String act) {
         return videoChannelClient.addOrDeleteVideoChannel(channel_id, act)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

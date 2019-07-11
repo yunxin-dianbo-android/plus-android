@@ -106,8 +106,8 @@ public class TabSelectView extends FrameLayout {
         findViewById(R.id.toolbar).setBackgroundResource(resId);
     }
 
-    public void setDividerBackground(int resId){
-          divider.setBackgroundResource(resId);
+    public void setDividerBackground(int resId) {
+        divider.setBackgroundResource(resId);
     }
 
     public void initTabView(ViewPager viewPager, List<String> stringList) {
@@ -158,9 +158,13 @@ public class TabSelectView extends FrameLayout {
         tvToolbarLeft.setVisibility(View.VISIBLE);
     }
 
+    public void setLeftTextVisibility(int visibility) {
+        tvToolbarLeft.setVisibility(visibility);
+    }
+
     public void setLeftImg(int imgRes) {
         if (imgRes == 0 && TextUtils.isEmpty(tvToolbarLeft.getText())) {
-            tvToolbarLeft.setVisibility(INVISIBLE);
+            tvToolbarLeft.setVisibility(GONE);
         } else {
             tvToolbarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), imgRes), null, null, null);
             tvToolbarLeft.setVisibility(View.VISIBLE);

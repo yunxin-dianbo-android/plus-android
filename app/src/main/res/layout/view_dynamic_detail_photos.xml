@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/color_38383A"
     android:layerType="none"
     android:orientation="vertical">
     <!--动态详情的图片-->
@@ -18,6 +18,6 @@
     <View
         android:id="@+id/img_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_small"
-        android:background="@color/white"/>
+        android:layout_height="0dp"
+        android:background="@color/color_38383A"/>
 </LinearLayout>

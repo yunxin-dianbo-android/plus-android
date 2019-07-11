@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,10 +36,12 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.modules.home.EditDeletePopUpWindow;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -74,13 +77,21 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected int mImageMaxHeight; // 单张图片最大高度
     protected Context mContext;
 
-    protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
+    protected boolean showToolMenu = false;// 是否显示工具栏:默认显示
     protected boolean showTopicTags = true;// 是否显示话题标签:默认显示
     protected boolean showCommentList = true;// 是否显示评论内容:默认显示
     protected boolean showReSendBtn = true;// 是否显示重发按钮
     protected long start;
     protected int mDrawableList;
     protected FilterImageView mFilterImageView;
+
+    EditDeletePopUpWindow editDeletePopUpWindow;
+    //个人中心的 帖子
+    private boolean isMyPost = false;
+
+    public void isMyPost(boolean myPost) {
+        isMyPost = myPost;
+    }
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -90,6 +101,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      * 图片点击监听
      */
     protected OnImageClickListener mOnImageClickListener;
+
+    public void setEditDeleteClickCallBack(EditDeletePopUpWindow.EditDeleteClickCallBack editDeleteClickCallBack) {
+        this.editDeleteClickCallBack = editDeleteClickCallBack;
+    }
+
+    EditDeletePopUpWindow.EditDeleteClickCallBack editDeleteClickCallBack;
 
     public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
         mOnUserInfoClickListener = onUserInfoClickListener;
@@ -200,11 +217,20 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } catch (Exception ignored) {
             }
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
+            try {
+                holder.setText(R.id.tv_come_from, dynamicBean.getGroup() == null ? "" : dynamicBean.getGroup().getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 
             holder.setText(R.id.tv_time, dynamicBean.getFriendlyTime());
             holder.setVisible(R.id.tv_title, View.GONE);
             SpanTextViewWithEllipsize contentView = holder.getView(R.id.tv_content);
+
+            holder.getTextView(R.id.tv_share_count).setText(dynamicBean.getFeed_view_count() + "");
+            holder.getTextView(R.id.tv_comment_count).setText(dynamicBean.getFeed_comment_count() + "");
+            holder.getTextView(R.id.tv_like_count).setText(dynamicBean.getFeed_digg_count() + "");
             // 置顶标识 ,防止没有置顶布局错误
             try {
                 // 待审核 也隐藏
@@ -214,9 +240,45 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
                         DynamicDetailBeanV2.TOP_REVIEW ?
                         R.string.review_ing : R.string.dynamic_top_flag));
+                topFlagView.setVisibility(View.GONE);
             } catch (Exception ignored) {
             }
+            try {
+                ImageView ivMoreDdit = holder.getImageViwe(R.id.iv_more_edit);
+                if (isMyPost) {
+                    ivMoreDdit.setVisibility(View.VISIBLE);
+                    ivMoreDdit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (editDeletePopUpWindow == null) {
+                                editDeletePopUpWindow = new EditDeletePopUpWindow(mContext);
+                            }
+                            editDeletePopUpWindow.bindData(dynamicBean);
+                            editDeletePopUpWindow.showLeft(view, new EditDeletePopUpWindow.EditDeleteClickCallBack() {
+                                @Override
+                                public void onEditeClick(DynamicDetailBeanV2 dynamicBean) {
+                                    if (editDeleteClickCallBack != null) {
+                                        editDeleteClickCallBack.onEditeClick(dynamicBean);
+                                    }
+//                              mOnMoreCommentClickListener.onMoreCommentClick();
+                                }
 
+                                @Override
+                                public void onDeleteClick(DynamicDetailBeanV2 dynamicBean) {
+                                    if (editDeleteClickCallBack != null) {
+                                        editDeleteClickCallBack.onDeleteClick(dynamicBean);
+                                    }
+//                              mOnMoreCommentClickListener.onMoreCommentClick();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    ivMoreDdit.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             String content = dynamicBean.getFriendlyContent();
             boolean hasContent = !TextUtils.isEmpty(content);
             contentView.setVisibility(hasContent ? View.VISIBLE : View.GONE);
@@ -278,7 +340,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             if (showToolMenu && dynamicBean.getUser_id() > 0) {
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-                dynamicListMenuView.setMoreButtonRightPadding(ConvertUtils.dp2px(mContext,15));
+                dynamicListMenuView.setMoreButtonRightPadding(ConvertUtils.dp2px(mContext, 15));
                 dynamicListMenuView.setImageNormalResourceIds(getToolImages());
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
@@ -323,29 +385,30 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             // 设置评论内容
             DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-            CirclePostListTopicView topics = holder.getView(R.id.dltv_topic);
-            boolean showTopic = showTopicTags && (dynamicBean.getTopics() != null && !dynamicBean.getTopics().isEmpty());
-            if (!showTopic) {
-                topics.setVisibility(View.GONE);
-            } else {
-                topics.setVisibility(View.VISIBLE);
-                topics.setOnTopicClickListener(mOnTopicClickListener);
-                if (mOnTopicClickListener != null) {
-//                    topics.setData(dynamicBean, mOnTopicClickListener.doNotShowThisTopic());
-                } else {
-//                    topics.setData(dynamicBean, null);
-                }
-
-            }
+//            DynamicListTopicView topics = holder.getView(R.id.dltv_topic);
+//            boolean showTopic = showTopicTags && (dynamicBean.getTopics() != null && !dynamicBean.getTopics().isEmpty());
+//            if (!showTopic) {
+//                topics.setVisibility(View.GONE);
+//            } else {
+//                topics.setVisibility(View.VISIBLE);
+////                topics.setOnTopicClickListener(mOnTopicClickListener);
+//                if (mOnTopicClickListener != null) {
+////                    topics.setData(dynamicBean, mOnTopicClickListener.doNotShowThisTopic());
+//                } else {
+////                    topics.setData(dynamicBean, null);
+//                }
+//
+//            }
             if (!showCommentList || dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
                 comment.setVisibility(View.GONE);
             } else {
                 comment.setVisibility(View.VISIBLE);
-//                comment.setData(dynamicBean);
-                comment.setOnCommentClickListener(mOnCommentClickListener);
-                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+//              comment.setData(dynamicBean);
+//                comment.setOnCommentClickListener(mOnCommentClickListener);
+//                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+//                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
             }
+            comment.setVisibility(View.GONE);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

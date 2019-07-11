@@ -65,6 +65,9 @@ public class PostListFragment extends BaseCircleDetailFragment {
             startRefrsh();
             mIsLoadedNetData = true;
         }
+        if(mCircleDetailPresenter !=null) {
+            circlePostListItemForShorVideo.setTourist(mCircleDetailPresenter.isTourist());
+        }
     }
 
     @Override
@@ -109,6 +112,13 @@ public class PostListFragment extends BaseCircleDetailFragment {
     @Override
     protected void closeInputView() {
 
+    }
+
+    @Override
+    public String getType() {
+//             * 参数 type 默认 1，   1-发布的 2- 已置顶 3-置顶待审
+//                * 6-最新帖子 7-最新回复 8-精华帖
+        return super.getType();
     }
 
     @Override

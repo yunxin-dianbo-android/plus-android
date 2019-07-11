@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopCircleJoinReQuestBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopNewsCommentListBean;
@@ -32,7 +33,7 @@ public interface IMessageReviewRepository {
 
     Observable<List<TopPostListBean>> getPostReview(Long circleId, int after);
 
-    Observable<List<CirclePostListBean>> getHotPost(Long circleId, int after);
+    Observable<List<CirclePostListBean>> getHotPost(Long circleId, int after,String type);
 
     Observable<List<TopSuperStarBean>> getPostHotSuperStar();
 

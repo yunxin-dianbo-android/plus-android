@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AddSearchKeyResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.UploadPostCommentResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.notify.AtMeaasgeBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
@@ -31,6 +34,8 @@ public interface IDynamicReppsitory {
     Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
 
 
+    Observable<List<TopSuperStarBean>> getPostHotSuperStar();
+
     /**
      * get dynamic list
      *
@@ -45,6 +50,23 @@ public interface IDynamicReppsitory {
     Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, String keyWord,Long user_id, boolean isLoadMore,
                                                            String screen,String id);
 
+    /**
+     * get dynamic list
+     *
+     * @param comment_id       评论id
+     * @return dynamic list
+     */
+    Observable<AddSearchKeyResInfo> handleLike4Comment(Long comment_id);
+    /**
+     * get dynamic list
+     *
+     * @param comment_id       评论id
+     * @return dynamic list
+     */
+    Observable<AddSearchKeyResInfo> handleDeleteLike4Comment(Long comment_id);
+
+    Observable<List<DynamicDetailBeanV2>> getHotDynamicV2(String type, Long after, String search, /*Long userId, */final boolean isLoadMore,
+                                                          String chooseType/*, String id*/);
     /**
      * 动态点赞
      *
@@ -92,6 +114,14 @@ public interface IDynamicReppsitory {
      */
     void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
+    /**
+     * 发布评论
+     * @param feedId
+     * @param body
+     * @param reply_user
+     * @param reply_comment_id
+     */
+    Observable<UploadPostCommentResInfo> sendCommentV3(Integer feedId, String body, Integer reply_user, Integer reply_comment_id);
 
     void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> datas, String type);
 
@@ -136,5 +166,8 @@ public interface IDynamicReppsitory {
      * 获取某个人的动态列表
      */
     Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id, String screen);
+
+
+
 
 }

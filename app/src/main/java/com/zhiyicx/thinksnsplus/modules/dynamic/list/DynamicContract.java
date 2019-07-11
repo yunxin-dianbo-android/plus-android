@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.CirclePostListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -53,6 +54,8 @@ public interface DynamicContract {
         void hiddenChanged(boolean hidden);
 
         void showDeleteTipPopupWindow(DynamicDetailBeanV2 detailBeanV2);
+
+        void onNetSuccessHotSuperStar(List<TopSuperStarBean> result);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存

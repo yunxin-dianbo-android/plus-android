@@ -110,6 +110,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                 } else {// 没有显示的图片控件隐藏
                     mImageViews[i].setVisibility(GONE);
                 }
+                mImageViews[i].setVisibility(GONE);
             }
         }
 
@@ -217,20 +218,23 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 设置点赞数量
      */
     public void setDigCount(int digCount) {
-        this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, ConvertUtils.numberConvert(digCount)));
+//      this.digCount.setText(mContext.getString(R.string.dynamic_dig_count, ConvertUtils.numberConvert(digCount)));
+        this.digCount.setText(ConvertUtils.numberConvert(digCount));
     }
 
     /**
      * 设置浏览人数
      */
     public void setViewerCount(int viewerCount) {
-        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, ConvertUtils.numberConvert(viewerCount)));
+//        this.viewerCount.setText(mContext.getString(R.string.dynamic_viewer_count, ConvertUtils.numberConvert(viewerCount)));
+        this.viewerCount.setText(ConvertUtils.numberConvert(viewerCount));
     }
-  /**
+
+    /**
      * 设置浏览人数
      */
     public void setViewerCountText(String str) {
-        this.viewerCount.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+        this.viewerCount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         this.viewerCount.setText(str);
     }
 
@@ -246,7 +250,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 设置发布时间
      */
     public void setPublishTimeText(String str) {
-        this.publishTime.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+        this.publishTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         this.publishTime.setText(str);
     }
 
@@ -254,7 +258,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 没有人点赞
      */
     private void showNoDig() {
-        this.digCount.setVisibility(GONE);
+        this.digCount.setVisibility(VISIBLE);
         for (ImageView imageView : mImageViews) {
             imageView.setVisibility(GONE);
         }

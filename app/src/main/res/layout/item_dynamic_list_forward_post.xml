@@ -34,6 +34,7 @@
 
     <TextView
         android:id="@+id/tv_top_flag"
+        android:layout_alignParentRight="true"
         android:layout_width="@dimen/dynamic_top_flag_width"
         android:layout_height="@dimen/dynamic_top_flag_height"
         android:layout_alignBaseline="@id/tv_name"

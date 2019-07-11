@@ -36,6 +36,12 @@ public class SearchDynamicListFragment extends DynamicFragment implements ISearc
 
     private ISearchSuceesListener mISearchSuceesListener;
 
+    @Override
+    protected void initData() {
+        super.initData();
+        mRvList.setBackgroundColor(getColor(R.color.color_2D2E30));
+    }
+
     public void setISearchSuceesListener(ISearchSuceesListener isearchsuceeslistener) {
         mISearchSuceesListener = isearchsuceeslistener;
     }
@@ -47,6 +53,16 @@ public class SearchDynamicListFragment extends DynamicFragment implements ISearc
         SearchDynamicListFragment fragment = new SearchDynamicListFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override

@@ -46,6 +46,7 @@
         android:maxLength="@integer/excelent_maxlength"
         android:maxLines="1"
         android:padding="@dimen/spacing_tiny"
+        android:layout_alignParentRight="true"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_advert_launche"
         android:visibility="gone"
@@ -67,18 +68,31 @@
         android:visibility="gone"
         tools:text="@string/dynamic_top_flag"/>
 
-   <!-- <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/iv_more_edit"
+        android:layout_width="25dp"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/tv_name"
         android:layout_alignParentRight="true"
+        android:scaleType="centerInside"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:gravity="right"
-        android:maxLines="1"
-        android:textColor="@color/general_for_hint"
-        android:textSize="@dimen/size_icon_assist"
-        tools:text="2016-05-06"/>-->
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_tiny"
+        android:src="@mipmap/ic_more" />
+
+    <!-- <TextView
+         android:id="@+id/tv_time"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBaseline="@id/tv_name"
+         android:layout_alignParentRight="true"
+         android:layout_marginRight="@dimen/spacing_normal"
+         android:gravity="right"
+         android:maxLines="1"
+         android:textColor="@color/general_for_hint"
+         android:textSize="@dimen/size_icon_assist"
+         tools:text="2016-05-06"/>-->
     <LinearLayout
         android:id="@+id/ll_tv_time_parent"
         android:layout_below="@+id/tv_name"

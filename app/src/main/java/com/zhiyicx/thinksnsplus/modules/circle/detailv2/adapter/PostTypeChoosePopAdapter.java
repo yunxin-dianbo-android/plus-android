@@ -79,9 +79,9 @@ public class PostTypeChoosePopAdapter extends TypeChoosePopAdapter {
     }
 
     public enum MyPostTypeEnum {
-        LATEST_POST("latest_post"),
-        LATEST_COMMENT("latest_reply"),
-        EXCELLENT("1");
+        LATEST_POST("group"),
+        LATEST_COMMENT("group_reply"),
+        EXCELLENT("group_fine");
         public String value;
 
         MyPostTypeEnum(String value) {

@@ -149,7 +149,8 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     @Override
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
                     }
                 });
         RxView.clicks(tvVideoClassification2)
@@ -159,7 +160,8 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     @Override
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
                     }
                 });
         RxView.clicks(tvAllVideoClassification)
@@ -169,7 +171,8 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     @Override
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
                     }
                 });
 //        RxView.clicks();

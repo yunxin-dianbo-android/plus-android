@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.InputPasswordView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -13,10 +14,12 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.circle.all_circle.container.AllCircleContainerActivity;
@@ -34,6 +37,8 @@ import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivi
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,6 +266,7 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     void initHeaderView() {
         if (mPresenter != null) {
             mCircleMainHeader = new CircleMainHeader(mActivity, mPresenter.getCircleTopAdvert(), 2341);
+            mHeaderAndFooterWrapper.clearHeaderView();
             mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
             mPresenter.requestNetData(0L, false);
         }
@@ -545,5 +551,36 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     @Override
     public void headClick(int position) {
 
+    }
+    @Override
+    protected boolean isUseTouristLoadLimit() {
+        return false;
+    }
+
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+//    /**
+//     * 添加或者删除频道
+//     *
+//     * @param
+//     */
+//    @Subscriber(tag = EventBusTagConfig.MAIN_FRAGMENT_ADD_DELETE__CHANNEL, mode = ThreadMode.MAIN)
+//    public void addOrDeleteChannel(List<VideoChannelBean> videoChannelBeans) {
+//        //刷新数据  重新登录
+//        initData();
+//    }
+    /**
+     * 添加或者删除频道
+     *
+     * @param
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_OUT, mode = ThreadMode.MAIN)
+    public void logout(boolean isLogOut) {
+        //刷新数据  重新登录
+        initData();
     }
 }

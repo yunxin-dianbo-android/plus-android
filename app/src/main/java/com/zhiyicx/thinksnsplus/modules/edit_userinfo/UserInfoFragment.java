@@ -103,6 +103,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @BindView(R.id.tv_tag_hint)
     TextView mTvTagHint;
 
+    View vStatusBarPlaceholder;
+
     private TSnackbar mTSnackbarUserInfo;
     private TSnackbar mTSnackbarUploadIcon;
 
@@ -125,14 +127,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
+    }
+
+    @Override
     protected boolean setUseSatusbar() {
         return true;
     }
 
     @Override
     protected boolean setUseStatusView() {
-        return true;
+        return false;
     }
+
 
     @Override
     protected void initView(View rootView) {
@@ -191,6 +199,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             }
             return true;
         });
+
+        vStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar(vStatusBarPlaceholder);
+
     }
 
 
@@ -257,7 +269,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     @Override
     protected boolean showToolBarDivider() {
-        return true;
+        return false;
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.ll_tag_container})
@@ -620,6 +632,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         } else {
             mToolbarRight.setEnabled(false);
         }
+    }
+
+    @Override
+    protected int setLeftImg() {
+        return R.mipmap.ic_back;
     }
 
     /**

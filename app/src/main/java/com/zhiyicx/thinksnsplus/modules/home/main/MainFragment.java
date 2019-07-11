@@ -16,9 +16,17 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.DeleteOrAddVideoChannelResInfo;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.ChannelManagerActivity;
@@ -27,6 +35,12 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.search.container.SearchContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
+import com.zhiyicx.thinksnsplus.modules.superstar.AllStarActivity;
+import com.zhiyicx.thinksnsplus.modules.video.VideoHomeCongract;
+import com.zhiyicx.thinksnsplus.modules.video.VideoHomeFragment;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +51,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.jzvd.JZVideoPlayerManager;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -61,11 +79,18 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     TextView tvVideoClassification2;
     @BindView(R.id.tv_all_video_classification)
     TextView tvAllVideoClassification;
+    @BindView(R.id.ll_channel_parent)
+    LinearLayout llChannelParent;
 
     @Inject
     AuthRepository mIAuthRepository;
+
+    //    @Inject
+//    VideoChannelRepository videoChannelRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
+    VideoChannelBean currentVideoChannelBean;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -103,7 +128,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected int getOffsetPage() {
-        return 2;
+        return 0;
     }
 
     @Override
@@ -126,9 +151,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         //不需要返回键
 //        mTsvToolbar.setLeftImg(0);
         mTsvToolbar.setLeftImg(R.mipmap.app_icon);
-        mTsvToolbar.setRightImg(R.mipmap.ic_home_show_more_channel, R.color.transparent);
-//        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, SearchContainerActivity.class)));
-        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, ChannelManagerActivity.class)));
+        // TODO: 2019/7/2 这一期先去掉
+//        mTsvToolbar.setRightImg(R.mipmap.ic_home_show_more_channel, R.color.transparent);
+//        mTsvToolbar.setRightClickListener(this, () -> startActivity(new Intent(mActivity, ChannelManagerActivity.class)));
         llSearchAndClassifyContent.setVisibility(View.VISIBLE);
         RxView.clicks(llSearchParent)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -139,36 +164,53 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                         startActivity(new Intent(mActivity, SearchContainerActivity.class));
                     }
                 });
-        RxView.clicks(tvVideoClassification)
+//        RxView.clicks(tvVideoClassification)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .compose(this.<Void>bindToLifecycle())
+//                .subscribe(new Action1<Void>() {
+//                    @Override
+//                    public void call(Void aVoid) {
+//                        // TODO: 2019/5/3 分类页面
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                    }
+//                });
+//        RxView.clicks(tvVideoClassification2)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .compose(this.<Void>bindToLifecycle())
+//                .subscribe(new Action1<Void>() {
+//                    @Override
+//                    public void call(Void aVoid) {
+//                        // TODO: 2019/5/3 分类页面
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                    }
+//                });
+//        RxView.clicks(tvAllVideoClassification)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .compose(this.<Void>bindToLifecycle())
+//                .subscribe(new Action1<Void>() {
+//                    @Override
+//                    public void call(Void aVoid) {
+//                        // TODO: 2019/5/3 分类页面
+//                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+//                    }
+//                });
+
+        RxView.clicks(llChannelParent)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                        if (currentVideoChannelBean != null && currentVideoChannelBean.getId() == 3) {
+                            AllStarActivity.startAllStarActivity(getContext());
+                        } else {
+//                            startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                            VideoChannelActivity.starVideoChannelActivity(mActivity, null);
+                        }
                     }
                 });
-        RxView.clicks(tvVideoClassification2)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                    }
-                });
-        RxView.clicks(tvAllVideoClassification)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // TODO: 2019/5/3 分类页面
-                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                    }
-                });
+
 //        RxView.clicks();
     }
 
@@ -179,7 +221,27 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initData() {
-
+//        if (videoChannelRepository != null) {
+//            videoChannelRepository.getMyVideoChannel().observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new BaseSubscribeForV2<List<VideoChannelBean>>() {
+//                        @Override
+//                        protected void onSuccess(List<VideoChannelBean> data) {
+//                            //频道
+////                        mView.onNetResponseSuccess(data);
+//                        }
+//
+//                        @Override
+//                        protected void onFailure(String message, int code) {
+////                        mView.showMsg(message);
+//                            ToastUtils.showToast(message);
+//                        }
+//
+//                        @Override
+//                        protected void onException(Throwable throwable) {
+//                            ToastUtils.showToast("频道信息获取失败");
+//                        }
+//                    });
+//        }
         mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -197,37 +259,57 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                 }
                 ZhiyiVideoView.goOnPlayOnPause();
                 // 游客处理
-                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
-                    showLoginPop();
-                    // 转回热门
-                    mVpFragment.setCurrentItem(1);
-                }
+//                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) {
+//                    showLoginPop();
+//                    // 转回热门
+//                    mVpFragment.setCurrentItem(0);
+//                }
+                currentVideoChannelBean = AppApplication.videoChannelListBeans.get(position);
+                setChannelInfo();
             }
+
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
+//                    ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
+//                    ((VideoHomeCongract.View) mFragmentList.get(mVpFragment.getCurrentItem())).closeInputView();
                 }
             }
         });
 
         // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
         try {
-            if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
-                mVpFragment.setCurrentItem(1);
-            }
+//            if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
+            mVpFragment.setCurrentItem(0);
+//            }
         } catch (SQLiteException ignored) {
         }
 
     }
 
+    private void setChannelInfo() {
+        if (currentVideoChannelBean != null && currentVideoChannelBean.getId() == 3) {
+            tvVideoClassification.setText("明星1");
+            tvVideoClassification2.setText("明星2");
+        } else {
+            tvVideoClassification.setText("频道1");
+            tvVideoClassification2.setText("频道2");
+        }
+    }
+
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.the_last)
-                , getString(R.string.hot)
-                , getString(R.string.follow), getString(R.string.follow), getString(R.string.follow),
-                getString(R.string.follow), getString(R.string.follow), getString(R.string.follow));
+
+        List<String> title = new ArrayList<>();
+        for (VideoChannelBean videoChannelBean : AppApplication.videoChannelListBeans) {
+            title.add(videoChannelBean.getName() + "");
+        }
+        return title;
+//        return Arrays.asList(getString(R.string.the_last)
+//                , getString(R.string.hot)
+//                , getString(R.string.follow), getString(R.string.follow), getString(R.string.follow),
+//                getString(R.string.follow), getString(R.string.follow), getString(R.string.follow));
     }
 
     @Override
@@ -240,14 +322,34 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         if (mFragmentList == null) {
             mFragmentList = new ArrayList();
 //            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+            if (AppApplication.videoChannelListBeans == null) {
+                String json = SharePreferenceUtils.getString(getContext(), VideoChannelBean.class.getSimpleName());
+                AppApplication.videoChannelListBeans =  JsonUtil.parseToList(json,VideoChannelBean.class);
+            }
+
+            if (AppApplication.videoChannelListBeans == null) {
+                AppApplication.videoChannelListBeans = new ArrayList<>();
+                VideoChannelBean item1 = new VideoChannelBean();
+                item1.setId(1);
+                item1.setName("精选");
+                VideoChannelBean item2 = new VideoChannelBean();
+                item2.setId(2);
+                item2.setName("短视频");
+                AppApplication.videoChannelListBeans.add(item1);
+                AppApplication.videoChannelListBeans.add(item2);
+            }
+            currentVideoChannelBean = AppApplication.videoChannelListBeans.get(0);
+            setChannelInfo();
+            for (int i = 0; i < AppApplication.videoChannelListBeans.size(); i++) {
+                mFragmentList.add(VideoHomeFragment.newInstance(AppApplication.videoChannelListBeans.get(i)));
+            }
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
+//            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
             // 游客处理
 //            if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) {
 //                mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
@@ -269,7 +371,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     public boolean backPressed() {
-        return ((DynamicContract.View) mFragmentList.get(mVpFragment.getCurrentItem())).backPressed();
+        return ((VideoHomeCongract.View) mFragmentList.get(mVpFragment.getCurrentItem())).backPressed();
     }
 
     @Override
@@ -294,4 +396,51 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         ((ITSListView) mFragmentList.get(mVpFragment.getCurrentItem())).startRefrsh();
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+
+
+    /**
+     * 切换频道
+     *
+     * @param
+     */
+    @Subscriber(tag = EventBusTagConfig.MAIN_FRAGMENT_CHANG_CHANNEL, mode = ThreadMode.MAIN)
+    public void changChannel(VideoChannelBean videoChannelBean) {
+        if (videoChannelBean != null) {
+            for (int i = 0; i < AppApplication.videoChannelListBeans.size(); i++) {
+                if (AppApplication.videoChannelListBeans.get(i).getId() == videoChannelBean.getId()) {
+                    mVpFragment.setCurrentItem(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 添加或者删除频道
+     *
+     * @param
+     */
+    @Subscriber(tag = EventBusTagConfig.MAIN_FRAGMENT_ADD_DELETE__CHANNEL, mode = ThreadMode.MAIN)
+    public void addOrDeleteChannel(List<VideoChannelBean> videoChannelBeans) {
+//        if (mFragmentList == null) {
+        mFragmentList.clear();
+        int currentPosition = 0;
+        for (int i = 0; i < AppApplication.videoChannelListBeans.size(); i++) {
+            if (AppApplication.videoChannelListBeans.get(i).getId() == currentVideoChannelBean.getId()) {
+                currentPosition = i;
+            }
+            mFragmentList.add(VideoHomeFragment.newInstance(AppApplication.videoChannelListBeans.get(i)));
+        }
+        tsViewPagerAdapter.bindData(mFragmentList);
+        mTsvToolbar.initTabView(mVpFragment, initTitles());
+        currentVideoChannelBean = AppApplication.videoChannelListBeans.get(currentPosition);
+        mVpFragment.setCurrentItem(currentPosition);
+        setChannelInfo();
+    }
+//    }
 }

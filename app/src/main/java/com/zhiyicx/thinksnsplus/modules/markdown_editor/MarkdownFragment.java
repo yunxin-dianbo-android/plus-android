@@ -419,7 +419,7 @@ public class MarkdownFragment<Draft extends BaseDraftBean, P extends MarkdownCon
        View mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
        initStatusBar(mStatusBarPlaceholder);
     }
-    private void initStatusBar(View mStatusBarPlaceholder) {
+    protected void initStatusBar(View mStatusBarPlaceholder) {
         // toolBar设置状态栏高度的marginTop
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, com.zhiyicx.common.utils.DeviceUtils
                 .getStatuBarHeight(getContext()));

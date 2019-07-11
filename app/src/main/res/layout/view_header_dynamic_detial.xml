@@ -1,56 +1,52 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/color_38383A"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/item_dynamic_detail_content"
-        />
+    <include layout="@layout/item_dynamic_detail_content" />
 
     <FrameLayout
-        android:background="@color/white"
         android:id="@+id/fl_forward_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/color_38383A"
         android:paddingTop="@dimen/spacing_small"
         android:visibility="gone">
 
     </FrameLayout>
 
-    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView
+    <!--    <com.zhiyicx.thinksnsplus.widget.comment.CirclePostListTopicView-->
+    <com.zhiyicx.thinksnsplus.widget.comment.DynamicListTopicView
         android:id="@+id/dltv_topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/color_38383A"
         android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal_large"/>
+        android:visibility="gone"
+        android:paddingTop="0dp" />
 
     <com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView
         android:id="@+id/detail_dig_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingTop="@dimen/spacing_normal_large">
-    </com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView>
+        android:background="@color/color_38383A"
+        android:paddingTop="0dp"></com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView>
 
-    <include
-        layout="@layout/include_reward"/>
+    <include layout="@layout/include_reward" />
 
-    <include
-        layout="@layout/advert_details"
-        />
+    <include layout="@layout/advert_details" />
 
     <FrameLayout
         android:id="@+id/fl_comment_count_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:background="@color/white">
+        android:layout_height="39dp"
+        android:background="@color/color_4C4C4E">
 
         <LinearLayout
+            android:gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_normal"
             android:orientation="vertical">
 
@@ -59,22 +55,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/spacing_mid"
-                android:paddingBottom="@dimen/spacing_mid"
+                android:gravity="center"
                 android:paddingLeft="@dimen/spacing_normal"
                 android:paddingRight="@dimen/spacing_normal"
-                android:paddingTop="@dimen/spacing_mid"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content_assist"/>
+                android:text="评论（1万）"
+                android:textColor="@color/color_EA3378"
+                android:textSize="@dimen/size_content_assist" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_line_bottom_themcolor"/>
+                android:background="@drawable/shape_line_bottom_themcolor"
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
             style="@style/style_divider_horizontal_light"
             android:layout_gravity="bottom"
-            />
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

@@ -123,6 +123,7 @@ public class PostDetailCommentItem implements ItemViewDelegate<CirclePostComment
 
         setUserInfoClick(holder.getView(R.id.tv_name), circlePostCommentBean.getCommentUser());
         setUserInfoClick(holder.getView(R.id.iv_headpic), circlePostCommentBean.getCommentUser());
+
         LinearLayout llCommentParent = holder.getView(R.id.ll_comment_parent);
         llCommentParent.removeAllViews();
         List<CirclePostCommentBean> reply = circlePostCommentBean.getTestReply();

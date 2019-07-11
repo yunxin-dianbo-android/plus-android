@@ -33,7 +33,7 @@ public class CirclePostListItemForFourImage extends CirclePostListBaseItem {
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_dynamic_list_four_image;
+        return R.layout.item_circle_post_list_four_image;
     }
 
     @Override

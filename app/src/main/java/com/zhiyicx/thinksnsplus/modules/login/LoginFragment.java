@@ -181,6 +181,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
         mVertifyAnimationDrawable = (AnimationDrawable) mIvVertifyLoading.getDrawable();
+        setOneKeyLoginShow(true);
     }
 
 
@@ -658,7 +659,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         boolean isShow = mRlLoginByVertify.getVisibility() != View.VISIBLE;
         if (!isShow) {
             setOneKeyLoginShow(false);
-        }else{
+        } else {
             com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(mActivity, mRootView);
             getActivity().finish();
         }

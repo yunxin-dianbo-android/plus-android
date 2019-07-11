@@ -181,8 +181,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     /**
      * 审核操作 PinnedBean
      */
-    @Transient
-    private int pinned;
+//    @Transient
+//    private int pinned;
 
     @Transient
     private int startPosition;
@@ -195,13 +195,24 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Transient
     private String friendlyContent;
 
-    public int getPinned() {
-        return pinned;
+    public CircleInfo getGroup() {
+        return group;
     }
 
-    public void setPinned(int pinned) {
-        this.pinned = pinned;
+    public void setGroup(CircleInfo group) {
+        this.group = group;
     }
+
+    @Transient
+    private CircleInfo group;
+
+//    public int getPinned() {
+//        return pinned;
+//    }
+
+//    public void setPinned(int pinned) {
+//        this.pinned = pinned;
+//    }
 
     public String getFriendlyTime() {
         return friendlyTime;
@@ -1505,7 +1516,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeString(this.repostable_type);
         dest.writeValue(this.repostable_id);
         dest.writeParcelable(this.mLetter, flags);
-        dest.writeInt(this.pinned);
         dest.writeInt(this.startPosition);
         dest.writeString(this.friendlyTime);
         dest.writeString(this.userCenterFriendlyTimeUp);
@@ -1562,7 +1572,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.repostable_type = in.readString();
         this.repostable_id = (Long) in.readValue(Long.class.getClassLoader());
         this.mLetter = in.readParcelable(Letter.class.getClassLoader());
-        this.pinned = in.readInt();
         this.startPosition = in.readInt();
         this.friendlyTime = in.readString();
         this.userCenterFriendlyTimeUp = in.readString();

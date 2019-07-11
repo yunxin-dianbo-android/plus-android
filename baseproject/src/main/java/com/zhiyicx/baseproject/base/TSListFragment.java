@@ -897,6 +897,7 @@ TSListFragment<P extends ITSListPresenter<T>, T extends BaseListBean> extends TS
     protected Long getMaxId(@NotNull List<T> data) {
         if (mListDatas.size() > 0) {
             return mListDatas.get(mListDatas.size() - 1).getMaxId();
+//            return mListDatas.size() * 1l;
         }
         return DEFAULT_PAGE_MAX_ID;
     }

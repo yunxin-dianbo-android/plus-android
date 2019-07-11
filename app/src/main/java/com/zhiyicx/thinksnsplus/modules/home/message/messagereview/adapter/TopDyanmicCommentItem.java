@@ -172,7 +172,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     @Override
     public void onReviewApprovedClick(BaseListBean data, int position) {
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) data;
-        dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_SUCCESS);
+//        dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_SUCCESS);
         dynamicCommentBean.setExpires_at(TimeUtils.millis2String(System.currentTimeMillis() + 1000000));
         BaseListBean result = dynamicCommentBean;
         mPresenter.approvedTopComment(dynamicCommentBean.getFeed().getId(),
@@ -182,7 +182,7 @@ public class TopDyanmicCommentItem extends BaseTopItem implements BaseTopItem.To
     @Override
     public void onReviewRefuseClick(BaseListBean data, int position) {
         TopDynamicCommentBean dynamicCommentBean = (TopDynamicCommentBean) data;
-        dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_REFUSE);
+//        dynamicCommentBean.getFeed().setPinned(PinnedBean.TOP_REFUSE);
         dynamicCommentBean.setExpires_at(TimeUtils.getCurrenZeroTimeStr());
         mPresenter.refuseTopComment(dynamicCommentBean.getId().intValue(), data, position);
     }

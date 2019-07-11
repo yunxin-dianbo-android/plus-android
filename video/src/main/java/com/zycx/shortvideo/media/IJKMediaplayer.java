@@ -90,12 +90,20 @@ public class IJKMediaplayer extends JZMediaInterface implements IMediaPlayer.OnP
 
     @Override
     public long getCurrentPosition() {
-        return ijkMediaPlayer.getCurrentPosition();
+        if (ijkMediaPlayer != null) {
+            return ijkMediaPlayer.getCurrentPosition();
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public long getDuration() {
-        return ijkMediaPlayer.getDuration();
+        if (ijkMediaPlayer != null) {
+            return ijkMediaPlayer.getDuration();
+        } else {
+            return 0;
+        }
     }
 
     @Override

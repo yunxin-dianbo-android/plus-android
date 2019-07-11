@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment2;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Fragment;
+import com.zhiyicx.thinksnsplus.modules.video.VideoHomeFragment;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import javax.inject.Singleton;
@@ -45,7 +46,7 @@ public interface AppComponent extends InjectComponent<AppApplication> {
 
     void inject(DeleteComment deleteComment);
 
-//    void inject(ChannelFragment channelFragment);
+//    void inject(VideoHomeFragment videoHomeFragment);
 
     void inject(SendComment sendComment);
 

@@ -4,8 +4,8 @@
     android:id="@+id/ll_advert"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="2dp"
-    android:background="@color/white"
+    android:paddingTop="2dp"
+    android:background="@color/color_38383A"
     android:orientation="vertical">
 
     <FrameLayout
@@ -29,7 +29,7 @@
                 android:paddingRight="@dimen/spacing_normal"
                 android:paddingTop="@dimen/spacing_normal"
                 android:text="@string/advert"
-                android:textColor="@color/important_for_content"
+                android:textColor="@color/white"
                 android:textSize="@dimen/size_content_assist"/>
 
             <View

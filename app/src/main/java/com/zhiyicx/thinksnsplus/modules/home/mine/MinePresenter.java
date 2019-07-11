@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserFollowerCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
@@ -24,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.VideoRepository2;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
 
 import org.simple.eventbus.EventBus;
@@ -31,10 +33,10 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -55,17 +57,21 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
     UserInfoRepository mUserInfoRepository;
 
     UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
+
+    VideoRepository2 videoRepository2;
     private Subscription mCertificationSub;
     private Subscription mUserinfoSub;
     private Subscription mNewMessageSub;
 
     @Inject
     public MinePresenter(MineContract.View rootView, FlushMessageBeanGreenDaoImpl flushMessageBeanGreenDao,
-                         UserInfoRepository userInfoRepository, UserCertificationInfoGreenDaoImpl userCertificationInfoGreenDao) {
+                         UserInfoRepository userInfoRepository,
+                         UserCertificationInfoGreenDaoImpl userCertificationInfoGreenDao, VideoRepository2 videoRepository2) {
         super(rootView);
         this.mFlushMessageBeanGreenDao = flushMessageBeanGreenDao;
         this.mUserInfoRepository = userInfoRepository;
         this.mUserCertificationInfoGreenDao = userCertificationInfoGreenDao;
+        this.videoRepository2 = videoRepository2;
     }
 
     @Override
@@ -109,6 +115,17 @@ public class MinePresenter extends AppBasePresenter<MineContract.View> implement
                     }
                 });
         addSubscrebe(mNewMessageSub);
+    }
+
+    @Override
+    public void updateVideoRecord() {
+        Observable<List<VideoListBean>> observable = videoRepository2.getVideoRecord(15, 0);
+        observable.subscribe(new BaseSubscribeForV2<List<VideoListBean>>() {
+            @Override
+            protected void onSuccess(List<VideoListBean> data) {
+                  mRootView.onHistoryRecordResponseSuccess(data);
+            }
+        });
     }
 
     /**

@@ -7,11 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.ParcelableDataUtil;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -51,9 +53,17 @@ public class PhotoAlbumListFragment extends TSFragment {
     private ArrayList<PhotoDirectory> directories;
     private final static String EXTRA_GIF = "gif";
 
+    View mStatusBarPlaceholder;
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_photo_album_list;
+    }
+
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_custom_contain_status_bar;
     }
 
     @Override
@@ -131,6 +141,16 @@ public class PhotoAlbumListFragment extends TSFragment {
         });
 
         mRvPhotoAlbumList.setAdapter(listAdapter);
+
+        mStatusBarPlaceholder = rootView.findViewById(R.id.v_status_bar_placeholder);
+        initStatusBar();
+
+    }
+    private void initStatusBar() {
+        // toolBar设置状态栏高度的marginTop
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, DeviceUtils
+                .getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -149,6 +169,34 @@ public class PhotoAlbumListFragment extends TSFragment {
         PhotoAlbumListFragment photoAlbumListFragment = new PhotoAlbumListFragment();
         photoAlbumListFragment.setArguments(bundle);
         return photoAlbumListFragment;
+    }
+
+
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+
+//    @Override
+//    protected boolean showToolBarDivider() {
+//        return false;
+//    }
+
+    @Override
+    protected boolean showToolbar() {
+        return true;
     }
 
 }

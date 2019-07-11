@@ -55,7 +55,9 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Observable<List<CircleInfo>> observable;
-        if (mRootView.getCategoryId() < 0) {
+        if (mRootView.getCategoryId() == -2) {
+            observable = mBaseCircleRepository.getAllCircle(null,maxId.intValue(),null,null,null);
+        } else if (mRootView.getCategoryId() < 0) {
             observable = mBaseCircleRepository.getRecommendCircle(TSListFragment.DEFAULT_PAGE_SIZE, maxId.intValue(), null);
         } else {
             observable = mBaseCircleRepository.getCircleList(mRootView.getCategoryId(), maxId);
@@ -84,7 +86,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
     }
 
     @Override
-    public void dealCircleJoinOrExit(int position, CircleInfo circleInfo,String psd) {
+    public void dealCircleJoinOrExit(int position, CircleInfo circleInfo, String psd) {
 
         if (handleTouristControl()) {
             return;
@@ -110,9 +112,9 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
             observable = handleIntegrationBlance(circleInfo.getMoney())
                     .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                             .string.pay_alert_ing)))
-                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo,psd));
+                    .flatMap(o -> mBaseCircleRepository.dealCircleJoinOrExit(circleInfo, psd));
         } else {
-            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo,null)
+            observable = mBaseCircleRepository.dealCircleJoinOrExit(circleInfo, null)
                     .doOnSubscribe(() -> {
                                 mRootView.dismissSnackBar();
                                 mRootView.showSnackLoadingMessage(mContext.getString(R.string.circle_dealing));
@@ -151,7 +153,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        if (usePayPassword()){
+                        if (usePayPassword()) {
                             mRootView.payFailed(message);
                             return;
                         }
@@ -165,7 +167,7 @@ public class CircleListPresenter extends AppBasePresenter<CircleListContract.Vie
                             mRootView.paySuccess();
                             return;
                         }
-                        if (usePayPassword()){
+                        if (usePayPassword()) {
                             mRootView.payFailed(throwable.getMessage());
                             return;
                         }

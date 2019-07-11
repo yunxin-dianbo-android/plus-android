@@ -4,6 +4,7 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.umeng.socialize.UMAuthListener;
@@ -13,6 +14,8 @@ import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.gson.JsonUtil;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -25,6 +28,8 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CirclePostCommentBeanGreenDaoImpl;
@@ -50,6 +55,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.VideoChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.chat.call.TSEMHyphenate;
@@ -57,6 +63,8 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -125,20 +133,64 @@ public class AuthRepository implements IAuthRepository {
     PostDraftBeanGreenDaoImpl mPostDraftBeanGreenDao;
     @Inject
     InfoDraftBeanGreenDaoImpl mInfoDraftBeanGreenDao;
+//    @Inject
+//    InfoDraftBeanGreenDaoImpl mInfoDraftBeanGreenDao;
 
+    VideoChannelClient videoChannelClient;
 
     @Inject
     public AuthRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();
         mCommonClient = serviceManager.getCommonClient();
+        videoChannelClient = serviceManager.getVideoChannelClient();
     }
 
+
+    @Override
+    public Observable<VideoChannelListBean> getMyVideoChannel() {
+        return videoChannelClient.getVideoChannel()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
 
     @Override
     public boolean saveAuthBean(AuthBean authBean) {
         authBean.setToken_request_time(System.currentTimeMillis());
         AppApplication.setmCurrentLoginAuth(authBean);
+        refreshMyVideoChannel();
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN, authBean);
+    }
+
+    private void refreshMyVideoChannel() {
+        getMyVideoChannel().observeOn(Schedulers.io()).observeOn(/*AndroidSchedulers.mainThread()*/Schedulers.io())
+                .subscribe(new BaseSubscribeForV2<VideoChannelListBean>() {
+                    @Override
+                    protected void onSuccess(VideoChannelListBean data) {
+                        //频道
+//                        String jsonObject = JsonUtil.objectToString(data);
+//                        SharePreferenceUtils.saveString(mContext, VideoChannelBean.class.getSimpleName(),jsonObject);
+                        List<VideoChannelBean> videoChannelBeans = new ArrayList<>();
+                        if (data.default_channels != null) {
+                            videoChannelBeans.addAll(data.default_channels);
+                        }
+                        if (data.user_channels != null) {
+                            videoChannelBeans.addAll(data.user_channels);
+                        }
+                        // TODO: 2019/7/2  暂时加上所有的频道
+                        if (data.other_channels != null) {
+                            videoChannelBeans.addAll(data.other_channels);
+                        }
+                        AppApplication.setVideoChannelListBeans(videoChannelBeans);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+//                        mView.showMsg(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                    }
+                });
     }
 
     @Override
@@ -156,12 +208,14 @@ public class AuthRepository implements IAuthRepository {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+
     /**
      * 刷新token
      */
     @Override
     public void refreshToken() {
         if (!isNeededRefreshToken()) {
+            refreshMyVideoChannel();
             return;
         }
         AuthBean authBean = getAuthBean();
@@ -177,9 +231,12 @@ public class AuthRepository implements IAuthRepository {
                         authBean.setRefresh_token(data.getRefresh_token());
                         // 获取了最新的token，将这些信息保存起来
                         saveAuthBean(authBean);
+
                         // 刷新im信息
 //                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean
 //                                (BackgroundTaskRequestMethodConfig.GET_IM_INFO));
+
+
                     }
 
                     @Override
@@ -345,7 +402,7 @@ public class AuthRepository implements IAuthRepository {
         IMConfig config = getIMConfig();
         //回调，如果都取不出来聊天用户信息，那么则必须再去获取，如果有那么只需要再次登录即可
         if (config != null && !TextUtils.isEmpty(config.getToken()) && !EMClient.getInstance().isConnected()) {
-            if (getAuthBean() != null && getAuthBean().getUser() != null&& NetUtils.netIsConnected(mContext)) {
+            if (getAuthBean() != null && getAuthBean().getUser() != null && NetUtils.netIsConnected(mContext)) {
                 String imUserName = String.valueOf(getAuthBean().getUser().getUser_id());
                 String imPassword = config.getToken();
                 EMClient.getInstance().login(imUserName, imPassword, new EMCallBack() {

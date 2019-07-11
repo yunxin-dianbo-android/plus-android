@@ -7,6 +7,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.GameInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -41,6 +42,7 @@ import retrofit2.http.Url;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GAME;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_APP_NEW_VERSION;
@@ -210,6 +212,13 @@ public interface CommonClient {
      */
     @GET(APP_PATH_GET_CHECK_NOTE)
     Observable<PurChasesBean> checkNote(@Path("note") int note);
+    /**
+     * 获取游戏的信息 V2 api
+     *
+     * @return
+     */
+    @GET(APP_PATH_GAME)
+    Observable<GameInfoBean> getGameInfo();
 
     /**
      * 付费节点支付

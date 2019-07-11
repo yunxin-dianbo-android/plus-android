@@ -157,6 +157,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_marginRight="@dimen/spacing_normal"
+        android:visibility="gone"
         android:textColor="@color/white" />
     <!--  android:background="@drawable/video_channel_fixed_bg"-->
     <View

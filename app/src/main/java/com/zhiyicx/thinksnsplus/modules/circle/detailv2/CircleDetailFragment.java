@@ -1179,7 +1179,6 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         });
 
 
-
     }
 
     @Override
@@ -1269,7 +1268,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         if (!updateHeadImg) {
             updateHeadImg = true;
             Glide.with(mActivity)
-                    .load(detail.getAvatar()!= null ? detail.getAvatar().getUrl() : "")
+                    .load(detail.getAvatar() != null ? detail.getAvatar().getUrl() : "")
                     .transform(new GlideStokeTransform(getActivity(), 5))
                     .error(R.drawable.shape_default_image)
                     .placeholder(R.drawable.shape_default_image)
@@ -1385,7 +1384,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     initPayPopWindow(mActivity, mCircleInfo.getMoney(), mPresenter.getRatio(), mPresenter.getGoldName()
                             , R.string.buy_pay_circle_desc);
                 } else {
-                    mPresenter.dealCircleJoinOrExit(mCircleInfo,null);
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo, null);
                 }
                 break;
             case R.id.tv_exit_circle:
@@ -1399,7 +1398,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                     intent2.putExtras(bundle2);
                     mActivity.startActivityForResult(intent2, AttornCircleFragment.ATTORNCIRCLECODE);
                 } else {
-                    mPresenter.dealCircleJoinOrExit(mCircleInfo,null);
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo, null);
                 }
                 break;
             /*
@@ -1482,6 +1481,15 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
         dialog.show(getFragmentManager(), LinkDialog.Tag);
     }
 
+    @Override
+    public void onPublishDynamicSuccess(CirclePostListBean circlePostListBean) {
+        if (getType().equals(PostTypeChoosePopAdapter.MyPostTypeEnum.LATEST_POST.value)) {
+            mListDatas.add(0, circlePostListBean);
+            mAdapter.notifyDataSetChanged();
+        }
+//        super.onPublishDynamicSuccess();
+    }
+
     private LinkDialog createLinkDialog() {
         return LinkDialog.createLinkDialog()
                 .setUrlHinit(getString(R.string.post_apply_top_days))
@@ -1532,7 +1540,7 @@ public class CircleDetailFragment extends TSListFragment<CircleDetailContract.Pr
                 .buildItem2Str(context.getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(context.getString(R.string.buy_pay_integration), PayConfig.realCurrency2GameCurrencyStr(amout, ratio)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mPresenter.dealCircleJoinOrExit(mCircleInfo,null);
+                    mPresenter.dealCircleJoinOrExit(mCircleInfo, null);
                     mPayPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())

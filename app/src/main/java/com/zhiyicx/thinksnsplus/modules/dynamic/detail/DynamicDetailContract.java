@@ -98,6 +98,11 @@ public interface DynamicDetailContract {
         void handleError(DynamicDetailPayNote error);
 
         void finish();
+
+        void onPublishCommentsSuccess(DynamicCommentBean comment);
+
+
+        void onCommentLikeStatuChanged(boolean isLike,int position);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -132,6 +137,14 @@ public interface DynamicDetailContract {
         void handleLike(boolean isLiked, Long feed_id, DynamicDetailBeanV2 dynamicToolBean);
 
         /**
+         * 评论的点赞
+         * @param comment_id
+         * @param isLike
+         * @param position
+         */
+        void handleLike4Comment(Long comment_id, boolean isLike,int position);
+
+        /**
          * 处理收藏逻辑
          */
 
@@ -140,7 +153,8 @@ public interface DynamicDetailContract {
         /**
          * 动态分享
          */
-        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap,List<UmengSharePolicyImpl.ShareBean> extraData);
+        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, List<UmengSharePolicyImpl.ShareBean> extraData);
+
         void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap, SHARE_MEDIA type);
 
         /**
@@ -157,6 +171,9 @@ public interface DynamicDetailContract {
         void sendCommentV2(long replyToUserId, String commentContent);
 
         void reSendComment(DynamicCommentBean commentBean, long feed_id);
+
+
+        void sendCommentV3(Integer feedId, String body, Integer reply_user, Integer reply_comment_id);
 
         /**
          * delete a comment
@@ -193,12 +210,12 @@ public interface DynamicDetailContract {
          * @param note
          * @param isImage
          */
-        void payNote(int imagePosition, int note, double amount,boolean isImage,String psd);
+        void payNote(int imagePosition, int note, double amount, boolean isImage, String psd);
 
         /**
          * update reward data
          *
-         * @param id  source id
+         * @param id source id
          */
         void updateRewardData(Long id);
 

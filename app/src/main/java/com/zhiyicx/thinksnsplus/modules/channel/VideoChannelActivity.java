@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.channel;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SuperStarBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailPresenterModuleNew;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.DaggerCirclePostDetailComponentNew;
 
@@ -25,7 +28,13 @@ public class VideoChannelActivity extends TSActivity<VideoChannelFragmentPresent
     }
 
 
-
+    public static void starVideoChannelActivity(Context context, SuperStarBean superStarBean) {
+        Intent intent = new Intent(context, VideoChannelActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SuperStarBean.class.getSimpleName(), superStarBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void componentInject() {
