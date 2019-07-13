@@ -100,7 +100,7 @@ public class VideoDetailBean implements Parcelable {
         this.name = name;
     }
 
-    public Object getSummary() {
+    public String getSummary() {
         return summary;
     }
 

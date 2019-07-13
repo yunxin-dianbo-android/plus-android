@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoTagListBean;
 import com.zhiyicx.thinksnsplus.modules.channel.adapter.FilterChannelTagAdapter;
@@ -50,6 +51,8 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
     TextView tvFilterContent;
     LinearLayout llChoosedChannel;
 
+    VideoChannelBean videoChannelBean;
+
     List<VideoListBean.TagsBean> choosedTags = new ArrayList<>();
 //    FilterChannelTagAdapter filterChannelTagAdapter1;
 //    FilterChannelTagAdapter filterChannelTagAdapter2;
@@ -61,9 +64,14 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
         return superStarBean;
     }
 
+    public VideoChannelBean getVideoChannelBean() {
+        return videoChannelBean;
+    }
+
     //    @Inject
 //    VideoChannelFragmentPresenter mPresenter;
     private SuperStarBean superStarBean;
+
 
     @Override
     protected void initView(View rootView) {
@@ -167,7 +175,15 @@ public class VideoChannelFragment2 extends TSListFragment<VideoChannelFragmentCo
         Bundle bundle = getArguments();
         if (bundle != null) {
             superStarBean = bundle.getParcelable(SuperStarBean.class.getSimpleName());
+            videoChannelBean = bundle.getParcelable(VideoChannelBean.class.getSimpleName());
         }
+        mToolbarCenter.setVisibility(View.VISIBLE);
+        if (superStarBean != null) {
+            mToolbarCenter.setText(superStarBean.getName());
+        } else if (videoChannelBean != null) {
+            mToolbarCenter.setText(videoChannelBean.getName());
+        }
+
         mPresenter.requestAllVideoTags();
         mPresenter.requestNetData(0l, false);
         RxView.clicks(llChoosedChannel)

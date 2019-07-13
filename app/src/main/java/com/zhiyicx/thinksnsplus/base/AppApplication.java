@@ -16,6 +16,7 @@ import com.huawei.android.hms.agent.HMSAgent;
 import com.mob.MobSDK;
 import com.zhiyi.emoji.EmojiApplicationInit;
 import com.zhiyi.rxdownload3.core.DownloadConfig;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -123,7 +124,7 @@ public class AppApplication extends TSApplication {
 //    VideoChannelRepository videoChannelRepository;
 
 
-    public GameInfoBean gameInfoBean;
+//    public GameInfoBean gameInfoBean;
     /**
      * 当前登录用户的信息
      */
@@ -134,7 +135,7 @@ public class AppApplication extends TSApplication {
     public static List<Integer> sOverRead = new ArrayList<>();
 
     public static List<VideoChannelBean> videoChannelListBeans;
-
+    public static SystemConfigBean systemConfigBean;
     public static void setVideoChannelListBeans(List<VideoChannelBean> list) {
         String json = JsonUtil.objectToString(list);
 //        SharePreferenceUtils.saveString(getContext(),VideoChannelListBean.class.getSimpleName(), json);

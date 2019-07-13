@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -81,6 +82,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     TextView tvAllVideoClassification;
     @BindView(R.id.ll_channel_parent)
     LinearLayout llChannelParent;
+    @BindView(R.id.tv_search_tip)
+    TextView tvSearchTip;
+
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -137,6 +141,22 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
         AppApplication.AppComponentHolder.getAppComponent().inject(this);
         super.initView(rootView);
         initToolBar();
+//        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
     }
 
     private void initToolBar() {
@@ -205,8 +225,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                         if (currentVideoChannelBean != null && currentVideoChannelBean.getId() == 3) {
                             AllStarActivity.startAllStarActivity(getContext());
                         } else {
-//                            startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                            VideoChannelActivity.starVideoChannelActivity(mActivity, null);
+//                          startActivity(new Intent(mActivity, VideoChannelActivity.class));
+                            VideoChannelActivity.starVideoChannelActivity(mActivity, null, currentVideoChannelBean);
                         }
                     }
                 });
@@ -266,6 +286,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 //                }
                 currentVideoChannelBean = AppApplication.videoChannelListBeans.get(position);
                 setChannelInfo();
+
             }
 
 
@@ -289,12 +310,33 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     private void setChannelInfo() {
-        if (currentVideoChannelBean != null && currentVideoChannelBean.getId() == 3) {
-            tvVideoClassification.setText("明星1");
-            tvVideoClassification2.setText("明星2");
-        } else {
-            tvVideoClassification.setText("频道1");
-            tvVideoClassification2.setText("频道2");
+//        if (currentVideoChannelBean != null && currentVideoChannelBean.getId() == 3) {
+//            tvVideoClassification.setText("明星1");
+//            tvVideoClassification2.setText("明星2");
+//        } else {
+//            tvVideoClassification.setText("频道1");
+//            tvVideoClassification2.setText("频道2");
+//        }
+        if (AppApplication.systemConfigBean != null) {
+            if (!TextUtils.isEmpty(AppApplication.systemConfigBean.channel_default_search))
+                tvSearchTip.setText(AppApplication.systemConfigBean.channel_default_search);
+            else
+                tvSearchTip.setText("推荐搜索");
+        }
+        if (currentVideoChannelBean != null && AppApplication.systemConfigBean.channel_default_tags != null) {
+            for (int i = 0; i < AppApplication.systemConfigBean.channel_default_tags.size(); i++) {
+                if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_id == currentVideoChannelBean.getId()) {
+                    if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag != null) {
+                        if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag.size() > 0) {
+                            tvVideoClassification.setText(AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag.get(0));
+                        }
+                        if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag.size() > 1) {
+                            tvVideoClassification2.setText(AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag.get(1));
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -324,7 +366,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 //            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
             if (AppApplication.videoChannelListBeans == null) {
                 String json = SharePreferenceUtils.getString(getContext(), VideoChannelBean.class.getSimpleName());
-                AppApplication.videoChannelListBeans =  JsonUtil.parseToList(json,VideoChannelBean.class);
+                AppApplication.videoChannelListBeans = JsonUtil.parseToList(json, VideoChannelBean.class);
             }
 
             if (AppApplication.videoChannelListBeans == null) {
@@ -341,6 +383,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             currentVideoChannelBean = AppApplication.videoChannelListBeans.get(0);
             setChannelInfo();
             for (int i = 0; i < AppApplication.videoChannelListBeans.size(); i++) {
+//              AppApplication.systemConfigBean
                 mFragmentList.add(VideoHomeFragment.newInstance(AppApplication.videoChannelListBeans.get(i)));
             }
 //            mFragmentList.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
@@ -400,7 +443,6 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected boolean useEventBus() {
         return true;
     }
-
 
 
     /**

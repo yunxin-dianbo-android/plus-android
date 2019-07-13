@@ -201,7 +201,7 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<VideoListBean
             RxView.clicks(holder.getView(R.id.rl_star_name_head))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        VideoChannelActivity.starVideoChannelActivity(mContext, dynamicBean.getStar());
+                        VideoChannelActivity.starVideoChannelActivity(mContext, dynamicBean.getStar(),null);
 //                        AllStarActivity.startAllStarActivity(mContext);
 //                        ToastUtils.showToast("去明星塞选页面");
                     });
@@ -222,7 +222,7 @@ public class DynamicListBaseItem4Video implements ItemViewDelegate<VideoListBean
         }
         LinearLayout llVideoInfoContanner = holder.getView(R.id.ll_video_info_contanner);
         holder.getTextView(R.id.tv_video_title).setText(dynamicBean.getName() + "");
-        holder.getTextView(R.id.tv_video_des).setText(dynamicBean.getSummary() + "");
+        holder.getTextView(R.id.tv_video_des).setText(TextUtils.isEmpty(dynamicBean.getSummary()) ? "" : dynamicBean.getSummary());
         TextView tvTag1 = holder.getTextView(R.id.tv_tag_1);
         TextView tvTag2 = holder.getTextView(R.id.tv_tag_2);
         TextView tvTag3 = holder.getTextView(R.id.tv_tag_3);

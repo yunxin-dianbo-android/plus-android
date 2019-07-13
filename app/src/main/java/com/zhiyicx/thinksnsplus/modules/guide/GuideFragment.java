@@ -12,15 +12,20 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
+import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.BannerImageLoaderUtil;
+
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +74,8 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     private List<RealAdvertListBean> mBootAdverts;
 
 
-    private int totalTime =5000;
+    private int totalTime = 5000;
+
     /**
      * Activity 手动调用处理
      *
@@ -81,6 +87,12 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
         if (isFinish || mPosition == mGuideBanner.getItemCount() - 1) {
             mPresenter.checkLogin();
         }
+    }
+
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -184,7 +196,7 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
                 mPresenter.checkLogin();
             }
             isFirst = false;
-        }else{
+        } else {
             startActivity(HomeActivity.class);
         }
     }
@@ -305,4 +317,27 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     public void onDestroy() {
         super.onDestroy();
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_CONFIG_LOADED_SUCCESS, mode = ThreadMode.MAIN)
+    public void onSystemConfigBeanLoaded(SystemConfigBean systemConfigBean) {
+//        mBootAdverts = mPresenter.getBootAdvert();
+//        if (mBootAdverts == null || mBootAdverts.size()==0) {
+//            if (systemConfigBean.getAdverts() != null) {
+//                List<String> urls = new ArrayList<>();
+//                List<RealAdvertListBean> tempAdvert = new ArrayList<>();
+//                for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
+//                    RealAdvertListBean realAdvertListBean
+//                    mBootAdverts.add()
+//                    urls.add(realAdvertListBean.getImageAdvert().getImage());
+//                }
+//                if (urls.isEmpty()) {
+//                    mBootAdverts = null;
+//                    return;
+//                }
+//                mGuideBanner.isBase64Image(false);
+//                mGuideBanner.setImages(urls);
+//            }
+//        }
+    }
+
 }

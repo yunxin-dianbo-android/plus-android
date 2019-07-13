@@ -58,7 +58,12 @@ public class VideoChannelFragmentPresenter extends AppBasePresenter<VideoChannel
         if (mRootView.getSuperStarBean() != null) {
             starId = mRootView.getSuperStarBean().getId();
         }
-        videoRepository2.getVideoList(0, 15, maxId.intValue(), "", starId, subTagStr, firstTagStr)
+        int channelId = 0;
+        if (mRootView.getVideoChannelBean() != null) {
+            channelId = mRootView.getVideoChannelBean().getId();
+        }
+
+        videoRepository2.getVideoList(channelId, 15, maxId.intValue(), "", starId, subTagStr, firstTagStr)
                 .subscribe(new BaseSubscribeForV2<List<VideoListBean>>() {
                     @Override
                     protected void onSuccess(List<VideoListBean> data) {

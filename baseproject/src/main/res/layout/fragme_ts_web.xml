@@ -1,13 +1,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:background="@color/color_38383A"
+    android:layout_height="match_parent"
+    android:layerType="hardware">
 
-        <WebView
-            android:id="@+id/wv_about_us"
-            android:background="@color/bgColor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </WebView>
+    <WebView
+        android:id="@+id/wv_about_us"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_38383A"
+        android:layerType="software"></WebView>
 
     <ProgressBar
         android:id="@+id/pb_bar"
@@ -15,9 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pb_height"
         android:max="@integer/progressbar_max"
-        android:progressDrawable="@drawable/pb_webview_style"/>
+        android:progressDrawable="@drawable/pb_webview_style" />
 
-    <include
-        layout="@layout/include_empty_view"
-        />
+    <include layout="@layout/include_empty_view" />
 </FrameLayout>

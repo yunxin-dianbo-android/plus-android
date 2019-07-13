@@ -8,12 +8,15 @@ import com.zhiyicx.appupdate.AppVersionBean;
 import com.zhiyicx.baseproject.base.SystemConfigBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.SystemConfig;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.GameInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
@@ -23,6 +26,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ISystemRepository;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.List;
 
@@ -80,6 +85,8 @@ public class SystemRepository implements ISystemRepository {
                             if (data.getLimit() > 0) {
                                 TSListFragment.DEFAULT_PAGE_SIZE = data.getLimit();
                             }
+                            AppApplication.systemConfigBean = data;
+                            EventBus.getDefault().post(data, EventBusTagConfig.EVENT_CONFIG_LOADED_SUCCESS);
                         }
                         saveComponentStatus(data, mContext);
                     }

@@ -53,6 +53,8 @@ import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment2;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBNotitleActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBNotitleFragment;
 import com.zhiyicx.thinksnsplus.modules.shortvideo.helper.ZhiyiVideoView;
 import com.zhiyicx.thinksnsplus.preset.PresetManager;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
@@ -299,7 +301,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 //                }
 //                mCurrenPage = PAGE_MESSAGE;
                 if (PresetManager.getInstance().gameInfoBean != null) {
-                    CustomWEBActivity.startToWEBActivity(getContext(), PresetManager.getInstance().gameInfoBean.url + "");
+                    CustomWEBNotitleActivity.startToWEBActivity(getContext(), PresetManager.getInstance().gameInfoBean.url + "");
                 } else {
                     ToastUtils.showToast("游戏信息获取失败");
                 }

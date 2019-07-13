@@ -19,6 +19,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.search.history.SearchHistoryFragment;
@@ -62,6 +63,7 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
 
 //    private SearchHistoryViewPagerContainerFragment mSearchHistoryViewPagerContainerFragment;
 
+
     @Override
     protected View getRightViewOfMusicWindow() {
         return mFragmentInfoSearchCancle;
@@ -82,6 +84,11 @@ public class SearchContainerFragment2 extends TSFragment implements IHistoryCent
     protected void initView(View rootView) {
         super.initView(rootView);
         historyFragment = new SearchIndexFragment();
+        if (!TextUtils.isEmpty(AppApplication.systemConfigBean.channel_default_search)) {
+            mFragmentInfoSearchEdittext.setText(AppApplication.systemConfigBean.channel_default_search);
+        } else {
+            mFragmentInfoSearchEdittext.setText("");
+        }
         historyFragment.setiSetSearchEdittextContent(new IDoSearchCallBack() {
             @Override
             public void doSearch(String content) {

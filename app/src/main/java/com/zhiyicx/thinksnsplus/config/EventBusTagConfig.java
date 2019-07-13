@@ -292,4 +292,6 @@ public class EventBusTagConfig {
     public static final String EVENT_LOG_OUT = "event_log_out";
 
     public static final String EVENT_LOG_IN = "event_log_in";
+
+    public static final String EVENT_CONFIG_LOADED_SUCCESS = "event_config_load_success";
 }

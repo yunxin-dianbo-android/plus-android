@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.CirclePostDetailPresenterModuleNew;
 import com.zhiyicx.thinksnsplus.modules.circle.detailv2.post.DaggerCirclePostDetailComponentNew;
 
@@ -28,10 +29,11 @@ public class VideoChannelActivity extends TSActivity<VideoChannelFragmentPresent
     }
 
 
-    public static void starVideoChannelActivity(Context context, SuperStarBean superStarBean) {
+    public static void starVideoChannelActivity(Context context, SuperStarBean superStarBean, VideoChannelBean videoChannelBean) {
         Intent intent = new Intent(context, VideoChannelActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SuperStarBean.class.getSimpleName(), superStarBean);
+        bundle.putParcelable(VideoChannelBean.class.getSimpleName(), videoChannelBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

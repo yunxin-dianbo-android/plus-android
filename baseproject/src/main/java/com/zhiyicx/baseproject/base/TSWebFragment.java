@@ -23,6 +23,7 @@ import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 
@@ -93,7 +94,7 @@ public abstract class TSWebFragment extends TSFragment {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             mIsLoadError = false;
-            mWebView.setVisibility(View.INVISIBLE);// 当加载网页的时候将网页进行隐藏
+//            mWebView.setVisibility(View.INVISIBLE);// 当加载网页的时候将网页进行隐藏
             mEmptyView.setErrorType(EmptyView.STATE_HIDE_LAYOUT);
         }
 
@@ -219,14 +220,14 @@ public abstract class TSWebFragment extends TSFragment {
         @Override
         public void onReceivedTitle(WebView view, String title) {
             // 判断标题 title 中是否包含有“error”字段，如果包含“error”字段，则设置加载失败，显示加载失败的视图
-            if (!TextUtils.isEmpty(title) && title.toLowerCase(Locale.getDefault()).contains("error")) {
-                mIsLoadError = true;
-            } else {
-                mToolbarCenter.setVisibility(View.VISIBLE);
-                mToolbarCenter.setText(title);
+            if (mToolbarCenter != null) {
+                if (!TextUtils.isEmpty(title) && title.toLowerCase(Locale.getDefault()).contains("error")) {
+                    mIsLoadError = true;
+                } else {
+                    mToolbarCenter.setVisibility(View.VISIBLE);
+                    mToolbarCenter.setText(title);
+                }
             }
-
-
         }
     };
 
@@ -296,6 +297,8 @@ public abstract class TSWebFragment extends TSFragment {
                     }
                 });
         mOverScrollLayout = (OverScrollLayout) rootView.findViewById(R.id.overscroll);
+        mWebView.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.color_38383A));
+        mWebView.setBackgroundResource(R.color.color_38383A);
 //        mOverScrollLayout.setTopOverScrollEnable(false);
     }
 
@@ -566,8 +569,11 @@ public abstract class TSWebFragment extends TSFragment {
         } else {
             mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//网络不可用时只使用缓存
         }
-        String appCachePath = FileUtils.getCacheFilePath(getContext());
+//       String appCachePath = FileUtils.getCacheFilePath(getContext());
+        String appCachePath= BaseApplication.getContext().getCacheDir().getAbsolutePath() + "/webcache";
+
         mWebSettings.setAppCachePath(appCachePath);
+        mWebSettings.setDatabasePath(appCachePath);
     }
 
     /**

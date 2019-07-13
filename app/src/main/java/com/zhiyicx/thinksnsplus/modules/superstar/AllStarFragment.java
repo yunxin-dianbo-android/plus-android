@@ -157,7 +157,7 @@ public class AllStarFragment extends TSFragment<AllStarContract.Presenter> imple
                         RxView.clicks(holder.getConvertView())
                                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                                 .subscribe(aVoid -> {
-                                    VideoChannelActivity.starVideoChannelActivity(mActivity, superStarBean);
+                                    VideoChannelActivity.starVideoChannelActivity(mActivity, superStarBean,null);
                                 });
                     }
 //                    @Override

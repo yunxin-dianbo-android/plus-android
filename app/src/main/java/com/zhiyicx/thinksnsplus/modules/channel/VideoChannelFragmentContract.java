@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.SuperStarBean;
+import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoTagListBean;
 
@@ -17,6 +18,7 @@ public class VideoChannelFragmentContract {
         SuperStarBean getSuperStarBean();
         void onAllVideoTagResponseSuccess(List<VideoTagListBean> videoTagListBeans);
         List<VideoListBean.TagsBean> getChoosedVideoTags();
+        VideoChannelBean getVideoChannelBean();
     }
 
     interface Presenter extends ITSListPresenter<VideoListBean> {

@@ -268,12 +268,12 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
                 .subscribe(aVoid -> {
                     mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
                 });
-        RxView.clicks(mTvToolbarCenter)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
-        RxView.clicks(mIvUserPortrait)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
+//        RxView.clicks(mTvToolbarCenter)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
+//        RxView.clicks(mIvUserPortrait)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+//                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
 
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -391,7 +391,7 @@ public class DynamicDetailFragment extends TSListFragmentForDownload<DynamicDeta
             public void onCommentLikeClick(int position) {
                 int realPostion = position - mHeaderAndFooterWrapper.getHeadersCount();
                 dianzanDynamicCommentBean = mListDatas.get(realPostion);
-                mPresenter.handleLike4Comment(dianzanDynamicCommentBean.get_id(), !dianzanDynamicCommentBean.isHas_like(), realPostion);
+                mPresenter.handleLike4Comment(dianzanDynamicCommentBean.getComment_id(), !dianzanDynamicCommentBean.isHas_like(), realPostion);
             }
         });
         dynamicDetailCommentItem.setOnCommentTextClickListener(new OnCommentTextClickListener() {

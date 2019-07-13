@@ -39,7 +39,6 @@ public class SystemConfigBean implements Serializable {
 
     @SerializedName("ad")
     private ArrayList<Advert> mAdverts; // 广告
-
     @SerializedName("news")
     private NewsConfig mNewsContribute;
     @SerializedName("Q&A")
@@ -61,6 +60,11 @@ public class SystemConfigBean implements Serializable {
     private WalletConfigBean wallet;
 
     private int limit = 15;
+
+
+   public String channel_default_search;
+
+   public List<ChannelTagInfo>  channel_default_tags;
 
 
     public WalletConfigBean getWallet() {
@@ -1309,6 +1313,45 @@ public class SystemConfigBean implements Serializable {
         private boolean status;
 
 
+    }
+
+    /**
+     * 默认的频道标签信息
+     */
+    public static class ChannelTagInfo implements Parcelable {
+         public int channel_id;//": 11,
+         public List<String> channel_tag;//": ["\u6807\u7b7e11", "\u6807\u7b7e1111"]
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.channel_id);
+            dest.writeStringList(this.channel_tag);
+        }
+
+        public ChannelTagInfo() {
+        }
+
+        protected ChannelTagInfo(Parcel in) {
+            this.channel_id = in.readInt();
+            this.channel_tag = in.createStringArrayList();
+        }
+
+        public static final Parcelable.Creator<ChannelTagInfo> CREATOR = new Parcelable.Creator<ChannelTagInfo>() {
+            @Override
+            public ChannelTagInfo createFromParcel(Parcel source) {
+                return new ChannelTagInfo(source);
+            }
+
+            @Override
+            public ChannelTagInfo[] newArray(int size) {
+                return new ChannelTagInfo[size];
+            }
+        };
     }
 }
 

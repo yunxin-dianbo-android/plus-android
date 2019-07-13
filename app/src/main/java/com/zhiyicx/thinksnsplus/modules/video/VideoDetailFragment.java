@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -416,7 +418,7 @@ public class VideoDetailFragment extends TSListFragmentForDownload<VideoDetailCo
 //      TextView tvTag6 = videoInfoView.findViewById(R.id.tv_tag_6);
         LinearLayout llTagContainer = videoInfoView.findViewById(R.id.ll_tag_container);
         tvTitle.setText(videoDetailBean.getName() + "");
-        tvSummary.setText(videoDetailBean.getSummary() + "");
+        tvSummary.setText(TextUtils.isEmpty(videoDetailBean.getSummary()) ? "" : videoDetailBean.getSummary() + "");
 
         tvSummary.post(new Runnable() {
             @Override
@@ -569,6 +571,9 @@ public class VideoDetailFragment extends TSListFragmentForDownload<VideoDetailCo
 //
 //                }
 //            }
+            if(mListDatas.get(replyCommentPosition).getComment_children() == null){
+                mListDatas.get(replyCommentPosition).setComment_children(new ArrayList<>());
+            }
             mListDatas.get(replyCommentPosition).getComment_children().add(0, comment);
             mListDatas.get(replyCommentPosition).setComment_children_count(mListDatas.get(replyCommentPosition).getComment_children_count() + 1);
         } else {

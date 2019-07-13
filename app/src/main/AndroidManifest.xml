@@ -376,7 +376,13 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".modules.settings.aboutus.CustomWEBActivity"
+            android:configChanges="orientation|locale|screenSize|layoutDirection|fontScale"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".modules.settings.aboutus.CustomWEBNotitleActivity"
+            android:configChanges="orientation|locale|screenSize|layoutDirection|fontScale"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".modules.edit_userinfo.UserInfoActivity"
             android:launchMode="singleTask"

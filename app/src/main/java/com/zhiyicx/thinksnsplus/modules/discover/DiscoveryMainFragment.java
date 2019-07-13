@@ -150,7 +150,7 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
 //                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
+                        VideoChannelActivity.starVideoChannelActivity(mActivity,null,AppApplication.videoChannelListBeans.get(mVpFragment.getCurrentItem()));
                     }
                 });
         RxView.clicks(tvVideoClassification2)
@@ -161,7 +161,7 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
 //                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
+                        VideoChannelActivity.starVideoChannelActivity(mActivity, null,AppApplication.videoChannelListBeans.get(mVpFragment.getCurrentItem()));
                     }
                 });
         RxView.clicks(tvAllVideoClassification)
@@ -172,7 +172,7 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
                     public void call(Void aVoid) {
                         // TODO: 2019/5/3 分类页面
 //                        startActivity(new Intent(mActivity, VideoChannelActivity.class));
-                        VideoChannelActivity.starVideoChannelActivity(mActivity, null);
+                        VideoChannelActivity.starVideoChannelActivity(mActivity, null,AppApplication.videoChannelListBeans.get(mVpFragment.getCurrentItem()));
                     }
                 });
 //        RxView.clicks();
@@ -230,8 +230,7 @@ public class DiscoveryMainFragment extends TSViewPagerFragment implements Dynami
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.hot)
-                , getString(R.string.group));
+        return Arrays.asList(getString(R.string.hot),getString(R.string.group));
     }
 
     @Override
