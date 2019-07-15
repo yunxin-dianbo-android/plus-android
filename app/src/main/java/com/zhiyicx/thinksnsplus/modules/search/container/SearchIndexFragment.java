@@ -18,9 +18,12 @@ import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SearchHistoryBeanV2;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.search.adapter.SearchHotAdapter;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.widget.FluidLayout;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -54,8 +57,12 @@ public class SearchIndexFragment extends TSFragment<SearchIndexContract.Presente
     RecyclerView rvHotSearch;
     @BindView(R.id.v_bottom_line)
     View vBottomLine;
+    @BindView(R.id.ll_root)
+    LinearLayout llRoot;
+    @BindView(R.id.ll_ad_content)
+    LinearLayout llAdContent;
     Unbinder unbinder;
-
+    private DynamicBannerHeader mDynamicBannerHeader;
 
     public void setiSetSearchEdittextContent(SearchContainerFragment2.IDoSearchCallBack iDoSearchCallBack) {
         this.iDoSearchCallBack = iDoSearchCallBack;
@@ -121,6 +128,7 @@ public class SearchIndexFragment extends TSFragment<SearchIndexContract.Presente
         if (searchIndexPresenter != null) {
             searchIndexPresenter.getSearchHistory();
             searchIndexPresenter.getHotSearchHistory();
+            searchIndexPresenter.requestAdData();
         }
     }
 
@@ -243,6 +251,50 @@ public class SearchIndexFragment extends TSFragment<SearchIndexContract.Presente
 
     }
 
+    @Override
+    public void onAdDataResSuccessed(List<AdListBeanV2> listBeanV2s) {
+
+        if (listBeanV2s != null && listBeanV2s.size() > 0) {
+            List<String> advertTitle = new ArrayList<>();
+            List<String> advertUrls = new ArrayList<>();
+            List<String> advertLinks = new ArrayList<>();
+
+            for (AdListBeanV2 advert : listBeanV2s) {
+                advertTitle.add(advert.getTitle());
+                advertUrls.add(advert.getData().getImage());
+                advertLinks.add(advert.getData().getLink());
+//                 if ("html".equals(advert.getType())) {
+//                     showStickyHtmlMessage((String) advert.getData().);
+//                 }
+            }
+            if (advertUrls.isEmpty()) {
+                return;
+            }
+            mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
+            mDynamicBannerHeader.setHeadlerClickEvent(new DynamicBannerHeader.DynamicBannerHeadlerClickEvent() {
+                @Override
+                public void headClick(int position) {
+                    toAdvert(listBeanV2s.get(position).getData().getLink(), listBeanV2s.get(position).getTitle());
+                }
+            });
+            DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
+                    DynamicBannerHeaderInfo();
+            headerInfo.setTitles(advertTitle);
+            headerInfo.setLinks(advertLinks);
+            headerInfo.setUrls(advertUrls);
+            headerInfo.setDelay(4000);
+            headerInfo.setOnBannerListener(position -> {
+
+            });
+            mDynamicBannerHeader.setHeadInfo(headerInfo);
+            llAdContent.addView(mDynamicBannerHeader.getDynamicBannerHeader());
+//            mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+//             mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
+//             mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
+
+        }
+    }
+
     public void doSearch(String str) {
         if (TextUtils.isEmpty(str)) {
             ToastUtils.showToast(R.string.have_no_input_search_key_tip);
@@ -280,5 +332,9 @@ public class SearchIndexFragment extends TSFragment<SearchIndexContract.Presente
 
     public void addSearchHistory(String str) {
         mPresenter.addSearchHistory(str);
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 }

@@ -162,6 +162,12 @@ public class DynamicFragment4Find extends DynamicFragment {
         //刷新数据  重新登录
         initData();
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_IN, mode = ThreadMode.MAIN)
+    public void login(boolean isLogin) {
+        //刷新数据  重新登录
+        initData();
+    }
 //
 //    /**
 //     * 添加或者删除频道

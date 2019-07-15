@@ -637,7 +637,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                         if (mCircleInfo.getPermissions().contains(mCircleInfo.getJoined().getRole())) {
                             if (mCircleInfo.getJoined()
                                     .getDisabled() == CircleJoinedBean.DisableStatus.NORMAL.value) {
-                                ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation",0f, 90f);
+                                ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 0f, 90f);
                                 valueAnimator.setDuration(500);
                                 valueAnimator.start();
                                 valueAnimator.addListener(new Animator.AnimatorListener() {
@@ -656,7 +656,7 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
                                                     publishPostMenuDialog.showDialog(new PublishPostMenuDialog.OnPublishListener() {
                                                         @Override
                                                         public void ondetachFromWindow() {
-                                                            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 90f,0);
+                                                            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(mBtnSendPost, "rotation", 90f, 0);
                                                             valueAnimator.setDuration(500);
                                                             valueAnimator.start();
                                                         }
@@ -859,9 +859,9 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
     private void setCircleData(CircleInfo detail) {
         mTvCircleTitle.setText(detail.getName());
         mTvCircleName.setText(detail.getName());
-        String postCount = String.format("帖子:%d",detail.getPosts_count());
+        String postCount = String.format("帖子:%d", detail.getPosts_count());
         tvCircleFeedCount.setText(postCount);
-        String memberCount = String.format("成员:%d",detail.getUsers_count());
+        String memberCount = String.format("成员:%d", detail.getUsers_count());
         tvCircleFollowCount.setText(memberCount);
         mLlMemberContainer.setRightText(String.valueOf(detail.getUsers_count() - mCircleInfo.getBlacklist_count()));
         String location = detail.getLocation();
@@ -877,7 +877,11 @@ public class CircleDetailFragmentV2 extends TSViewPagerFragment<CircleDetailCont
         mTvCirclePostCount.setText(String.format(Locale.getDefault(), getString(R.string.circle_detail_postcount), detail.getPosts_count()));
         mLlBlackContainer.setRightText("" + mCircleInfo.getBlacklist_count());
         mTvOwnerName.setText(detail.getFounder().getUser().getName());
-        mTvCircleIntroduce.setText(detail.getSummary() + "");
+        if (!TextUtils.isEmpty(detail.getSummary())) {
+            mTvCircleIntroduce.setText(detail.getSummary() + "");
+        } else {
+            mTvCircleIntroduce.setText("暂无简介");
+        }
 
 //        mLlIntroCountContainer.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);
 //        mLine.setVisibility(TextUtils.isEmpty(detail.getSummary()) ? View.GONE : View.VISIBLE);

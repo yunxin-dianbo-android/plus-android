@@ -4,9 +4,12 @@ import android.text.TextUtils;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.AddSearchKeyResInfo;
 import com.zhiyicx.thinksnsplus.data.beans.SearchHistoryBeanV2;
+import com.zhiyicx.thinksnsplus.data.source.repository.AdRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VideoRepository2;
+import com.zhiyicx.thinksnsplus.menum.AdType;
 
 import java.util.List;
 
@@ -15,6 +18,8 @@ import javax.inject.Inject;
 public class SearchIndexPresenter extends AppBasePresenter<SearchIndexContract.View> implements SearchIndexContract.Presenter {
     @Inject
     VideoRepository2 videoRepository2;
+    @Inject
+    AdRepository adRepository;
 
     @Inject
     public SearchIndexPresenter(SearchIndexContract.View rootView) {
@@ -56,6 +61,16 @@ public class SearchIndexPresenter extends AppBasePresenter<SearchIndexContract.V
             @Override
             protected void onSuccess(AddSearchKeyResInfo data) {
 //                    mRootView.onGetHotSearchSuccess(data);
+            }
+        });
+    }
+
+    @Override
+    public void requestAdData() {
+        adRepository.getAd(AdType.SEARCH.getValue()).subscribe(new BaseSubscribeForV2<List<AdListBeanV2>>() {
+            @Override
+            protected void onSuccess(List<AdListBeanV2> data) {
+                mRootView.onAdDataResSuccessed(data);
             }
         });
     }

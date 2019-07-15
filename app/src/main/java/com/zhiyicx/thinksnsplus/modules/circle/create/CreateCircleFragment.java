@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -38,6 +39,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
+import com.zhiyicx.thinksnsplus.data.beans.CircleMembers;
 import com.zhiyicx.thinksnsplus.data.beans.CircleTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.circle.CreateCircleBean;
@@ -52,6 +54,8 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.EnableCheckBox;
 import com.zhiyicx.thinksnsplus.widget.EnableSwitchCompat;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -137,6 +141,10 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     LinearLayout mLlContainer;
     @BindView(R.id.ll_gone_to_member)
     LinearLayout mLlGoneToMember;
+    @BindView(R.id.tv_circle_number)
+    TextView tvCircleNumber;
+    @BindView(R.id.rv_circle_member_list)
+    RecyclerView rvCircleMemberList;
 
     private ActionPopupWindow mPhotoPopupWindow;
     private PhotoSelectorImpl mPhotoSelector;
@@ -248,6 +256,8 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initData() {
+        String circleNum = String.format("圈子成员(%d)"+mCircleInfo.getUsers_count());
+        tvCircleNumber.setText(circleNum);
         mTvUseAgreeMent.setText(String.format(Locale.getDefault(), getString(R.string.edit_circle_rule), getString(R.string.app_name)));
         mEtCircleName.setFilters(new InputFilter[]{RegexUtils.getEmojiFilter(),
                 new InputFilter.LengthFilter(getResources().getInteger(R.integer.dynamic_title_input_size))});
@@ -643,7 +653,15 @@ public class CreateCircleFragment extends TSFragment<CreateCircleContract.Presen
         if (!canUpdate) {
             mTvAttention.setVisibility(View.GONE);
         }
-
+        rvCircleMemberList.setAdapter(new CommonAdapter<CircleMembers>(getContext(),R.layout.item_group_member_layout,mCircleInfo.getCircleMembers()) {
+            @Override
+            protected void convert(ViewHolder holder, CircleMembers circleMembers, int position) {
+              TextView tvUserName =  holder.getTextView(R.id.tv_user_name);
+              ImageView imageView = holder.getImageViwe(R.id.iv_user_head);
+              tvUserName.setText(circleMembers.getUser().getName());
+              GlideManager.glide(getContext(),imageView,circleMembers.getUser().getAvatar().getUrl(),R.mipmap.ic_default_user_head_circle);
+            }
+        });
     }
 
     @OnClick({R.id.rl_change_head_container, R.id.ll_type_container, R.id.ll_tag_container, R.id.ll_location_container,

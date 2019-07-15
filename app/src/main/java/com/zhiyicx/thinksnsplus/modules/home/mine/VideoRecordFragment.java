@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.home.mine.adapter.VideoRecordItem;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.video.VideoDetailActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -26,7 +29,7 @@ public class VideoRecordFragment extends TSListFragment<VideoRecordContract.Pres
     TextView tvDelete;
 
     private boolean isChooseAll = false;
-
+    private DynamicBannerHeader mDynamicBannerHeader;
     public static VideoRecordFragment newInstance() {
         VideoRecordFragment videoRecordFragment = new VideoRecordFragment();
         return videoRecordFragment;
@@ -34,6 +37,55 @@ public class VideoRecordFragment extends TSListFragment<VideoRecordContract.Pres
 
     View vStatusBarPlaceHolder;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mDynamicBannerHeader != null) {
+            mDynamicBannerHeader.startBanner();
+        }
+    }
+
+    @Override
+    public void onAdDataResSuccessed(final List<AdListBeanV2> listBeanV2s) {
+        if (mHeaderAndFooterWrapper != null && listBeanV2s != null && listBeanV2s.size() > 0) {
+            List<String> advertTitle = new ArrayList<>();
+            List<String> advertUrls = new ArrayList<>();
+            List<String> advertLinks = new ArrayList<>();
+
+            for (AdListBeanV2 advert : listBeanV2s) {
+                advertTitle.add(advert.getTitle());
+                advertUrls.add(advert.getData().getImage());
+                advertLinks.add(advert.getData().getLink());
+//                 if ("html".equals(advert.getType())) {
+//                     showStickyHtmlMessage((String) advert.getData().);
+//                 }
+            }
+            if (advertUrls.isEmpty()) {
+                return;
+            }
+            mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
+            mDynamicBannerHeader.setHeadlerClickEvent(new DynamicBannerHeader.DynamicBannerHeadlerClickEvent() {
+                @Override
+                public void headClick(int position) {
+                    toAdvert(listBeanV2s.get(position).getData().getLink(), listBeanV2s.get(position).getTitle());
+                }
+            });
+            DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
+                    DynamicBannerHeaderInfo();
+            headerInfo.setTitles(advertTitle);
+            headerInfo.setLinks(advertLinks);
+            headerInfo.setUrls(advertUrls);
+            headerInfo.setDelay(4000);
+            headerInfo.setOnBannerListener(position -> {
+
+            });
+            mDynamicBannerHeader.setHeadInfo(headerInfo);
+            mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+//             mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
+//             mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
+
+        }
+    }
     @Override
     protected RecyclerView.Adapter getAdapter() {
         adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
@@ -140,6 +192,9 @@ public class VideoRecordFragment extends TSListFragment<VideoRecordContract.Pres
     protected void initData() {
         super.initData();
         startRefrsh();
+        if(mPresenter !=null){
+            mPresenter.getAdData();
+        }
     }
 
     @Override
@@ -176,22 +231,26 @@ public class VideoRecordFragment extends TSListFragment<VideoRecordContract.Pres
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        if (mListDatas.get(position).isEditMode) {
-            mListDatas.get(position).isChecked = !mListDatas.get(position).isChecked;
+        int realPosition = position-mHeaderAndFooterWrapper.getHeadersCount();
+        if (mListDatas.get(realPosition).isEditMode) {
+            mListDatas.get(realPosition).isChecked = !mListDatas.get(realPosition).isChecked;
             ImageView ivChechedStatus = holder.itemView.findViewById(R.id.iv_checked_status);
-            if (mListDatas.get(position).isChecked) {
+            if (mListDatas.get(realPosition).isChecked) {
                 ivChechedStatus.setImageResource(R.mipmap.ic_video_record_checked);
             } else {
                 ivChechedStatus.setImageResource(R.mipmap.ic_video_record_unchecked);
             }
         } else {
-            VideoDetailActivity.starVideoDetailActivity(getContext(), mListDatas.get(position).getVideo());
+            VideoDetailActivity.starVideoDetailActivity(getContext(), mListDatas.get(realPosition).getVideo());
         }
     }
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
+    }
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 
 }

@@ -1227,6 +1227,9 @@ public class ApiConfig {
 
     public static final String APP_PATH_GAME = "api/" + API_VERSION_2 + "/dianbo/game";
 
+//    http://47.97.249.200/api/v2/advertisingspace/1/advertising
+    public static final String APP_AD_PATH = "api/" + API_VERSION_2 + "/advertisingspace/{position}/advertising";
+
 
 
 

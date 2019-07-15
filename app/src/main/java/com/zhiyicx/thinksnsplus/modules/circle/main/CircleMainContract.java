@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.circle.main;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -28,6 +29,8 @@ public interface CircleMainContract {
         void setRecommendCircles(List<CircleInfo> circles);
         void loadAllError();
         void setUserCertificationInfo(UserCertificationInfo data);
+
+        void adDataResponseSuccess(List<AdListBeanV2> adListBeanV2s);
     }
 
     interface Presenter extends ITSListPresenter<CircleInfo> {
@@ -42,6 +45,8 @@ public interface CircleMainContract {
         void canclePay();
 
         List<RealAdvertListBean> getAdvert();
+
+        void getAdData();
     }
 
 }

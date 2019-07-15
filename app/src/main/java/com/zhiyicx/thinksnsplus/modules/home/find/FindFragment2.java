@@ -121,14 +121,6 @@ public class FindFragment2 extends TSFragment implements DynamicFragment.OnComme
 
     @Override
     protected void initData() {
-//        SystemConfigBean systemConfigBean = null;
-//        try {
-//            systemConfigBean = SharePreferenceUtils.getObject(getContext().getApplicationContext(), SharePreferenceTagConfig
-//                    .SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        mQAButton.setVisibility(systemConfigBean != null && !systemConfigBean.getQuestionConfig().isStatus() ? View.GONE : View.VISIBLE);
         datas.clear();
         fragments.clear();
         datas.add("热门");
@@ -299,16 +291,22 @@ public class FindFragment2 extends TSFragment implements DynamicFragment.OnComme
         return true;
     }
 
-    /**
-     * 添加或者删除频道
-     *
-     * @param
-     */
-    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_IN, mode = ThreadMode.MAIN)
-    public void login(boolean isLogin) {
-        //刷新数据  重新登录
-        initData();
-    }
+//    /**
+//     * 添加或者删除频道
+//     *
+//     * @param
+//     */
+//    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_IN, mode = ThreadMode.MAIN)
+//    public void login(boolean isLogin) {
+//        //刷新数据  重新登录
+////        tablayout.postDelayed(new Runnable() {
+////            @Override
+////            public void run() {
+//                initData();
+////            }
+////        }, 2000);
+//
+//    }
 
 
 }

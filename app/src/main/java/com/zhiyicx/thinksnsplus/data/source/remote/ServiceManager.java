@@ -37,6 +37,10 @@ public class ServiceManager {
 
 
 
+    private AdClient adClient;
+
+
+
     private VideoClient2 videoClient2;
 
     /**
@@ -64,7 +68,7 @@ public class ServiceManager {
             , CircleClient circleClient
             , EasemobClient easemobClient
             , TopicClient topicClient, VideoChannelClient videoChannelClient
-            , VideoClient2 videoClient2) {
+            , VideoClient2 videoClient2,AdClient adClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
         this.mQAClient = qAClient;
@@ -85,6 +89,7 @@ public class ServiceManager {
         this.mTopicClient = topicClient;
         this.videoChannelClient = videoChannelClient;
         this.videoClient2 = videoClient2;
+        this.adClient = adClient;
     }
 
     public CommonClient getCommonClient() {
@@ -173,5 +178,13 @@ public class ServiceManager {
 
     public void setVideoClient2(VideoClient2 videoClient2) {
         this.videoClient2 = videoClient2;
+    }
+
+    public AdClient getAdClient() {
+        return adClient;
+    }
+
+    public void setAdClient(AdClient adClient) {
+        this.adClient = adClient;
     }
 }

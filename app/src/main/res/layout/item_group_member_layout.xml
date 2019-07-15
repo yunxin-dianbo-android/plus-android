@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_38383A"
+   >
+<LinearLayout
+    android:id="@+id/ll_menmber_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:background="@color/color_38383A"
@@ -22,3 +30,14 @@
         android:textColor="@color/white"
         android:textSize="14sp" />
 </LinearLayout>
+    <View
+        android:layout_below="@+id/ll_menmber_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/color_99999999"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"/>
+
+</RelativeLayout>

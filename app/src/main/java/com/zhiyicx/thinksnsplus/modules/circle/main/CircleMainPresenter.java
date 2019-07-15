@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
@@ -21,8 +22,10 @@ import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.CircleInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.AdRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseCircleRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.menum.AdType;
 import com.zhiyicx.thinksnsplus.modules.circle.main.adapter.BaseCircleItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +67,8 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
     @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
+    @Inject
+    AdRepository adRepository;
     private Subscription subscribe;
 
     @Inject
@@ -421,6 +426,16 @@ public class CircleMainPresenter extends AppBasePresenter<CircleMainContract.Vie
             return null;
         }
         return allAdverListBean.getMRealAdvertListBeen();
+    }
+
+    @Override
+    public void getAdData() {
+        adRepository.getAd(AdType.FIND_CIRCLE.getValue()).subscribe(new BaseSubscribeForV2<List<AdListBeanV2>>() {
+            @Override
+            protected void onSuccess(List<AdListBeanV2> data) {
+                mRootView.adDataResponseSuccess(data);
+            }
+        });
     }
 
 

@@ -15,6 +15,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.CircleInfo;
 import com.zhiyicx.thinksnsplus.data.beans.CircleJoinedBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -34,6 +35,7 @@ import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchCont
 import com.zhiyicx.thinksnsplus.modules.circle.search.container.CircleSearchContainerViewPagerFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -81,10 +83,10 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
      */
     @Inject
     CircleMainPresenter mCircleMainPresenter;
-
-
     //    private List<RealAdvertListBean> mListAdvert;
     private List<RealAdvertListBean> mHeaderAdvert;
+
+    private DynamicBannerHeader mDynamicBannerHeader;
 
     @Override
     protected boolean setUseCenterLoading() {
@@ -240,6 +242,14 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mDynamicBannerHeader != null) {
+            mDynamicBannerHeader.startBanner();
+        }
+    }
+
+    @Override
     public void onForgetPsdClick() {
         showInputPsdView(false);
         startActivity(new Intent(getActivity(), FindPasswordActivity.class));
@@ -267,8 +277,9 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
         if (mPresenter != null) {
             mCircleMainHeader = new CircleMainHeader(mActivity, mPresenter.getCircleTopAdvert(), 2341);
             mHeaderAndFooterWrapper.clearHeaderView();
-            mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
+
             mPresenter.requestNetData(0L, false);
+            mPresenter.getAdData();
         }
     }
 
@@ -453,6 +464,50 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
 
     }
 
+    @Override
+    public void adDataResponseSuccess(List<AdListBeanV2> listBeanV2s) {
+        if (mHeaderAndFooterWrapper != null && listBeanV2s != null && listBeanV2s.size() > 0) {
+            List<String> advertTitle = new ArrayList<>();
+            List<String> advertUrls = new ArrayList<>();
+            List<String> advertLinks = new ArrayList<>();
+
+            for (AdListBeanV2 advert : listBeanV2s) {
+                advertTitle.add(advert.getTitle());
+                advertUrls.add(advert.getData().getImage());
+                advertLinks.add(advert.getData().getLink());
+            }
+            if (advertUrls.isEmpty()) {
+                return;
+            }
+            mDynamicBannerHeader = new DynamicBannerHeader(mActivity);
+            mDynamicBannerHeader.setHeadlerClickEvent(new DynamicBannerHeader.DynamicBannerHeadlerClickEvent() {
+                @Override
+                public void headClick(int position) {
+                    toAdvert(listBeanV2s.get(position).getData().getLink(), listBeanV2s.get(position).getTitle());
+                }
+            });
+            DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
+                    DynamicBannerHeaderInfo();
+            headerInfo.setTitles(advertTitle);
+            headerInfo.setLinks(advertLinks);
+            headerInfo.setUrls(advertUrls);
+            headerInfo.setDelay(4000);
+            headerInfo.setOnBannerListener(position -> {
+
+            });
+            mDynamicBannerHeader.setHeadInfo(headerInfo);
+            mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
+//             mLinearDecoration.setHeaderCount(mHeaderAndFooterWrapper.getHeadersCount());
+//             mLinearDecoration.setFooterCount(mHeaderAndFooterWrapper.getFootersCount());
+
+        }
+        mHeaderAndFooterWrapper.addHeaderView(mCircleMainHeader.getCircleMainHeader());
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
+    }
+
     /**
      * 认证提示弹窗
      */
@@ -580,6 +635,11 @@ public class CircleMainFragment extends TSListFragment<CircleMainContract.Presen
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_LOG_OUT, mode = ThreadMode.MAIN)
     public void logout(boolean isLogOut) {
+        //刷新数据  重新登录
+        initData();
+    }
+    @Subscriber(tag = EventBusTagConfig.EVENT_LOG_IN, mode = ThreadMode.MAIN)
+    public void login(boolean isLogin) {
         //刷新数据  重新登录
         initData();
     }

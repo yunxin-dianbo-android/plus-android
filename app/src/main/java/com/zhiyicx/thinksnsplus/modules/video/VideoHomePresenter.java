@@ -4,9 +4,11 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.base.fordownload.AppListPresenterForDownload;
+import com.zhiyicx.thinksnsplus.data.beans.AdListBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopSuperStarBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoChannelBean;
 import com.zhiyicx.thinksnsplus.data.beans.VideoListBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.AdRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.VideoRepository2;
 
@@ -23,7 +25,8 @@ public class VideoHomePresenter extends AppListPresenterForDownload<VideoHomeCon
     //    @Inject
     @Inject
     VideoRepository2 videoRepository2;
-
+    @Inject
+    AdRepository adRepository;
     @Inject
     public VideoHomePresenter(VideoHomeCongract.View rootView) {
         super(rootView);
@@ -66,5 +69,15 @@ public class VideoHomePresenter extends AppListPresenterForDownload<VideoHomeCon
     @Override
     public boolean insertOrUpdateData(@NotNull List<VideoListBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void requestAdData(int position) {
+        adRepository.getAd(position).subscribe(new BaseSubscribeForV2<List<AdListBeanV2>>() {
+            @Override
+            protected void onSuccess(List<AdListBeanV2> data) {
+                mRootView.onAdDataResSuccessed(data);
+            }
+        });
     }
 }

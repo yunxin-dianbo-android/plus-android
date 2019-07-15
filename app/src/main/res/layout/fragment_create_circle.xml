@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_38383A"
+    android:orientation="vertical">
+<!--<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
@@ -9,12 +16,11 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/color_38383A">
+        android:background="@color/color_38383A">-->
 
         <LinearLayout
             android:id="@+id/ll_container"
@@ -502,6 +508,7 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/tv_circle_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
@@ -519,24 +526,33 @@
                 android:layout_marginRight="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_line"/>
-            <LinearLayout
-                android:id="@+id/ll_group_member_parent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
-                <include layout="@layout/item_group_member_layout"/>
-                <View
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:background="@color/color_99999999"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/divider_line"/>
-                <include layout="@layout/item_group_member_layout"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_circle_member_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <!--
+           <LinearLayout
+               android:id="@+id/ll_group_member_parent"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical">
+
+            <include layout="@layout/item_group_member_layout"/>
+               <View
+                   xmlns:android="http://schemas.android.com/apk/res/android"
+                   android:background="@color/color_99999999"
+                   android:layout_marginTop="0dp"
+                   android:layout_marginLeft="15dp"
+                   android:layout_marginRight="15dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/divider_line"/>
+               <include layout="@layout/item_group_member_layout"/>
 
             </LinearLayout>
+            -->
         </LinearLayout>
+<!--
     </android.support.v4.widget.NestedScrollView>
-</com.wcy.overscroll.OverScrollLayout>
+</com.wcy.overscroll.OverScrollLayout>-->
+</LinearLayout>

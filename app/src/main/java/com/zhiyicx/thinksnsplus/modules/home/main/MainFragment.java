@@ -89,7 +89,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @Inject
     AuthRepository mIAuthRepository;
 
-    //    @Inject
+//    @Inject
 //    VideoChannelRepository videoChannelRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
@@ -323,7 +323,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
             else
                 tvSearchTip.setText("推荐搜索");
         }
-        if (currentVideoChannelBean != null && AppApplication.systemConfigBean.channel_default_tags != null) {
+        if (currentVideoChannelBean != null && AppApplication.systemConfigBean != null && AppApplication.systemConfigBean.channel_default_tags != null) {
             for (int i = 0; i < AppApplication.systemConfigBean.channel_default_tags.size(); i++) {
                 if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_id == currentVideoChannelBean.getId()) {
                     if (AppApplication.systemConfigBean.channel_default_tags.get(i).channel_tag != null) {

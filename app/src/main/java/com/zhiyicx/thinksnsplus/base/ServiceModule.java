@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.base;
 
 
 import com.zhiyicx.thinksnsplus.comment.CommonCommentClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.AdClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.CircleClient;
@@ -206,5 +207,10 @@ public class ServiceModule {
     @Provides
     VideoClient2 provideVideoClient2(Retrofit retrofit) {
         return retrofit.create(VideoClient2.class);
+    }
+    @Singleton
+    @Provides
+    AdClient provideAdClient(Retrofit retrofit) {
+        return retrofit.create(AdClient.class);
     }
 }
